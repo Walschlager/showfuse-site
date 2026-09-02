@@ -1,0 +1,20 @@
+:root{--bg:#111013;--ink:#1a181b;--paper:#f2efe6;--accent:#FFC300;--text2:#b9b4a8;--text3:#7a766c;--hair:#2c2a2e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--paper);font-family:Outfit,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:0 24px}
+header{padding:26px 0;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--paper);text-decoration:none}
+.logo span{color:var(--accent)}
+nav a{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);text-decoration:none;margin-left:18px}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-top:64px}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,9vw,72px);line-height:.95;letter-spacing:1px;margin:14px 0 10px}
+.meta{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);letter-spacing:1px;margin-bottom:40px}
+.lead{font-size:18px;font-weight:300;color:var(--text2);line-height:1.6;margin-bottom:36px;padding:18px 20px;border-left:3px solid var(--accent);background:rgba(255,195,0,.05)}
+h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1.5px;margin:34px 0 10px}
+p,li{color:var(--text2);font-weight:300;line-height:1.65;font-size:16px}
+ul{padding-left:20px;margin:8px 0}
+li{margin:6px 0}
+b{color:var(--paper);font-weight:600}
+a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--hair)}
+footer{margin-top:64px;padding:36px 0 64px;border-top:1px solid var(--hair);color:var(--text3);font-size:13px;line-height:2}
+footer a{color:var(--text2)}
