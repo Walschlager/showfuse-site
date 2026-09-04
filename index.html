@@ -36,9 +36,19 @@
   footer{padding:44px 0 64px;color:var(--text3);font-size:13px;line-height:2}
   footer a{color:var(--text2);text-decoration:none;border-bottom:1px solid var(--hair)}
   .mono{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase}
+  .glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(600px 600px at 50% 45%, rgba(255,195,0,.10), transparent 70%)}
+  .sparks{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .sparks i{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--accent);
+    opacity:0;animation:fup linear infinite}
+  @keyframes fup{0%{transform:translateY(60px);opacity:.6}100%{transform:translateY(-250px);opacity:0}}
+  @media (prefers-reduced-motion:reduce){.sparks{display:none}}
+  header,main,footer{position:relative;z-index:1}
 </style>
 </head>
 <body>
+<div class="glow"></div>
+<div class="sparks"><i style="left:32.4%;top:57.5%;animation-duration:6.0s;animation-delay:0.4s"></i><i style="left:53.6%;top:68.3%;animation-duration:4.2s;animation-delay:2.5s"></i><i style="left:3.7%;top:71.7%;animation-duration:4.2s;animation-delay:0.5s"></i><i style="left:42.5%;top:91.3%;animation-duration:4.4s;animation-delay:1.1s"></i><i style="left:62.7%;top:97.4%;animation-duration:5.7s;animation-delay:2.0s"></i><i style="left:97.6%;top:52.3%;animation-duration:6.6s;animation-delay:1.4s"></i><i style="left:14.4%;top:55.9%;animation-duration:4.9s;animation-delay:4.1s"></i><i style="left:18.1%;top:79.1%;animation-duration:5.9s;animation-delay:1.9s"></i><i style="left:54.8%;top:53.1%;animation-duration:4.2s;animation-delay:1.0s"></i><i style="left:68.0%;top:71.4%;animation-duration:4.9s;animation-delay:2.9s"></i><i style="left:45.3%;top:65.0%;animation-duration:6.4s;animation-delay:3.5s"></i><i style="left:24.4%;top:78.7%;animation-duration:5.6s;animation-delay:4.4s"></i><i style="left:72.9%;top:64.4%;animation-duration:6.9s;animation-delay:0.6s"></i><i style="left:41.8%;top:87.9%;animation-duration:4.5s;animation-delay:2.4s"></i><i style="left:3.9%;top:83.4%;animation-duration:6.3s;animation-delay:2.9s"></i><i style="left:87.5%;top:65.7%;animation-duration:6.1s;animation-delay:3.0s"></i><i style="left:58.0%;top:72.8%;animation-duration:6.5s;animation-delay:4.7s"></i><i style="left:47.4%;top:83.2%;animation-duration:4.2s;animation-delay:3.5s"></i><i style="left:64.7%;top:99.7%;animation-duration:6.5s;animation-delay:1.4s"></i><i style="left:38.6%;top:83.4%;animation-duration:4.1s;animation-delay:2.3s"></i><i style="left:16.8%;top:55.9%;animation-duration:4.2s;animation-delay:3.8s"></i><i style="left:12.9%;top:62.4%;animation-duration:5.2s;animation-delay:4.4s"></i><i style="left:8.1%;top:72.5%;animation-duration:5.6s;animation-delay:4.4s"></i><i style="left:81.9%;top:93.2%;animation-duration:4.8s;animation-delay:2.1s"></i><i style="left:35.9%;top:94.2%;animation-duration:6.9s;animation-delay:0.8s"></i></div>
 <header><div class="wrap"><a href="/" aria-label="ShowFuse"><span class="wordmark" role="img" aria-label="ShowFuse"></span></a></div></header>
 
 <main>
