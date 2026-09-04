@@ -6,7 +6,7 @@ header{padding:26px 0;border-bottom:1px solid var(--hair);display:flex;justify-c
 .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--paper);text-decoration:none}
 .logo span{color:var(--accent)}
 .wordmark{display:block;width:124px;height:41px;background:var(--accent);-webkit-mask:url(/assets/wordmark.png) center/contain no-repeat;mask:url(/assets/wordmark.png) center/contain no-repeat}
-.emblem{width:84px;height:84px;margin-bottom:26px;background:var(--accent);-webkit-mask:url(/assets/fuse.png) center/contain no-repeat;mask:url(/assets/fuse.png) center/contain no-repeat;filter:drop-shadow(0 0 26px rgba(255,195,0,.45))}
+.emblem{display:block;width:84px;height:84px;margin-bottom:26px;background:var(--accent);-webkit-mask:url(/assets/fuse.png) center/contain no-repeat;mask:url(/assets/fuse.png) center/contain no-repeat;filter:drop-shadow(0 0 26px rgba(255,195,0,.45))}
 
 nav a{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);text-decoration:none;margin-left:18px}
 .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-top:64px}
