@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ShowFuse — this one lives in the app</title>
+<title>ShowFuse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -12,7 +12,8 @@
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--bg);color:var(--paper);font-family:Outfit,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
   .card{max-width:520px;text-align:center}
-  .logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;margin-bottom:40px}
+  .logo{margin-bottom:40px;display:flex;justify-content:center}
+  .wordmark{height:26px;width:auto}
   .logo span{color:var(--accent)}
   h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,10vw,64px);line-height:1;letter-spacing:1px;margin-bottom:18px}
   p{color:var(--text2);font-weight:300;line-height:1.6;font-size:17px}
@@ -22,10 +23,10 @@
 </head>
 <body>
   <div class="card">
-    <div class="logo">SHOW<span>FUSE</span></div>
+    <div class="logo"><a href="/"><img class="wordmark" src="/assets/wordmark.png" alt="ShowFuse"></a></div>
     <h1>THIS ONE LIVES<br>IN THE APP</h1>
     <p>Shows, artists, and tickets on ShowFuse open inside the app.
-    We're in closed beta on iOS — if a friend sent you this link, ask them for an invite.</p>
+    We're in closed beta on iOS. If a friend sent you this link, ask them for an invite.</p>
     <div class="beta">iOS · Closed beta</div>
     <a class="home" href="/">← showfuseapp.com</a>
   </div>

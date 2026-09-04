@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ShowFuse — swipe into live music</title>
-<meta name="description" content="ShowFuse is a swipe-first app for discovering live music near you — artists, shows, and the rooms they play. iOS, in closed beta.">
+<title>ShowFuse</title>
+<meta name="description" content="ShowFuse is a swipe-first app for discovering live music near you. Artists, shows, and the rooms they play. iOS, in closed beta.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -16,6 +16,9 @@
   header{padding:26px 0;border-bottom:1px solid var(--hair)}
   .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px}
   .logo span{color:var(--accent)}
+
+.wordmark{height:26px;width:auto;display:block}
+.emblem{height:76px;width:auto;margin-bottom:26px;filter:drop-shadow(0 0 26px rgba(255,195,0,.35))}
   .hero{padding:88px 0 64px;border-bottom:1px solid var(--hair)}
   .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--accent);text-transform:uppercase}
   h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,12vw,96px);line-height:.95;letter-spacing:1px;margin:18px 0 22px}
@@ -34,14 +37,15 @@
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="logo">SHOW<span>FUSE</span></div></div></header>
+<header><div class="wrap"><a href="/"><img class="wordmark" src="/assets/wordmark.png" alt="ShowFuse"></a></div></header>
 
 <main>
   <div class="hero"><div class="wrap">
+    <img class="emblem" src="/assets/fuse.png" alt="">
     <div class="kicker">Live music discovery</div>
     <h1>SWIPE INTO<br>THE SHOW</h1>
-    <p class="sub">ShowFuse is a swipe-first app for finding live music near you —
-    the artists worth hearing, the dates they're playing, and the rooms they play them in.
+    <p class="sub">ShowFuse is a swipe-first app for finding live music near you.
+    The artists worth hearing, the dates they're playing, and the rooms they play them in.
     Follow an artist and their next show near you finds its way back to your deck.</p>
     <div class="beta">iOS · Closed beta</div>
   </div></div>
@@ -49,8 +53,8 @@
   <section><div class="wrap">
     <h2>How it works</h2>
     <div class="row"><span class="n">01</span><div><b>Swipe the deck.</b><p>Artists near you, with their music playing as you browse. Right to follow, up when you're going.</p></div></div>
-    <div class="row"><span class="n">02</span><div><b>Never miss the date.</b><p>Artists you follow come back as a show card when they're playing close — with the ticket link at the seller's own door.</p></div></div>
-    <div class="row"><span class="n">03</span><div><b>Built for artists too.</b><p>Post your dates, see who's going — and who said maybe — city by city.</p></div></div>
+    <div class="row"><span class="n">02</span><div><b>Never miss the date.</b><p>Artists you follow come back as a show card when they're playing close, with the ticket link at the seller's own door.</p></div></div>
+    <div class="row"><span class="n">03</span><div><b>Built for artists too.</b><p>Post your dates, see who's going and who said maybe, city by city.</p></div></div>
   </div></section>
 
   <section><div class="wrap">
