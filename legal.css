@@ -5,6 +5,7 @@ body{background:var(--bg);color:var(--paper);font-family:Outfit,system-ui,sans-s
 header{padding:26px 0;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between;align-items:center}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--paper);text-decoration:none}
 .logo span{color:var(--accent)}
+.headmark{display:block;width:34px;height:34px;background:var(--accent);-webkit-mask:url(/assets/fuse.png) center/contain no-repeat;mask:url(/assets/fuse.png) center/contain no-repeat}
 .wordmark{display:block;width:124px;height:41px;background:var(--accent);-webkit-mask:url(/assets/wordmark.png) center/contain no-repeat;mask:url(/assets/wordmark.png) center/contain no-repeat}
 .emblem{display:block;width:84px;height:84px;margin-bottom:26px;background:var(--accent);-webkit-mask:url(/assets/fuse.png) center/contain no-repeat;mask:url(/assets/fuse.png) center/contain no-repeat;filter:drop-shadow(0 0 26px rgba(255,195,0,.45))}
 
