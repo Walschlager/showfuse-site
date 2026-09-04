@@ -13,7 +13,7 @@
   body{background:var(--bg);color:var(--paper);font-family:Outfit,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
   .card{max-width:520px;text-align:center}
   .logo{margin-bottom:40px;display:flex;justify-content:center}
-  .wordmark{height:26px;width:auto}
+  .wordmark{display:block;width:124px;height:41px;background:var(--accent);-webkit-mask:url(/assets/wordmark.png) center/contain no-repeat;mask:url(/assets/wordmark.png) center/contain no-repeat}
   .logo span{color:var(--accent)}
   h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,10vw,64px);line-height:1;letter-spacing:1px;margin-bottom:18px}
   p{color:var(--text2);font-weight:300;line-height:1.6;font-size:17px}
@@ -23,7 +23,7 @@
 </head>
 <body>
   <div class="card">
-    <div class="logo"><a href="/"><img class="wordmark" src="/assets/wordmark.png" alt="ShowFuse"></a></div>
+    <div class="logo"><a href="/" aria-label="ShowFuse"><span class="wordmark" role="img" aria-label="ShowFuse"></span></a></div>
     <h1>THIS ONE LIVES<br>IN THE APP</h1>
     <p>Shows, artists, and tickets on ShowFuse open inside the app.
     We're in closed beta on iOS. If a friend sent you this link, ask them for an invite.</p>

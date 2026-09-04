@@ -17,8 +17,8 @@
   .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px}
   .logo span{color:var(--accent)}
 
-.wordmark{height:26px;width:auto;display:block}
-.emblem{height:76px;width:auto;margin-bottom:26px;filter:drop-shadow(0 0 26px rgba(255,195,0,.35))}
+.wordmark{display:block;width:124px;height:41px;background:var(--accent);-webkit-mask:url(/assets/wordmark.png) center/contain no-repeat;mask:url(/assets/wordmark.png) center/contain no-repeat}
+.emblem{width:84px;height:84px;margin-bottom:26px;background:var(--accent);-webkit-mask:url(/assets/fuse.png) center/contain no-repeat;mask:url(/assets/fuse.png) center/contain no-repeat;filter:drop-shadow(0 0 26px rgba(255,195,0,.45))}
   .hero{padding:88px 0 64px;border-bottom:1px solid var(--hair)}
   .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--accent);text-transform:uppercase}
   h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,12vw,96px);line-height:.95;letter-spacing:1px;margin:18px 0 22px}
@@ -37,11 +37,11 @@
 </style>
 </head>
 <body>
-<header><div class="wrap"><a href="/"><img class="wordmark" src="/assets/wordmark.png" alt="ShowFuse"></a></div></header>
+<header><div class="wrap"><a href="/" aria-label="ShowFuse"><span class="wordmark" role="img" aria-label="ShowFuse"></span></a></div></header>
 
 <main>
   <div class="hero"><div class="wrap">
-    <img class="emblem" src="/assets/fuse.png" alt="">
+    <span class="emblem" aria-hidden="true"></span>
     <div class="kicker">Live music discovery</div>
     <h1>SWIPE INTO<br>THE SHOW</h1>
     <p class="sub">ShowFuse is a swipe-first app for finding live music near you.
