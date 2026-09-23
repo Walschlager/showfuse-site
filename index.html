@@ -28,6 +28,26 @@
   .sub{font-size:19px;font-weight:300;color:var(--text2);line-height:1.55;max-width:34em}
   .beta{display:inline-block;margin-top:34px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--ink);background:var(--accent);padding:10px 16px;text-transform:uppercase}
   section{padding:56px 0;border-bottom:1px solid var(--hair)}
+  .join{padding:56px 0;border-bottom:1px solid var(--hair);background:rgba(255,195,0,.04)}
+  .join .num{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,16vw,120px);line-height:.9;color:var(--accent);margin:8px 0 12px}
+  .field{margin-top:16px}
+  .field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+  .field input,.field select{width:100%;background:#0b0b0d;border:1px solid var(--hair);color:var(--paper);font-family:Outfit,system-ui,sans-serif;font-size:16px;padding:14px;border-radius:0;-webkit-appearance:none;appearance:none}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:520px){.grid2{grid-template-columns:1fr}}
+  .roles{display:flex;gap:10px;margin-top:8px}
+  .roles label{flex:1;border:1px solid var(--hair);background:#0b0b0d;padding:14px 12px;cursor:pointer;text-transform:none;letter-spacing:0;font-family:Outfit,system-ui,sans-serif;font-size:14px;color:var(--paper);margin:0}
+  .roles label b{display:block;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--paper)}
+  .roles label span{display:block;color:var(--text2);font-size:12px;margin-top:4px;line-height:1.4}
+  .roles input{position:absolute;opacity:0;width:0;height:0}
+  .roles input:checked+label{border-color:var(--accent);background:rgba(255,195,0,.08)}
+  .btn{display:block;width:100%;margin-top:22px;padding:17px;background:var(--accent);color:var(--ink);border:0;font-family:Outfit,system-ui,sans-serif;font-weight:800;font-size:13px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;border-radius:0}
+  .btn[disabled]{opacity:.5;cursor:default}
+  .fine{margin-top:12px;font-size:12px;color:var(--text3);line-height:1.6}
+  .fine a{color:var(--text2);border-bottom:1px solid var(--hair)}
+  .err{margin-top:14px;padding:12px 14px;border-left:3px solid #FF4757;color:var(--paper);font-size:14px;background:rgba(255,71,87,.08);display:none}
+  .hp{position:absolute;left:-9999px;top:-9999px;height:0;overflow:hidden}
   h2{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1.5px;margin-bottom:26px}
   .row{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--hair);align-items:baseline}
   .row:last-child{border-bottom:1px solid var(--hair)}
@@ -66,6 +86,39 @@
     <div class="beta">iOS · Closed beta</div>
   </div></div>
 
+  <section class="join" id="join"><div class="wrap">
+    <div class="kicker">Founding members</div>
+    <h2 style="margin-top:14px">Get in first.</h2>
+    <p class="sub">Put your name down and you're numbered from day one. The app opens to founding members before anyone else, by email.</p>
+    <form id="joinForm" novalidate>
+      <div class="field"><label>I am a</label>
+        <div class="roles">
+          <input type="radio" name="role" id="r-listener" value="listener" checked><label for="r-listener"><b>Listener</b><span>Find shows near you, follow artists, go.</span></label>
+          <input type="radio" name="role" id="r-artist" value="artist"><label for="r-artist"><b>Artist</b><span>Post your dates, sell your tickets.</span></label>
+          <input type="radio" name="role" id="r-venue" value="venue"><label for="r-venue"><b>Venue</b><span>Who's coming through, who's coming out.</span></label>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="j-name">Name</label><input id="j-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Your name"></div>
+        <div class="field"><label for="j-city">Home city</label><input id="j-city" name="city" type="text" autocomplete="address-level2" maxlength="80" placeholder="Los Angeles, CA"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="j-email">Email</label><input id="j-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required></div>
+        <div class="field"><label for="j-phone">Phone <span style="color:var(--text3);letter-spacing:0;text-transform:none">(optional)</span></label><input id="j-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="32" placeholder="+1 (555) 555-5555"></div>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn" id="joinBtn" type="submit">Put me on the list</button>
+      <div class="err" id="joinErr"></div>
+      <p class="fine">By joining you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. 13+. One email, when your door opens. No spam, ever.</p>
+    </form>
+    <div id="joinDone" style="display:none">
+      <div class="kicker" style="margin-top:8px">You're in</div>
+      <div class="num" id="joinNum">#—</div>
+      <p class="sub" id="joinMsg">Founding member. Watch your inbox for the invite.</p>
+      <p class="fine">Already on the list? We kept your original number.</p>
+    </div>
+  </div></section>
+
   <section><div class="wrap">
     <h2>How it works</h2>
     <div class="row"><span class="n">01</span><div><b>Swipe the deck.</b><p>Artists near you, with their music playing as you browse. Right to follow, up when you're going.</p></div></div>
@@ -75,16 +128,42 @@
 
   <section><div class="wrap">
     <h2>Contact</h2>
-    <p class="sub">The beta is invite-only while we build with our first listeners and artists.</p>
+    <p class="sub">The beta is invite-only while we build with our first listeners and artists. Want in? <a href="#join">Put your name on the list</a>.</p>
     <div class="row" style="margin-top:22px"><span class="n">&#9679;</span><div><b><a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Investor%20inquiry">Investors, here</a></b><p>Building the discovery layer for live music. Ask us for the deck.</p></div></div>
     <div class="row"><span class="n">&#9679;</span><div><b><a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Ad%20space%20request">Ad space, request here</a></b><p>Reach fans by city, right in the deck. Tell us the city, the dates, and what you're promoting.</p></div></div>
     <p style="margin-top:18px" class="mono">info@showfuseapp.com</p>
   </div></section>
 </main>
 
-<footer><div class="wrap"><a href="/faq">FAQ</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Investor%20inquiry">Investors</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Ad%20space%20request">Ad space</a><br>
+<footer><div class="wrap"><a href="/#join">Get in first</a> · <a href="/faq">FAQ</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Investor%20inquiry">Investors</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Ad%20space%20request">Ad space</a><br>
   ShowFuse · Los Angeles, CA<br>
   © 2026 ShowFuse. All rights reserved. · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a>
 </div></footer>
+<script>
+(function(){
+  var API = 'https://showfuse-api-production.up.railway.app/v1/waitlist';
+  var form = document.getElementById('joinForm'), btn = document.getElementById('joinBtn'), err = document.getElementById('joinErr');
+  var loaded = Date.now();
+  function fail(msg){ err.textContent = msg; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Put me on the list'; }
+  form.addEventListener('submit', function(e){
+    e.preventDefault(); err.style.display = 'none';
+    var email = form.email.value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { fail('That email doesn\u2019t look right.'); form.email.focus(); return; }
+    btn.disabled = true; btn.textContent = 'One sec\u2026';
+    var role = (form.querySelector('input[name=role]:checked') || {}).value || 'listener';
+    var payload = { email: email, name: form.name.value.trim(), phone: form.phone.value.trim(), city: form.city.value.trim(), role: role, website: form.website.value, t: Date.now() - loaded };
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+      .then(function(res){
+        if (!res.ok || !res.j || !res.j.ok) { fail((res.j && res.j.message) || 'Something went wrong. Try again in a minute.'); return; }
+        form.style.display = 'none';
+        document.getElementById('joinNum').textContent = '#' + String(res.j.founding_number).padStart(4, '0');
+        if (res.j.existing) document.getElementById('joinMsg').textContent = 'You were already on the list \u2014 this is your number.';
+        var done = document.getElementById('joinDone'); done.style.display = 'block'; done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      })
+      .catch(function(){ fail('Couldn\u2019t reach the server. Check your connection and try again.'); });
+  });
+})();
+</script>
 </body>
 </html>
