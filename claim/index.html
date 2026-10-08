@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: blob:; connect-src https://showfuse-api-production.up.railway.app http://localhost:3000; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="dark">
+<title>Claim your page · ShowFuse</title>
+<meta name="description" content="Artists: claim your ShowFuse page in 3 quick steps. Find your name, confirm your email, show us it's you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/claim/claim.css">
+<script src="/claim/common.js" defer></script>
+<script src="/claim/claim.js" defer></script>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+<header><div class="wrap hdr">
+  <a href="/" aria-label="ShowFuse home"><span class="headmark" aria-hidden="true"></span></a>
+  <a class="help" href="mailto:info@showfuseapp.com?subject=Help%20claiming%20my%20page">Need help?</a>
+</div></header>
+
+<main class="wrap" id="main">
+  <noscript><p class="note">This page needs JavaScript. Turn it on and reload, or email <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a> and we'll help you claim your page.</p></noscript>
+
+  <ol class="prog" id="prog" aria-label="Your progress" hidden>
+    <li><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Find your name</span></span></li>
+    <li><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Confirm your email</span></span></li>
+    <li><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Show two proofs</span></span></li>
+  </ol>
+
+  <!-- While an invite or status link opens -->
+  <section class="screen" id="s-loading" hidden>
+    <p class="lede" role="status"><span class="spin" aria-hidden="true"></span><span id="loadText">One sec…</span></p>
+  </section>
+
+  <!-- Step 1: find your name -->
+  <section class="screen" id="s-search" hidden>
+    <div class="kicker">For artists</div>
+    <h1 tabindex="-1">Claim your ShowFuse page</h1>
+    <p class="lede">3 quick steps: find your name, confirm your email, and show us two proofs that it's you. It takes a few minutes.</p>
+    <form id="searchForm" role="search" novalidate>
+      <div class="field">
+        <label for="q">Your artist name</label>
+        <input id="q" name="q" type="search" maxlength="60" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Start typing your name">
+      </div>
+    </form>
+    <p class="sr" id="searchStatus" role="status"></p>
+    <div class="results" id="results"></div>
+    <p class="fine" id="notListed" hidden>Don't see yourself? <button type="button" class="link" id="openAdd">Ask us to add you</button></p>
+
+    <div class="panel" id="addBox" hidden>
+      <div class="kicker" id="addKicker" hidden>Ask us to add you</div>
+      <h2 id="addTitle" tabindex="-1">Ask us to add you</h2>
+      <p class="sub">We only list artists we've added ourselves. Tell us who you are, and we'll email you when your page is ready to claim.</p>
+      <form id="addForm" novalidate>
+        <div class="field"><label for="aName">Artist name</label><input id="aName" type="text" maxlength="80" autocomplete="off" placeholder="Your artist name"></div>
+        <div class="field"><label for="aEmail">Your email</label><input id="aEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" placeholder="you@example.com"></div>
+        <div class="field"><label for="aSpotify">Spotify link <span class="optl">(optional)</span></label><input id="aSpotify" type="url" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="300" placeholder="open.spotify.com/artist/…"></div>
+        <div class="field"><label for="aNote">Anything else? <span class="optl">(optional)</span></label><textarea id="aNote" maxlength="500" rows="3" placeholder="Your city, your label, where we can hear you"></textarea></div>
+        <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+        <button class="btn" type="submit" id="addBtn">Ask us to add me</button>
+        <div class="err" id="addErr" role="alert"></div>
+      </form>
+      <div class="covered" id="addDone" role="status" hidden></div>
+    </div>
+  </section>
+
+  <!-- Step 2: email -->
+  <section class="screen" id="s-email" hidden>
+    <h1 tabindex="-1">Confirm your email</h1>
+    <div class="picked" data-picked></div>
+    <p class="note" id="bigNote" hidden><b>This is a big page.</b> Claim it with your band email and a DM from your official Instagram, or with an invite code from our team.</p>
+    <p class="lede">We'll email you a 6-digit code.</p>
+    <form id="emailForm" novalidate>
+      <div class="field"><label for="email">Your email</label><input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" placeholder="you@example.com"></div>
+      <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn" type="submit" id="emailBtn">Email me a code</button>
+      <div class="err" id="emailErr" role="alert"></div>
+    </form>
+    <p class="fine">Got a band email, like you@yourband.com? Use it. It counts as one of your two proofs.</p>
+    <p class="fine">Started before? Use the same email. We'll pick up where you left off.</p>
+  </section>
+
+  <!-- Report, step 1: tell us -->
+  <section class="screen" id="s-report" hidden>
+    <div class="kicker">Report a page</div>
+    <h1 tabindex="-1">Is this your page?</h1>
+    <div class="picked" data-picked></div>
+    <p class="lede">Someone else claimed it. Tell us what's going on and we'll look into it. Nothing changes on the page until we decide.</p>
+    <form id="reportForm" novalidate>
+      <div class="field"><label for="rMsg">What's going on?</label><textarea id="rMsg" maxlength="1000" rows="4" placeholder="I'm the artist, and I didn't claim this page."></textarea></div>
+      <div class="field"><label for="rEmail">Your email</label><input id="rEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" placeholder="you@example.com"></div>
+      <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn" type="submit" id="reportBtn">Email me a code</button>
+      <div class="err" id="reportErr" role="alert"></div>
+    </form>
+    <p class="fine">Next, you'll confirm your email and show us two proofs. A band email counts as one.</p>
+  </section>
+
+  <!-- Step 2: type the code -->
+  <section class="screen" id="s-code" hidden>
+    <div class="kicker" id="codeKicker" hidden>Invited by ShowFuse</div>
+    <h1 tabindex="-1" id="codeTitle">Check your inbox</h1>
+    <div class="picked" data-picked></div>
+    <div class="field" id="lockedWrap" hidden><span class="lbl">Your email</span><div class="locked"><span id="lockedEmail"></span><span class="lk">Locked</span></div></div>
+    <p class="lede" id="codeLede"></p>
+    <form id="codeForm" novalidate>
+      <div class="field"><label for="code">Your code</label><input id="code" class="codein" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="······"></div>
+      <button class="btn" type="submit" id="codeBtn">Confirm my email</button>
+      <div class="err" id="codeErr" role="alert"></div>
+      <p class="okline" id="codeInfo" role="status"></p>
+    </form>
+    <p class="fine">No email? Check your spam folder. <button type="button" class="link" id="resend" disabled>Send again in 0:45</button><span id="diffWrap"> · <button type="button" class="link" id="diffEmail">Use a different email</button></span></p>
+    <p class="fine" id="inviteWrong" hidden>Not your email? Ask the person who invited you to send a new invite.</p>
+  </section>
+
+  <!-- Step 3: two proofs (or one invite code) -->
+  <section class="screen" id="s-proof" hidden>
+    <div class="kicker" id="proofKicker" hidden>Invited by ShowFuse</div>
+    <h1 tabindex="-1" id="proofTitle">Show two proofs</h1>
+    <div class="picked" data-picked></div>
+    <p class="ok">✓ Email confirmed · <span id="proofEmail"></span></p>
+    <p class="lede" id="proofLede"></p>
+    <p class="note" id="acctNote" hidden><b>This email already has a ShowFuse account.</b> Once approved, it becomes <span id="acctName">this artist</span>'s account. It gets signed out on every device and its old password stops working. Then sign back in with this email.</p>
+
+    <div id="proofList">
+      <p class="note" id="pBigNote" hidden><b>This is a big page.</b> Claim it with your band email and a DM from your official Instagram, or with an invite code from our team.</p>
+      <p class="countline" id="countLine"><span class="counter" id="proofCount" role="status">0 of 2</span><span id="countHint">Any two below, or one invite code.</span></p>
+      <ul class="plist">
+        <li class="prow" id="rShot">
+          <div class="prow-h"><span class="tick" aria-hidden="true"></span><span class="ptext"><b>Upload a screenshot</b><small id="shotHint">Your Spotify for Artists, DistroKid or similar dashboard, with your artist name showing.</small><span class="sr" data-state></span></span><span class="strength">Most people</span></div>
+          <div class="prow-b">
+            <input id="shotFile" class="sr" type="file" accept="image/jpeg,image/png,image/heic,image/heif,.jpg,.jpeg,.png,.heic,.heif">
+            <label for="shotFile" class="btn ghost small" id="shotPick">Choose a screenshot</label>
+            <div class="upl" id="shotDone" hidden><span class="thumb" id="shotThumb" aria-hidden="true"></span><span><b id="shotName"></b><small id="shotState"></small></span><label for="shotFile" class="link" id="shotChange">Change</label></div>
+            <div class="err" id="shotErr" role="alert"></div>
+            <details class="how"><summary>How do I get this screenshot?</summary><ul>
+              <li><b>Spotify for Artists:</b> open the app and screenshot the home screen with your name on it.</li>
+              <li><b>DistroKid, TuneCore or CD Baby:</b> log in and screenshot your releases page.</li>
+              <li><b>Apple Music for Artists:</b> screenshot your artist page.</li>
+            </ul></details>
+            <p class="fine" id="shotNote">JPEG, PNG or HEIC, up to 10 MB. We keep it private.</p>
+          </div>
+        </li>
+        <li class="prow" id="rBand">
+          <div class="prow-h"><span class="tick" aria-hidden="true"></span><span class="ptext"><b>Your band email</b><small id="bandText"></small><span class="sr" data-state></span></span><span class="strength strong" id="bandTag">✓ Counts</span></div>
+          <div class="prow-b" id="bandFix" hidden><button type="button" class="link" id="bandDiffEmail">Use a different email</button></div>
+        </li>
+        <li class="prow" id="rDm">
+          <div class="prow-h"><span class="tick" aria-hidden="true"></span><span class="ptext"><b>DM us your code from your official Instagram</b><small>About 20 seconds.</small><span class="sr" data-state></span></span><span class="strength fast">Fastest</span></div>
+          <div class="prow-b">
+            <p class="dmline">Send <span class="dmcode" id="dmCode"></span> to <b class="ighandle">@showfuse</b> on Instagram. <button type="button" class="link" data-copy="dmCode">Copy code</button></p>
+            <label class="check"><input type="checkbox" id="dmSent"><span>I sent the DM</span></label>
+          </div>
+        </li>
+        <li class="prow" id="rCode">
+          <div class="prow-h"><span class="tick" aria-hidden="true"></span><span class="ptext"><b>I have an invite code</b><small>From ShowFuse, your label or your manager. One is enough on its own.</small><span class="sr" data-state></span></span><span class="strength strong">Instant</span></div>
+          <div class="prow-b"><label for="invCode" class="sr">Invite code</label><input id="invCode" type="text" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="40" placeholder="SF-XXXX-XXXX"></div>
+        </li>
+      </ul>
+    </div>
+
+    <details class="optbox" id="optBox" open>
+      <summary><span class="opt">Optional</span><span>Want a faster yes? Add any of these.</span></summary>
+      <div class="optrow">
+        <div class="rowh"><b>Your Instagram, TikTok or website</b><span class="strength strong">+ faster</span></div>
+        <p class="rowsub">They go on your profile too.</p>
+        <div class="field"><label for="lIg">Instagram</label><input id="lIg" type="text" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="200" placeholder="@yourname"></div>
+        <div class="field"><label for="lTt">TikTok</label><input id="lTt" type="text" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="200" placeholder="@yourname"></div>
+        <div class="field"><label for="lWeb">Website</label><input id="lWeb" type="url" inputmode="url" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="200" placeholder="yoursite.com"></div>
+      </div>
+      <div class="optrow">
+        <div class="rowh"><b>Your manager's or label's email</b><span class="strength strong">+ faster</span></div>
+        <div class="field"><label for="mgr" class="sr">Manager's or label's email</label><input id="mgr" type="email" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="254" placeholder="name@label.com"></div>
+      </div>
+    </details>
+
+    <div class="field" id="dobField" hidden>
+      <label for="dob">Your birthday</label>
+      <input id="dob" type="date" min="1900-01-01" autocomplete="bday" placeholder="YYYY-MM-DD">
+      <div class="err" id="dobErr" role="alert"></div>
+      <p class="fine">We check that you're 13 or older. That's all we use it for.</p>
+    </div>
+    <label class="check terms"><input type="checkbox" id="terms"><span>I'm the artist, or I'm allowed to act for them, and I agree to the <a href="/terms.html" target="_blank" rel="noopener">Terms</a>.</span></label>
+    <button class="btn" type="button" id="sendBtn" aria-disabled="true">Add two proofs</button>
+    <div class="err" id="sendErr" role="alert"></div>
+    <p class="fine" id="proofFine">We look at public info like your music, website and socials to confirm it's you. Stuck? Email <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a> and a real person will help.</p>
+  </section>
+
+  <!-- Done -->
+  <section class="screen" id="s-done" hidden>
+    <div class="kicker" id="doneKicker">Sent</div>
+    <h1 tabindex="-1" id="doneTitle">Done. You can close this page.</h1>
+    <p class="lede" id="doneLede"></p>
+    <ol class="track" id="doneTrack"></ol>
+    <p class="note donedm" id="doneDm" hidden></p>
+    <p class="fine" id="doneFine"></p>
+  </section>
+
+  <!-- Status link from the receipt email -->
+  <section class="screen" id="s-status" hidden>
+    <div class="kicker" id="stKicker">Your claim</div>
+    <h1 tabindex="-1" id="stTitle"></h1>
+    <p class="lede" id="stLede"></p>
+    <div class="asked" id="stNote" hidden><span class="lbl">Our note</span><p id="stNoteText"></p></div>
+    <form id="moreForm" class="panel" novalidate hidden>
+      <h2>Add one more thing</h2>
+      <p class="sub">Any one of these helps. Add what you have.</p>
+      <div class="optrow" id="moreDm" hidden>
+        <div class="rowh"><b>DM us your code from your official Instagram</b><span class="strength fast">Fastest</span></div>
+        <p class="dmline">Send <span class="dmcode" id="mDmCode"></span> to <b class="ighandle">@showfuse</b> on Instagram. <button type="button" class="link" data-copy="mDmCode">Copy code</button></p>
+        <label class="check"><input type="checkbox" id="mDm"><span>I sent the DM</span></label>
+      </div>
+      <div class="optrow">
+        <div class="rowh"><b>A screenshot</b></div>
+        <p class="rowsub">Your Spotify for Artists, DistroKid or similar dashboard, with your artist name showing.</p>
+        <input id="mFile" class="sr" type="file" accept="image/jpeg,image/png,image/heic,image/heif,.jpg,.jpeg,.png,.heic,.heif">
+        <label for="mFile" class="btn ghost small" id="mFilePick">Choose a screenshot</label>
+        <div class="upl" id="mFileDone" hidden><span class="thumb" id="mThumb" aria-hidden="true"></span><span><b id="mFileName"></b><small>Ready to send</small></span><button type="button" class="link" id="mFileDrop">Remove</button></div>
+      </div>
+      <div class="optrow">
+        <div class="rowh"><b>Your Instagram, TikTok or website</b></div>
+        <div class="field"><label for="mIg">Instagram</label><input id="mIg" type="text" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="200" placeholder="@yourname"></div>
+        <div class="field"><label for="mTt">TikTok</label><input id="mTt" type="text" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="200" placeholder="@yourname"></div>
+        <div class="field"><label for="mWeb">Website</label><input id="mWeb" type="url" inputmode="url" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="200" placeholder="yoursite.com"></div>
+      </div>
+      <button class="btn" type="submit" id="moreBtn" aria-disabled="true">Add something above</button>
+      <div class="err" id="moreErr" role="alert"></div>
+    </form>
+    <div class="covered" id="moreDone" role="status" hidden><b>✓ Got it.</b> We'll take another look and email you.</div>
+    <div class="actions" id="stActions"></div>
+  </section>
+
+  <!-- Dead ends, always with a next step -->
+  <section class="screen" id="s-oops" hidden>
+    <div class="kicker">Hold on</div>
+    <h1 tabindex="-1" id="oopsTitle"></h1>
+    <p class="lede" id="oopsText"></p>
+    <p class="lede" id="oopsNext"></p>
+    <div class="actions" id="oopsActions"></div>
+  </section>
+</main>
+
+<footer><div class="wrap"><a href="/">Home</a> · <a href="/faq.html">FAQ</a> · <a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy</a> · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a><br>
+  © 2026 ShowFuse. All rights reserved.
+</div></footer>
+</body>
+</html>

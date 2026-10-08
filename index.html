@@ -66,12 +66,15 @@
   @keyframes fup{0%{transform:translateY(60px);opacity:.6}100%{transform:translateY(-250px);opacity:0}}
   @media (prefers-reduced-motion:reduce){.sparks{display:none}}
   header,main,footer{position:relative;z-index:1}
+  .hdr{display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .claimbtn{display:inline-block;background:var(--accent);color:var(--ink);font-family:Outfit,system-ui,sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:11px 14px;white-space:nowrap}
+  .claimbtn:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
 </style>
 </head>
 <body>
 <div class="glow"></div>
 <div class="sparks"><i style="left:32.4%;top:57.5%;animation-duration:6.0s;animation-delay:0.4s"></i><i style="left:53.6%;top:68.3%;animation-duration:4.2s;animation-delay:2.5s"></i><i style="left:3.7%;top:71.7%;animation-duration:4.2s;animation-delay:0.5s"></i><i style="left:42.5%;top:91.3%;animation-duration:4.4s;animation-delay:1.1s"></i><i style="left:62.7%;top:97.4%;animation-duration:5.7s;animation-delay:2.0s"></i><i style="left:97.6%;top:52.3%;animation-duration:6.6s;animation-delay:1.4s"></i><i style="left:14.4%;top:55.9%;animation-duration:4.9s;animation-delay:4.1s"></i><i style="left:18.1%;top:79.1%;animation-duration:5.9s;animation-delay:1.9s"></i><i style="left:54.8%;top:53.1%;animation-duration:4.2s;animation-delay:1.0s"></i><i style="left:68.0%;top:71.4%;animation-duration:4.9s;animation-delay:2.9s"></i><i style="left:45.3%;top:65.0%;animation-duration:6.4s;animation-delay:3.5s"></i><i style="left:24.4%;top:78.7%;animation-duration:5.6s;animation-delay:4.4s"></i><i style="left:72.9%;top:64.4%;animation-duration:6.9s;animation-delay:0.6s"></i><i style="left:41.8%;top:87.9%;animation-duration:4.5s;animation-delay:2.4s"></i><i style="left:3.9%;top:83.4%;animation-duration:6.3s;animation-delay:2.9s"></i><i style="left:87.5%;top:65.7%;animation-duration:6.1s;animation-delay:3.0s"></i><i style="left:58.0%;top:72.8%;animation-duration:6.5s;animation-delay:4.7s"></i><i style="left:47.4%;top:83.2%;animation-duration:4.2s;animation-delay:3.5s"></i><i style="left:64.7%;top:99.7%;animation-duration:6.5s;animation-delay:1.4s"></i><i style="left:38.6%;top:83.4%;animation-duration:4.1s;animation-delay:2.3s"></i><i style="left:16.8%;top:55.9%;animation-duration:4.2s;animation-delay:3.8s"></i><i style="left:12.9%;top:62.4%;animation-duration:5.2s;animation-delay:4.4s"></i><i style="left:8.1%;top:72.5%;animation-duration:5.6s;animation-delay:4.4s"></i><i style="left:81.9%;top:93.2%;animation-duration:4.8s;animation-delay:2.1s"></i><i style="left:35.9%;top:94.2%;animation-duration:6.9s;animation-delay:0.8s"></i></div>
-<header><div class="wrap"><a href="/" aria-label="ShowFuse"><span class="headmark" role="img" aria-label="ShowFuse"></span></a></div></header>
+<header><div class="wrap hdr"><a href="/" aria-label="ShowFuse"><span class="headmark" role="img" aria-label="ShowFuse"></span></a><a class="claimbtn" href="/claim/">Claim your page</a></div></header>
 
 <main>
   <div class="hero"><div class="wrap">
