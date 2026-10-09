@@ -654,12 +654,58 @@
     if (f) uploadShot(f);
   });
 
-  function fileProblem(f) {
+  // typeOnly: the size is checked again after shrinkShot, which can bring a big file under 10 MB
+  function fileProblem(f, typeOnly) {
     var t = String(f.type || '').toLowerCase();
     var ok = /^image\/(jpeg|png|heic|heif)$/.test(t) || /\.(jpe?g|png|heic|heif)$/i.test(f.name || '');
     if (!ok) return 'That file won’t work. Use a JPEG, PNG or HEIC screenshot.';
-    if (f.size > MAX_FILE) return 'That file is over 10 MB. Try a smaller screenshot.';
+    if (!typeOnly && f.size > MAX_FILE) return 'That file is over 10 MB. Try a smaller screenshot.';
     return '';
+  }
+
+  // Big screenshots are shrunk on the phone before they go up: a 6 MB PNG is
+  // slow on cell data and too big for Claude's notes (5 MB / 8000 px), which
+  // then saw no screenshot at all (Tsunoki, 2026-10-08). Redrawn as a JPEG no
+  // longer than 2400 px. A file the browser can't read (HEIC in Chrome) goes up
+  // as it is, like before.
+  var SHRINK_EDGE = 2400, SHRINK_OVER = 3 * 1024 * 1024;
+  function shrinkShot(f) {
+    return new Promise(function (resolve) {
+      if (!window.URL || !URL.createObjectURL) { resolve(f); return; }
+      var url = URL.createObjectURL(f), img = new Image(), settled = false;
+      function finish(out) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        URL.revokeObjectURL(url);
+        resolve(out || f);
+      }
+      var timer = setTimeout(function () { finish(f); }, 15000);
+      img.onerror = function () { finish(f); };
+      img.onload = function () {
+        var w = img.naturalWidth, ht = img.naturalHeight;
+        var heic = /hei[cf]/i.test(String(f.type) + String(f.name));
+        var scale = w && ht ? Math.min(1, SHRINK_EDGE / Math.max(w, ht)) : 1;
+        if (!w || !ht || (scale === 1 && f.size <= SHRINK_OVER && !heic)) { finish(f); return; }
+        try {
+          var c = document.createElement('canvas');
+          c.width = Math.max(1, Math.round(w * scale));
+          c.height = Math.max(1, Math.round(ht * scale));
+          var g = c.getContext('2d');
+          if (!g || !c.toBlob) { finish(f); return; }
+          g.fillStyle = '#fff';   // see-through PNG corners turn white, not black
+          g.fillRect(0, 0, c.width, c.height);
+          g.drawImage(img, 0, 0, c.width, c.height);
+          c.toBlob(function (b) {
+            // nothing gained on a big-but-small-sized PNG: keep the original
+            if (!b || (scale === 1 && !heic && b.size >= f.size)) { finish(f); return; }
+            var name = String(f.name || 'screenshot').replace(/\.[a-z0-9]+$/i, '') + '.jpg';
+            try { finish(new File([b], name, { type: 'image/jpeg' })); } catch (e) { finish(b); }
+          }, 'image/jpeg', 0.85);
+        } catch (e) { finish(f); }
+      };
+      img.src = url;
+    });
   }
 
   function thumb(box, f) {
@@ -689,7 +735,7 @@
 
   function uploadShot(f) {
     hideErr('shotErr');
-    var bad = fileProblem(f);
+    var bad = fileProblem(f, true);
     if (bad) { showErr('shotErr', bad); return; }
     var mine = S, seq = ++S.upSeq, st = $('shotState');
     S.uploading = true;
@@ -702,9 +748,14 @@
     $('shotPick').hidden = true;
     $('shotNote').hidden = true;
     updateSend();
-    var fd = new FormData();
-    fd.append('file', f, f.name || 'screenshot');
-    SF.request('POST', '/v1/claim/proof', { form: fd, bearer: S.claimToken, timeout: 120000 }).then(function (res) {
+    shrinkShot(f).then(function (g) {
+      if (S !== mine || seq !== S.upSeq) return null;
+      var big = fileProblem(g);
+      if (big) throw { message: big, status: 0 };
+      var fd = new FormData();
+      fd.append('file', g, g.name || f.name || 'screenshot');
+      return SF.request('POST', '/v1/claim/proof', { form: fd, bearer: S.claimToken, timeout: 120000 });
+    }).then(function (res) {
       if (S !== mine || seq !== S.upSeq) return;
       S.uploading = false;
       S.proofId = res.proof_id || null;
@@ -1146,7 +1197,7 @@
     this.value = '';
     if (!f) return;
     hideErr('moreErr');
-    var bad = fileProblem(f);
+    var bad = fileProblem(f, true);
     if (bad) { showErr('moreErr', bad); return; }
     S.moreFile = f;
     thumb($('mThumb'), f);
@@ -1175,8 +1226,12 @@
     var p = Promise.resolve();
     if (h.file) {
       p = p.then(function () {
+        return shrinkShot(h.file);
+      }).then(function (g) {
+        var big = fileProblem(g);
+        if (big) throw { message: big, status: 0 };
         var fd = new FormData();
-        fd.append('file', h.file, h.file.name || 'screenshot');
+        fd.append('file', g, g.name || h.file.name || 'screenshot');
         return SF.request('POST', '/v1/claim/add-proof', { form: fd, bearer: tok, timeout: 120000 });
       }).then(function () {
         mine.moreFile = null;   // sent: a retry only sends what's left
