@@ -155,11 +155,12 @@
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { fail('That email doesn\u2019t look right.'); form.email.focus(); return; }
     btn.disabled = true; btn.textContent = 'One sec\u2026';
     var role = (form.querySelector('input[name=role]:checked') || {}).value || 'listener';
-    var payload = { email: email, name: form.name.value.trim(), phone: form.phone.value.trim(), city: form.city.value.trim(), role: role, website: form.website.value, t: Date.now() - loaded };
+    // t = ms since the page loaded. The server refuses more than a day (86,400,000), so a tab left open longer sends the cap.
+    var payload = { email: email, name: form.name.value.trim(), phone: form.phone.value.trim(), city: form.city.value.trim(), role: role, website: form.website.value, t: Math.min(Date.now() - loaded, 86000000) };
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
       .then(function(res){
-        if (!res.ok || !res.j || !res.j.ok) { fail((res.j && res.j.message) || 'Something went wrong. Try again in a minute.'); return; }
+        if (!res.ok || !res.j || !res.j.ok) { fail((res.j && res.j.error && res.j.error.message) || 'Something went wrong. Try again in a minute.'); return; }
         form.style.display = 'none';
         document.getElementById('joinNum').textContent = '#' + String(res.j.founding_number).padStart(4, '0');
         if (res.j.existing) document.getElementById('joinMsg').textContent = 'You were already on the list \u2014 this is your number.';

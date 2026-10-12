@@ -313,7 +313,7 @@
       var done = $('addDone');
       SF.clear(done);
       done.appendChild(el('b', { text: '✓ Thanks! We got it.' }));
-      done.appendChild(document.createTextNode(' We’ll look for ' + name + ' and email ' + email + ' when your page is ready to claim.'));
+      done.appendChild(document.createTextNode(' We’ll look for ' + name + '. Check back here to claim your page once it’s up.'));
       done.hidden = false;
     }, function (err) {
       unbusy(btn);
@@ -904,7 +904,7 @@
   function submitClaim() {
     var c = S.claim, invite = S.mode === 'invite', p = proofs();
     var body = {
-      proof_ids: !invite && p.shot ? [S.proofId] : [],
+      proof_ids: !invite && p.shot && S.proofId ? [S.proofId] : [],   // a real id only: a screenshot saved earlier has none here, and the server counts the saved ones itself
       invite_code: !invite && p.code ? normCode($('invCode').value) : null,
       dm_sent: !invite && p.dm,
       links: invite ? { instagram: '', tiktok: '', website: '' } : links('lIg', 'lTt', 'lWeb'),
@@ -965,7 +965,7 @@
   function proofSummary(body) {
     var parts = [];
     if (S.claim && S.claim.email_kind === 'band') parts.push('Band email');
-    if (body.proof_ids.length) parts.push('Screenshot');
+    if (proofs().shot) parts.push('Screenshot');   // not body.proof_ids: a screenshot saved earlier counts too
     if (body.invite_code) parts.push('Invite code');
     if (body.dm_sent) parts.push('Instagram DM');
     if (body.links.instagram) parts.push('Instagram link');
