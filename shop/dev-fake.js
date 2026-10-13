@@ -12,6 +12,12 @@
    shop=linkonly    open, but nothing is listed (only /shop/p/?s=m_beanie works), like the $1 test product
    shop=error       config fails (503)
    shop=none        config answers 404, like a server that doesn't have the shop yet (shows the closed page)
+   shop=showcase    mode "showcase": the shop can be looked at, nothing can be bought (no Bag link, no Add to bag, no Checkout)
+   shop=showcasemin the same, but config is only { mode, open: false, visible: true }
+   shop=nomode      an older server: config has no "mode" at all (open + visible still decide)
+   shop=weirdmode   config says mode "sale", open and visible: a mode the page doesn't know, so it stays closed
+   demo=1           the Emblem Hoodie (Coming soon) is a DEMO item: a DEMO stamp on its photos
+   demo=live        ...and so is the Fuse Hoodie, which this fake still lists as on sale: the page must refuse to sell a DEMO item
    tax=none         the bag has no tax line (config says tax: none)
    pay=paid         Checkout "pays" and lands on the thank-you page (default)
    pay=pending      ...lands on the thank-you page while the payment is still being confirmed
@@ -44,7 +50,7 @@
     var m = new RegExp('(?:^|[?&])' + name + '=([^&]*)').exec(location.search);
     return m ? decodeURIComponent(m[1]) : '';
   }
-  var SHOP = flag('shop'), TAX = flag('tax'), PAY = flag('pay'), CO = flag('co'), EVIL = flag('evil') === '1';
+  var SHOP = flag('shop'), TAX = flag('tax'), PAY = flag('pay'), CO = flag('co'), EVIL = flag('evil') === '1', DEMO = flag('demo');
   // ?evil=1 puts HTML and script-looking text in every server string (names, notes, messages, links, photo
   // addresses), to prove the pages show it as plain text and never run it. window.__pwned must stay unset.
   var n = 0;
@@ -96,13 +102,19 @@
   function L(s) { return EVIL ? '<i>' + s + '</i>' : s; }
 
   var LOW = 5;
+  // demo=1: the Emblem Hoodie (Coming soon, like the real DEMO items) is a DEMO item. demo=live: the Fuse Hoodie too, which
+  // this fake still lists as on sale, to prove the page won't sell a DEMO item even if a server ever said it could be bought.
+  var DEMO_SLUGS = DEMO === '1' ? ['m_hoodie_emblem'] : DEMO === 'live' ? ['m_hoodie_emblem', 'm_hoodie'] : [];
   function publicProduct(p, preview) {
     var sizes = p.variants.map(function (v) { return { id: v.id, label: L(v.label), sold_out: v.stock <= 0, left: v.stock <= LOW ? v.stock : null }; });
     var any = sizes.some(function (s) { return !s.sold_out; });
     var shipping = Object.keys(ZONES).map(function (c) { return { zone_id: ZONES[c].id, ships: typeof p.ship[c] === 'number', price_cents: typeof p.ship[c] === 'number' ? p.ship[c] : null }; });
+    var demo = DEMO_SLUGS.indexOf(p.slug) >= 0;
+    // a demo item shows three pictures, so the stamp can be seen on the thumbnails too
+    var photos = demo && p.photos.length < 3 ? p.photos.concat(['m_hoodie', 'm_hoodie_pro_back']).slice(0, 3) : p.photos;
     return {
       id: p.id, slug: p.slug, name: E(p.name), blurb: E(p.blurb), description: E(p.desc), price_cents: p.price, currency: 'USD',
-      photos: p.photos.map(photoUrl), status: p.status, buyable: !preview && sellable(p) && any,
+      photos: photos.map(photoUrl), status: p.status, buyable: !preview && !showcaseOn() && sellable(p) && any, demo: demo,
       sold_out: !any, sizes: sizes, shipping: shipping,
       ships_to: Object.keys(ZONES).filter(function (c) { return typeof p.ship[c] === 'number'; }), preview: !!preview
     };
@@ -122,6 +134,8 @@
   var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
   function closed() { return SHOP === 'closed'; }
+  // Showcase: visible and browsable; the server turns away every quote and checkout.
+  function showcaseOn() { return SHOP === 'showcase' || SHOP === 'showcasemin'; }
   // What the shop window lists, what a link can reach, and what can be bought.
   function liveCatalog() { return SHOP === 'linkonly' ? [] : CATALOG.filter(function (p) { return p.status === 'live' || p.status === 'coming_soon'; }); }
   function reachable(p) { return !closed() && (SHOP === 'linkonly' ? p.slug === 'm_beanie' : p.status === 'live' || p.status === 'coming_soon' || p.status === 'unlisted'); }
@@ -202,7 +216,7 @@
   function carry() { return Base.carry ? '&' + Base.carry : ''; }
 
   function checkout(b) {
-    if (CO === 'closed' || closed()) return fail(409, 'store_closed', 'The shop is closed right now.');
+    if (CO === 'closed' || closed() || showcaseOn()) return fail(409, 'store_closed', 'The shop is closed right now.');
     if (CO === 'rate') return fail(429, 'rate_limited', 'Too many requests. Slow down and try again.');
     var bag = checkBag(b);
     if (bag.err) return fail(bag.err[0], bag.err[1], bag.err[2]);
@@ -311,9 +325,11 @@
   function config() {
     if (SHOP === 'error') return fail(503, 'unavailable', 'Something went wrong on our side. Try again in a minute.');
     if (SHOP === 'none') return fail(404, 'not_found', 'Route not found.');   // a server that doesn't have the shop yet
-    if (closed()) return reply(200, { open: false, visible: false, test_mode: false });
-    return reply(200, {
-      open: true, visible: SHOP !== 'linkonly', test_mode: false, currency: 'USD',
+    if (closed()) return reply(200, { mode: 'off', open: false, visible: false, test_mode: false });
+    if (SHOP === 'showcasemin') return reply(200, { mode: 'showcase', open: false, visible: true, test_mode: false });
+    var full = {
+      mode: SHOP === 'showcase' ? 'showcase' : 'open',
+      open: SHOP !== 'showcase', visible: SHOP !== 'linkonly', test_mode: false, currency: 'USD',
       tax: TAX === 'none' ? 'none' : 'calculated_at_checkout', pack_time: '3 business days',
       countries: Object.keys(ZONES).map(function (c) {
         var z = ZONES[c];
@@ -323,7 +339,10 @@
       links: EVIL
         ? { shipping_returns: 'javascript:window.__pwned=5', terms_of_sale: 'https://evil.example/terms' }
         : { shipping_returns: 'https://showfuseapp.com/shipping-returns', terms_of_sale: 'https://showfuseapp.com/terms-of-sale' }
-    });
+    };
+    if (SHOP === 'nomode') delete full.mode;   // an older server: it only says open and visible
+    if (SHOP === 'weirdmode') full.mode = 'sale';   // a mode this page has never heard of: it must stay closed
+    return reply(200, full);
   }
 
   function handle(method, path, params, body) {
@@ -340,7 +359,7 @@
       return reply(200, publicProduct(p, preview));
     }
     if (method === 'POST' && path === '/v1/shop/quote') {
-      if (closed()) return fail(409, 'store_closed', 'The shop is closed right now.');
+      if (closed() || showcaseOn()) return fail(409, 'store_closed', 'The shop is closed right now.');
       var bag = checkBag(body);
       if (bag.err) return fail(bag.err[0], bag.err[1], bag.err[2]);
       return reply(200, quote(bag));

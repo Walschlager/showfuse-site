@@ -87,8 +87,10 @@
     SF.setTitle(p.name);
 
     var soon = p.status === 'coming_soon';
+    var showcase = !!cfg.showcase;   // the shop can be looked at; nothing can be bought
     var selling = !p.preview && (p.status === 'live' || p.status === 'unlisted');
-    var canBuy = selling && p.buyable && p.shipsTo.length > 0;
+    // Never in showcase, and never a demo item (R1): a DEMO item is only to look at.
+    var canBuy = selling && cfg.open && !p.demo && p.buyable && p.shipsTo.length > 0;
     var multi = p.sizes.length > 1;
     var S = { size: null, qty: 1, photo: 0 };
     if (canBuy && p.sizes.length === 1 && !p.sizes[0].soldOut) S.size = p.sizes[0];
@@ -101,7 +103,9 @@
     function showPhoto(i) {
       S.photo = i;
       SF.clear(big);
-      big.appendChild(SF.photo(p.photos[i], photoAlt(i)));
+      var bp = SF.photo(p.photos[i], photoAlt(i));
+      if (p.demo) bp.appendChild(SF.demoStamp('big'));
+      big.appendChild(bp);
       thumbBtns.forEach(function (b, k) {
         b.className = 'th' + (k === i ? ' on' : '');
         b.setAttribute('aria-pressed', k === i ? 'true' : 'false');
@@ -110,7 +114,9 @@
     if (p.photos.length > 1) {
       thumbs = el('div', { cls: 'thumbs' });
       p.photos.forEach(function (u, i) {
-        var b = el('button', { type: 'button', cls: 'th', 'aria-label': 'Show photo ' + (i + 1) + ' of ' + p.photos.length, on: { click: function () { showPhoto(i); } } }, [SF.photo(u, '', 'ph', true)]);
+        var tp = SF.photo(u, '', 'ph', true);
+        if (p.demo) tp.appendChild(SF.demoStamp('thumb'));
+        var b = el('button', { type: 'button', cls: 'th', 'aria-label': 'Show photo ' + (i + 1) + ' of ' + p.photos.length, on: { click: function () { showPhoto(i); } } }, [tp]);
         thumbBtns.push(b);
         thumbs.appendChild(b);
       });
@@ -128,7 +134,8 @@
     // "Ships to the United States only": a product that skips some country we ship to.
     var skipped = cfg.countries.filter(function (c) { return p.shipsTo.indexOf(c.code) < 0; });
     var only = cfg.countries.filter(function (c) { return p.shipsTo.indexOf(c.code) >= 0; });
-    if (p.shipsTo.length === 0) right.appendChild(el('p', { cls: 'quiet', text: 'We can\'t ship this anywhere right now.' }));
+    if (showcase) { /* nothing ships in showcase, so there is nothing to say about where */ }
+    else if (p.shipsTo.length === 0) right.appendChild(el('p', { cls: 'quiet', text: 'We can\'t ship this anywhere right now.' }));
     else if (skipped.length) right.appendChild(el('p', { cls: 'quiet', text: 'Ships to ' + SF.joinList(only.map(SF.countryLong)) + ' only' }));
 
     var desc = p.description || p.blurb;
@@ -182,7 +189,7 @@
         sizeBtns.push({ size: size, btn: b });
         sizesBox.appendChild(b);
       });
-      if (p.sizes.length && !soon) {
+      if (p.sizes.length && !soon && !showcase) {
         right.appendChild(el('div', { cls: 'field' }, [el('label', { text: 'Size' }), sizesBox, pick]));
       }
     }
@@ -197,14 +204,16 @@
       addBtn = el('button', { type: 'button', cls: 'btn', text: 'Add to bag', 'aria-disabled': 'false', on: { click: add } });
       right.appendChild(addBtn);
     } else {
-      var why = p.preview ? 'Preview only' : soon ? 'Coming soon' : p.soldOut ? 'Sold out' : 'Not on sale';
+      var why = p.preview ? 'Preview only' : soon ? 'Coming soon' : p.soldOut ? 'Sold out' : showcase ? 'Not on sale yet' : 'Not on sale';
       right.appendChild(el('button', { type: 'button', cls: 'btn', text: why, 'aria-disabled': 'true' }));
     }
 
-    var words = el('div', { cls: 'polsum' }, [shippingWords(cfg, p)]);
-    var links = SF.policyLinks(cfg, 'roomy');
-    if (links) words.appendChild(links);
-    right.appendChild(words);
+    if (!showcase) {
+      var words = el('div', { cls: 'polsum' }, [shippingWords(cfg, p)]);
+      var links = SF.policyLinks(cfg, 'roomy');
+      if (links) words.appendChild(links);
+      right.appendChild(words);
+    }
 
     function add() {
       if (!S.size) {
@@ -249,7 +258,8 @@
       var f = p.fail || { status: 404 };
       if (f.status === 404) {
         // Unknown link, or a closed store (a closed store answers every product with 404).
-        if (!cfg.open && !preview) showClosed(); else showNotFound(cfg);
+        // Showcase is visible: there a 404 is just an unknown product.
+        if (!cfg.visible && !preview) showClosed(); else showNotFound(cfg);
         return;
       }
       showError(f);

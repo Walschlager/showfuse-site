@@ -123,7 +123,9 @@
   function recheck() {
     SF.config(true).then(function (cfg) {
       S.cfg = cfg;
-      if (!cfg.open) showClosed(); else { S.qerr = 'Something changed. Try again.'; render(); }
+      if (cfg.showcase) showBrowseOnly();
+      else if (!cfg.open) showClosed();
+      else { S.qerr = 'Something changed. Try again.'; render(); }
     }, function () { S.qerr = SF.NET_MSG; render(); });
   }
 
@@ -330,6 +332,22 @@
     SF.focusHeading(view);
   }
 
+  // Showcase: the shop can be looked at and nothing can be bought, so there is no bag to show.
+  // (Anything already in the bag stays in it, ready for when buying opens.)
+  function showBrowseOnly() {
+    main.className = 'wrap';
+    SF.setTitle('Buying isn\'t open yet');
+    SF.clear(view);
+    [
+      el('div', { cls: 'kicker', text: 'ShowFuse merch' }),
+      el('h1', { tabindex: '-1', text: 'Buying isn\'t open yet.' }),
+      el('p', { cls: 'lede', text: 'You can look around the shop. Nothing can be bought yet.' }),
+      el('a', { cls: 'btn small ghost', href: SF.href('/shop/'), text: 'Back to the shop' })
+    ].forEach(function (n) { view.appendChild(n); });
+    SF.renderNav(S.cfg, { here: 'bag' });
+    SF.focusHeading(view);
+  }
+
   function showError(err) {
     main.className = 'wrap';
     SF.setTitle('Your bag');
@@ -434,6 +452,7 @@
       if (mine !== seq) return;
       S.cfg = cfg;
       SF.renderFooter(cfg);
+      if (cfg.showcase) { showBrowseOnly(); return; }
       if (!cfg.open || !cfg.countries.length) { showClosed(); return; }
       var bag = Bag.read();
       S.country = defaultCountry(cfg, bag.country);

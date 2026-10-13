@@ -170,13 +170,19 @@
     return box;
   }
 
+  // The "DEMO" stamp over a demo item's photos (R1). size: '' (a card in the grid), 'big' (the product photo) or 'thumb'.
+  // The size classes are demo-big / demo-thumb: a plain "big" would pick up the product gallery's own .big rules.
+  function demoStamp(size) {
+    return el('div', { cls: 'demo' + (size ? ' demo-' + size : ''), text: 'DEMO' });
+  }
+
   // A product as the shop pages use it. Anything we don't recognise is dropped.
   function normalizeProduct(p) {
     if (!p || typeof p.slug !== 'string' || typeof p.name !== 'string') return null;
     var out = {
       id: cleanStr(p.id, 60), slug: p.slug, name: cleanStr(p.name, 120), blurb: cleanStr(p.blurb, 200),
       description: cleanStr(p.description, 4000), priceCents: intOr(p.price_cents, 0), status: cleanStr(p.status, 20),
-      buyable: p.buyable === true, soldOut: p.sold_out === true, preview: p.preview === true,
+      buyable: p.buyable === true, soldOut: p.sold_out === true, preview: p.preview === true, demo: p.demo === true,
       photos: [], sizes: [], shipping: [], shipsTo: []
     };
     (Array.isArray(p.photos) ? p.photos : []).forEach(function (u) { if (safeImg(u)) out.photos.push(u); });
@@ -207,8 +213,12 @@
 
   function normalizeConfig(j) {
     j = j || {};
+    // mode: "off", "showcase" (the shop can be looked at, nothing can be bought) or "open". An older server doesn't say
+    // at all: then it is open if it says open, else off. A mode we don't know is treated as off (fail closed).
+    var mode = j.mode === undefined || j.mode === null ? (j.open === true ? 'open' : 'off')
+      : (j.mode === 'off' || j.mode === 'showcase' || j.mode === 'open' ? j.mode : 'off');
     var cfg = {
-      open: j.open === true, visible: false, testMode: j.test_mode === true,
+      mode: mode, open: j.open === true && mode === 'open', visible: false, showcase: false, testMode: j.test_mode === true,
       tax: j.tax === 'calculated_at_checkout' ? 'calculated_at_checkout' : 'none',
       packTime: cleanStr(j.pack_time, 40), countries: [], lowStockAt: 5, links: { shippingReturns: null, termsOfSale: null }
     };
@@ -221,8 +231,11 @@
         collectsPhone: c.collects_phone === true ? true : c.collects_phone === false ? false : null
       });
     });
-    // Visible only when the server says so AND there is somewhere to ship to. Anything else: no doors.
-    cfg.visible = cfg.open && j.visible === true && cfg.countries.length > 0;
+    // Showcase: the server says visible and nothing more is needed (nothing ships, nothing is bought), so cfg.open stays false:
+    // no bag, no Add to bag, no Checkout. Otherwise visible only when the server says so AND there is somewhere to ship to.
+    // Anything else: no doors.
+    cfg.showcase = mode === 'showcase' && j.visible === true;
+    cfg.visible = cfg.showcase || (cfg.open && j.visible === true && cfg.countries.length > 0);
     var l = j.limits || {};
     if (intOr(l.max_items, 0) >= 1 && intOr(l.max_items, 0) <= 100) limits.items = intOr(l.max_items, 10);
     if (intOr(l.max_qty_per_line, 0) >= 1 && intOr(l.max_qty_per_line, 0) <= 100) limits.qty = intOr(l.max_qty_per_line, 5);
@@ -472,8 +485,10 @@
     var box = $('policyLinks');
     if (!box) return;
     var a = $('polShip'), b = $('polTerms');
-    var s = cfg && cfg.visible ? cfg.links.shippingReturns : null;
-    var t = cfg && cfg.visible ? cfg.links.termsOfSale : null;
+    // Only while buying is open. In showcase nothing can be bought, so there is nothing to link (and the pages may not exist yet).
+    var live = cfg && cfg.visible && !cfg.showcase;
+    var s = live ? cfg.links.shippingReturns : null;
+    var t = live ? cfg.links.termsOfSale : null;
     if (a && s) a.setAttribute('href', s);
     if (b && t) b.setAttribute('href', t);
     box.hidden = !(s && t);
@@ -482,6 +497,7 @@
   // The returns words (Brandon's checkpoint 1.4), with links to the two policy pages when they exist.
   function policyLinks(cfg, mt) {
     var out = [];
+    if (cfg && cfg.showcase) return null;
     if (cfg && cfg.links.shippingReturns) out.push(el('a', { href: cfg.links.shippingReturns, target: '_blank', rel: 'noopener', text: 'Shipping and returns' }));
     if (cfg && cfg.links.termsOfSale) out.push(el('a', { href: cfg.links.termsOfSale, target: '_blank', rel: 'noopener', text: 'Terms of sale' }));
     return out.length ? el('div', { cls: 'pol-links' + (mt ? ' ' + mt : '') }, out) : null;
@@ -524,7 +540,7 @@
     Base: Base, MAIL: MAIL, NET_MSG: NET_MSG, limits: limits, Bag: Bag,
     $: $, el: el, clear: clear, request: request, withBot: withBot, afterMinTime: afterMinTime,
     usd: usd, usdShort: usdShort, shortDate: shortDate, plural: plural, joinList: joinList,
-    safeHttps: safeHttps, photo: photo, normalizeProduct: normalizeProduct, href: href,
+    safeHttps: safeHttps, photo: photo, demoStamp: demoStamp, normalizeProduct: normalizeProduct, href: href,
     config: config, countryByCode: countryByCode, countryLabel: countryLabel, countryNote: countryNote,
     countryShort: countryShort, countryLong: countryLong,
     renderNav: renderNav, renderFooter: renderFooter, policyLinks: policyLinks,

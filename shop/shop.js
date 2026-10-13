@@ -58,12 +58,14 @@
     var ph = SF.photo(p.photos[0], p.name, 'ph', index >= 4);
     if (sold) ph.appendChild(el('div', { cls: 'sticker', text: 'Sold out' }));
     if (soon) ph.appendChild(el('div', { cls: 'sticker soon', text: 'Coming soon' }));
+    if (p.demo) ph.appendChild(SF.demoStamp());
     var price;
     if (soon) price = el('div', { cls: 'pr', text: 'Coming soon' });
     else if (sold) price = el('div', { cls: 'pr', text: 'Sold out' });
     else {
       price = el('div', { cls: 'pr' }, [SF.usd(p.priceCents), el('small', { text: 'USD' })]);
-      var left = leftLabel(p, cfg.lowStockAt);
+      // "Only 3 left" nudges a buyer; in showcase nobody can buy, so it is left out.
+      var left = cfg.showcase ? '' : leftLabel(p, cfg.lowStockAt);
       if (left) price.appendChild(el('span', { cls: 'left', text: left }));
     }
     var tx = el('div', { cls: 'tx' }, [el('b', { text: p.name }), p.blurb ? el('small', { text: p.blurb }) : null, price]);
@@ -78,16 +80,22 @@
     var where = cfg.countries.map(SF.countryShort);
     var grid = el('div', { cls: 'pgrid' });
     products.forEach(function (p, i) { grid.appendChild(card(p, cfg, i)); });
+    // Showcase: the shop can be looked at and nothing can be bought, so no words about shipping or a bag.
+    var intro = cfg.showcase
+      ? [el('p', { cls: 'lede', text: 'Hoodies, tees and hats from ShowFuse.' }),
+         el('div', { cls: 'shipnote' }, [el('div', null, [
+           el('b', { text: 'Just looking for now.' }),
+           el('small', { text: 'Nothing can be bought yet.' })
+         ])])]
+      : [el('p', { cls: 'lede', text: 'Hoodies, tees and hats from ShowFuse. We ship to ' + SF.joinList(where) + '.' }),
+         el('div', { cls: 'shipnote' }, [el('div', null, [
+           el('b', { text: 'Ships to ' + where.join(' + ') + '.' }),
+           el('small', { text: 'Prices are in US dollars. Shipping is worked out in your bag.' })
+         ])])];
     put([
       el('div', { cls: 'kicker', text: 'ShowFuse merch' }),
-      el('h1', { tabindex: '-1', text: 'Wear the fuse.' }),
-      el('p', { cls: 'lede', text: 'Hoodies, tees and hats from ShowFuse. We ship to ' + SF.joinList(where) + '.' }),
-      el('div', { cls: 'shipnote' }, [el('div', null, [
-        el('b', { text: 'Ships to ' + where.join(' + ') + '.' }),
-        el('small', { text: 'Prices are in US dollars. Shipping is worked out in your bag.' })
-      ])]),
-      grid
-    ]);
+      el('h1', { tabindex: '-1', text: 'Wear the fuse.' })
+    ].concat(intro, [grid]));
   }
 
   var seq = 0;

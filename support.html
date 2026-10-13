@@ -94,7 +94,7 @@
       B.ready.then(function(){
         return fetch(B.api + '/v1/shop/config', { headers: { Accept: 'application/json' }, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' });
       }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
-        if (!j || j.open !== true || j.visible !== true) return;
+        if (!j || j.visible !== true) return;
         var sel = document.getElementById('topic'), other = sel && sel.querySelector('option[value="other"]');
         if (!sel || !other || sel.querySelector('option[value="merch"]')) return;
         var opt = document.createElement('option');
