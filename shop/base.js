@@ -36,7 +36,7 @@
   var carry = [];
   if (local) {
     DEV_KEYS.forEach(function (k) {
-      var v = param(k);
+      var v = k === 'fake' ? fake : k === 'api' ? (practice ? 'practice' : null) : param(k);
       if (v !== null && /^[a-z0-9_-]{1,20}$/i.test(v)) carry.push(k + '=' + encodeURIComponent(v));
     });
   }

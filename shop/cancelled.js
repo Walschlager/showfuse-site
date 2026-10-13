@@ -6,7 +6,6 @@
   'use strict';
   var SF = window.SF;
   if (!SF) return;
-  var el = SF.el;
 
   function query(name) {
     var m = new RegExp('(?:^|[?&])' + name + '=([^&]*)').exec(location.search);
@@ -16,8 +15,12 @@
   var number = query('n');
   var token = query('t');
   var haveLink = /^SF-\d{3,9}$/.test(number) && /^[A-Za-z0-9_-]{8,64}$/.test(token);
+  // "Your bag is just as you left it" is only said when there is something in it (a browser that
+  // blocks storage can lose the bag on the way to Stripe and back).
+  var haveBag = SF.Bag.count() > 0;
 
   var BASE = 'You left the payment page before paying, so nothing was bought. ';
+  var BAG = 'Your bag is just as you left it.';
 
   function say(text) { SF.$('lede').textContent = text; }
 
@@ -28,10 +31,10 @@
         SF.$('head').textContent = 'That order was already paid.';
         say('You already paid for this order, so it wasn\'t cancelled. Your confirmation email has the details.');
       } else if (res && res.status === 'pending') {
-        say(BASE + 'We\'re still ending this checkout. No charge was made, and your bag is just as you left it.');
+        say(BASE + 'We\'re still ending this checkout. No charge was made.' + (haveBag ? ' ' + BAG : ''));
       } else if (res && res.released === true) {
         SF.Bag.forgetCheckoutKey();   // that checkout has ended: the next try gets a fresh key
-        say(BASE + 'We\'ve let go of the items we were holding, and your bag is just as you left it.');
+        say(BASE + 'We\'ve let go of the items we were holding' + (haveBag ? ', and your bag is just as you left it.' : '.'));
       }
     }, function () {
       // A wrong link or no connection: the page already says what matters. The held items are let go on their own in a few minutes.
@@ -52,6 +55,8 @@
     SF.renderFooter(null);
   });
   SF.$('bagBtn').setAttribute('href', SF.href('/shop/bag/'));
-  SF.$('lede').textContent = BASE + 'Your bag is just as you left it.';
+  SF.$('bagBtn').hidden = !haveBag;
+  if (!haveBag) SF.$('shopBtn').className = 'btn';   // nothing to go back to: the way out is the main button
+  say(BASE + (haveBag ? BAG : ''));
   cancel();
 })();

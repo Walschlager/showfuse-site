@@ -251,7 +251,7 @@
     ];
     if (S.qerr) {
       parts.push(el('div', { cls: 'err', role: 'alert' }, [el('p', { text: S.qerr })]));
-      parts.push(el('button', { type: 'button', cls: 'btn small ghost', text: 'Try again', on: { click: function () { schedule(0); render(); } } }));
+      parts.push(el('button', { type: 'button', cls: 'btn small ghost', text: 'Try again', on: { click: function () { S.qerr = ''; schedule(0); render(); } } }));
     } else {
       parts.push(totalsEl(bag));
     }
@@ -300,7 +300,6 @@
     var bag = Bag.read();
     if (!bag.lines.length) { renderEmpty(); if (S.focus === 'heading') SF.focusHeading(view); S.focus = ''; return; }
     if (!S.loaded) { loading(); return; }
-    if (S.cfg && S.country !== bag.country) Bag.setCountry(S.country);
     renderBag(bag);
     var want = S.focus || key;
     S.focus = '';
@@ -350,7 +349,7 @@
     Bag.remove(id);
     S.coErr = '';
     S.focus = 'heading';
-    schedule(Bag.read().lines.length ? 0 : 0);
+    schedule(0);
     render();
   }
   function changeCountry(code) {
@@ -411,8 +410,9 @@
       if (code === 'store_closed' || code === 'shop_not_configured') { recheck(); S.co = false; return; }
       S.co = false;
       S.coErr = err && err.message ? err.message : SF.NET_MSG;
-      if (code === 'sold_out' || code === 'item_unavailable' || code === 'cant_ship_here') { render(); schedule(0); render(); return; }
-      if (code === 'country_not_available') { S.country = defaultCountry(S.cfg, ''); Bag.setCountry(S.country); render(); schedule(0); render(); return; }
+      // The lines the server named are re-checked right away, so they show as struck out with a note.
+      if (code === 'sold_out' || code === 'item_unavailable' || code === 'cant_ship_here') schedule(0);
+      if (code === 'country_not_available') { S.country = defaultCountry(S.cfg, ''); Bag.setCountry(S.country); schedule(0); }
       render();
     });
   }
@@ -431,6 +431,7 @@
       if (!cfg.open || !cfg.countries.length) { showClosed(); return; }
       var bag = Bag.read();
       S.country = defaultCountry(cfg, bag.country);
+      if (S.country !== bag.country) Bag.setCountry(S.country);
       if (!bag.lines.length) { S.loaded = true; render(); return; }
       runQuote();
     }, function (err) {
@@ -442,8 +443,13 @@
   }
 
   start();
-  // Another tab changed the bag.
-  window.addEventListener('storage', function (e) { if (e.key === 'sf_bag_v1' && S.cfg && S.loaded) { schedule(200); render(); } });
+  // Another tab changed the bag: take its country and lines as they are, and ask again.
+  window.addEventListener('storage', function (e) {
+    if (e.key !== 'sf_bag_v1' || !S.cfg || !S.loaded) return;
+    S.country = defaultCountry(S.cfg, Bag.read().country);
+    schedule(200);
+    render();
+  });
   // Back from Stripe (or any back/forward) can bring this page back mid-checkout. Start fresh.
   window.addEventListener('pageshow', function (e) { if (e.persisted) start(); });
 })();

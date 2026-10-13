@@ -235,13 +235,9 @@
 
   // Asked on every page load. Not kept anywhere: a closed store must show no doors.
   var cfgPromise = null;
-  var lastConfig = null;
   function config(force) {
     if (cfgPromise && !force) return cfgPromise;
-    cfgPromise = request('GET', '/v1/shop/config', { timeout: 12000 }).then(function (j) {
-      lastConfig = normalizeConfig(j);
-      return lastConfig;
-    });
+    cfgPromise = request('GET', '/v1/shop/config', { timeout: 12000 }).then(normalizeConfig);
     return cfgPromise;
   }
 
@@ -420,8 +416,7 @@
 
     return {
       read: read, write: write, count: count, qtyOf: qtyOf, room: room, add: add, setQty: setQty,
-      remove: remove, clear: clearLines, setCountry: setCountry, checkoutKey: checkoutKey, forgetCheckoutKey: forgetCheckoutKey,
-      canStore: canStore
+      remove: remove, clear: clearLines, setCountry: setCountry, checkoutKey: checkoutKey, forgetCheckoutKey: forgetCheckoutKey
     };
   })();
 
@@ -487,9 +482,6 @@
     return out.length ? el('div', { cls: 'pol-links' + (mt ? ' ' + mt : '') }, out) : null;
   }
 
-  function showOnly(ids, shown) {
-    ids.forEach(function (id) { var n = $(id); if (n) n.hidden = id !== shown; });
-  }
   function focusHeading(root) {
     var h = root && root.querySelector('h1');
     if (h) { try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } }
@@ -517,12 +509,12 @@
 
   window.SF = {
     Base: Base, MAIL: MAIL, NET_MSG: NET_MSG, limits: limits, Bag: Bag,
-    $: $, el: el, clear: clear, request: request, withBot: withBot, afterMinTime: afterMinTime, sinceLoad: sinceLoad,
+    $: $, el: el, clear: clear, request: request, withBot: withBot, afterMinTime: afterMinTime,
     usd: usd, usdShort: usdShort, shortDate: shortDate, plural: plural, joinList: joinList,
-    safeImg: safeImg, safeSiteUrl: safeSiteUrl, safeHttps: safeHttps, photo: photo, normalizeProduct: normalizeProduct, href: href,
+    safeHttps: safeHttps, photo: photo, normalizeProduct: normalizeProduct, href: href,
     config: config, countryByCode: countryByCode, countryLabel: countryLabel, countryNote: countryNote,
-    countryShort: countryShort, countryLong: countryLong, regionName: regionName,
+    countryShort: countryShort, countryLong: countryLong,
     renderNav: renderNav, renderFooter: renderFooter, policyLinks: policyLinks,
-    showOnly: showOnly, focusHeading: focusHeading, setTitle: setTitle, closedPage: closedPage, errorBlock: errorBlock
+    focusHeading: focusHeading, setTitle: setTitle, closedPage: closedPage, errorBlock: errorBlock
   };
 })();

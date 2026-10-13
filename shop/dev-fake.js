@@ -23,7 +23,7 @@
 
    Order links  /shop/thanks/?n=SF-1042&t=...  and  /shop/order/?n=SF-1042&t=...
    t=fake-paid | fake-pending (pending twice, then paid) | fake-shipped | fake-refunded | fake-expired
-   t=fake-ca (paid, to Canada) | fake-slow (paid after 4 seconds) | fake-fail (the call fails) | anything else: not found
+   t=fake-canada (paid, to Canada) | fake-slow (paid after 4 seconds) | fake-fail (the call fails) | anything else: not found
    Cancel link  /shop/cancelled/?n=SF-1042&t=fake-cancel | fake-paid-cancel (already paid) | fake-pending-cancel | anything else: not found
 
    Product photos are /shop/dev-photos/<slug>.jpg. They are NOT in the site's files (the demo merch isn't
@@ -279,7 +279,7 @@
       refunded_cents: 0, currency: 'USD', tracking: null, test_mode: false
     };
     if (EVIL) { o.city = '<b>Detroit</b>'; o.region = '<i>MI</i>'; }
-    if (t === 'fake-ca') { o.country = 'CA'; o.city = 'Toronto'; o.region = 'ON'; o.shipping_cents = 2000; o.tax_cents = 0; o.total_cents = 14500; }
+    if (t === 'fake-canada') { o.country = 'CA'; o.city = 'Toronto'; o.region = 'ON'; o.shipping_cents = 2000; o.tax_cents = 0; o.total_cents = 14500; }
     if (t === 'fake-shipped') {
       o.status = 'shipped'; o.shipped_at = '2026-10-21T11:08:00.000Z';
       o.tracking = { carrier: E('USPS'), number: '9400111899223344556677', url: EVIL ? 'javascript:window.__pwned=6' : 'https://tools.usps.com/go/TrackConfirmAction?tLabels=9400111899223344556677' };
@@ -296,7 +296,7 @@
     var n = params.get('n'), t = params.get('t');
     if (!/^SF-\d{3,9}$/.test(n || '') || !t) return fail(404, 'not_found', 'We couldn\'t find that order.');
     if (t === 'fake-fail') return fail(503, 'unavailable', 'Something went wrong on our side. Try again in a minute.');
-    if (['fake-paid', 'fake-pending', 'fake-shipped', 'fake-refunded', 'fake-expired', 'fake-ca', 'fake-slow'].indexOf(t) < 0) {
+    if (['fake-paid', 'fake-pending', 'fake-shipped', 'fake-refunded', 'fake-expired', 'fake-canada', 'fake-slow'].indexOf(t) < 0) {
       return fail(404, 'not_found', 'We couldn\'t find that order.');
     }
     return reply(200, orderView(n, t), t === 'fake-slow' ? 4000 : undefined);
