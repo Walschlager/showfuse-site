@@ -20,6 +20,7 @@
     news: false   // "Email me when new merch drops": starts unticked (Back from Stripe restores it, see Bag.wasTicked)
   };
   var photoNodes = {};   // variant id -> its picture, so redrawing the bag doesn't reload the images
+  var restoredTick = false;   // the newsletter box is restored from an attempt in flight once per page load, never again
 
   function num(v) { return typeof v === 'number' && isFinite(v) ? Math.round(v) : 0; }
   function numOrNull(v) { return typeof v === 'number' && isFinite(v) ? Math.round(v) : null; }
@@ -470,7 +471,8 @@
       if (S.country !== bag.country) Bag.setCountry(S.country);
       bag.country = S.country;
       // Back from Stripe with the box ticked: it comes back ticked (see Bag.wasTicked). Otherwise it starts unticked.
-      if (!S.news) S.news = Bag.wasTicked(bag);
+      // Only on a fresh load of the page: when the browser brings a kept copy of the page back, the box is as the person left it.
+      if (!restoredTick) { restoredTick = true; S.news = Bag.wasTicked(bag); }
       if (!bag.lines.length) { S.loaded = true; render(); return; }
       runQuote();
     }, function (err) {
