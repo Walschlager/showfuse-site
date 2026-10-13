@@ -21,6 +21,7 @@
    co=toomany       409 too_many_open_checkouts     co=key     409 checkout_key_used once, then it works
    co=slow          Checkout takes 3 seconds        co=bad     the link in the answer is not Stripe's (the page must refuse it)
    evil=1           HTML and script-looking text in every server string, to prove it only ever shows as text
+   nobadge=1        hides the small FAKE API badge (for clean screenshots)
 
    Order links  /shop/thanks/?n=SF-1042&t=...  and  /shop/order/?n=SF-1042&t=...
    t=fake-paid | fake-pending (pending twice, then paid) | fake-shipped | fake-refunded | fake-expired

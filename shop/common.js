@@ -512,6 +512,14 @@
     ];
   }
 
+  // ?fake=1 or ?fake=checkout (localhost only): a small badge, so canned answers are never mistaken for the real thing.
+  // Add &nobadge=1 for clean screenshots.
+  if (Base.fake && !/(?:^|[?&])nobadge=1(?:&|$)/.test(window.location.search)) {
+    Base.ready.then(function () {
+      document.body.appendChild(el('div', { cls: 'fakebadge', 'aria-hidden': 'true', text: Base.fake === 'checkout' ? 'FAKE CHECKOUT' : 'FAKE API' }));
+    });
+  }
+
   window.SFShop = {
     Base: Base, MAIL: MAIL, NET_MSG: NET_MSG, limits: limits, Bag: Bag,
     $: $, el: el, clear: clear, request: request, withBot: withBot, afterMinTime: afterMinTime,
