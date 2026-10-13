@@ -1,0 +1,84 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/legal.css"><title>ShowFuse Support</title>
+<meta name="description" content="Get help with ShowFuse: your account, claiming your artist or venue page, the app, or merch. Send us a message and we'll email you back.">
+<style>
+  .quick{display:grid;gap:10px;margin:8px 0 8px}
+  .quick a{display:block;border:1px solid var(--hair);padding:14px 16px;color:var(--paper);background:rgba(255,255,255,.02)}
+  .quick a span{display:block;color:var(--text3);font-size:14px;font-weight:300;margin-top:2px}
+  .field{margin-top:16px}
+  .field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+  .field input,.field select,.field textarea{width:100%;background:#0b0b0d;border:1px solid var(--hair);color:var(--paper);font-family:Outfit,system-ui,sans-serif;font-size:16px;padding:14px;border-radius:0}
+  .field textarea{min-height:150px;resize:vertical;line-height:1.5}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:520px){.grid2{grid-template-columns:1fr}}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .send{margin-top:20px;width:100%;background:var(--accent);color:#0a0a0a;border:0;font-family:Outfit,system-ui,sans-serif;font-weight:800;font-size:14px;letter-spacing:3px;text-transform:uppercase;padding:17px;cursor:pointer}
+  .send:disabled{opacity:.6;cursor:default}
+  .send:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
+  .err{display:none;margin-top:14px;color:#ff8a80;font-size:15px}
+  .done{display:none;margin-top:8px;padding:18px 20px;border-left:3px solid var(--accent);background:rgba(255,195,0,.05)}
+  .done b{display:block;font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;font-weight:400;margin-bottom:4px}
+  .count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);text-align:right;margin-top:6px}
+</style></head><body><header class="wrap"><a class="logo" href="/" aria-label="ShowFuse"><span class="headmark" role="img" aria-label="ShowFuse"></span></a><nav><a href="/faq">FAQ</a><a href="/support">Support</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a></nav></header><main class="wrap">
+<div class="kicker">Help</div><h1>Support</h1><div class="meta">We answer by email, usually within a day</div>
+
+<h2>Quick answers</h2>
+<div class="quick">
+  <a href="/faq">Questions about the app<span>Tickets, invites, location, messages, deleting your account</span></a>
+  <a href="/claim/">Claim your artist page<span>Prove it's you and take over the page fans already see</span></a>
+</div>
+
+<h2>Send us a message</h2>
+<p>Tell us what's going on and we'll email you back. If something broke, say what you tapped and what happened.</p>
+<form id="supportForm" novalidate>
+  <div class="grid2">
+    <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" maxlength="80" autocomplete="name"></div>
+    <div class="field"><label for="email">Your email</label><input id="email" name="email" type="email" maxlength="254" autocomplete="email" required></div>
+  </div>
+  <div class="field"><label for="topic">What's it about</label>
+    <select id="topic" name="topic">
+      <option value="account">My account or signing in</option>
+      <option value="claim">Claiming my artist or venue page</option>
+      <option value="app">Something isn't working</option>
+      <option value="merch">Merch or an order</option>
+      <option value="other" selected>Something else</option>
+    </select>
+  </div>
+  <div class="field"><label for="message">Your message</label><textarea id="message" name="message" maxlength="4000" required></textarea><div class="count" id="count">0 / 4000</div></div>
+  <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+  <button class="send" id="sendBtn" type="submit">Send message</button>
+  <div class="err" id="sendErr" role="alert"></div>
+</form>
+<div class="done" id="sendDone" role="status"><b>Sent. Thanks.</b><p>We'll reply to the email you gave us. Check your spam folder if you don't see it in a day.</p></div>
+
+<h2>Email</h2>
+<p>You can also write to <b>info@showfuseapp.com</b>.</p>
+</main><footer><div class="wrap">ShowFuse · <a href="/faq">FAQ</a> · <a href="/support">Support</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a><br>© 2026 ShowFuse. All rights reserved.</div></footer>
+<script>
+(function(){
+  var API = 'https://showfuse-api-production.up.railway.app/v1/support';
+  var form = document.getElementById('supportForm'), btn = document.getElementById('sendBtn'), err = document.getElementById('sendErr');
+  var msg = document.getElementById('message'), count = document.getElementById('count');
+  var loaded = Date.now();
+  msg.addEventListener('input', function(){ count.textContent = msg.value.length + ' / 4000'; });
+  function fail(text){ err.textContent = text; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Send message'; }
+  form.addEventListener('submit', function(e){
+    e.preventDefault(); err.style.display = 'none';
+    var email = form.email.value.trim(), message = msg.value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { fail('That email doesn’t look right.'); form.email.focus(); return; }
+    if (message.length < 10) { fail('Tell us a little more (at least 10 characters).'); msg.focus(); return; }
+    btn.disabled = true; btn.textContent = 'Sending…';
+    // t = ms since the page loaded; the server refuses more than a day, so a tab left open longer sends the cap.
+    var payload = { name: form.name.value.trim(), email: email, topic: form.topic.value, message: message, website: form.website.value, t: Math.min(Date.now() - loaded, 86000000) };
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }, function(){ return { ok: false, j: null }; }); })
+      .then(function(res){
+        if (!res.ok || !res.j || !res.j.ok) { fail((res.j && res.j.error && res.j.error.message) || 'That didn’t send. Email us at info@showfuseapp.com.'); return; }
+        form.style.display = 'none';
+        var done = document.getElementById('sendDone'); done.style.display = 'block'; done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      })
+      .catch(function(){ fail('Couldn’t reach us. Check your connection, or email info@showfuseapp.com.'); });
+  });
+})();
+</script>
+</body></html>
