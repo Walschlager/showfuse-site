@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src https://showfuse-api-production.up.railway.app http://localhost:3000; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<title>Freeze my account · ShowFuse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/claim/claim.css">
+<script src="/claim/common.js" defer></script>
+<script src="/claim/steps.js" defer></script>
+<script src="/account/freeze/freeze.js" defer></script>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+<header><div class="wrap hdr">
+  <a href="/" aria-label="ShowFuse home"><span class="headmark" aria-hidden="true"></span></a>
+  <a class="help" href="mailto:info@showfuseapp.com?subject=Help%20freezing%20my%20ShowFuse%20account">Need help?</a>
+</div></header>
+
+<main class="wrap">
+  <noscript><p class="note">This page needs JavaScript. Turn it on and reload, or email <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a> and we'll freeze your account for you right away.</p></noscript>
+
+  <!-- 1 · Sign in: with a code we email, not a password (someone who got in may have changed the password) -->
+  <section id="a-email">
+    <ol class="prog" aria-label="Your progress">
+      <li class="now"><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Sign in</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Freeze it</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Frozen</span></span></li>
+    </ol>
+    <div class="kicker">Keep your account safe</div>
+    <h1 tabindex="-1">Sign in</h1>
+    <p class="lede">Sign in to freeze your account. We'll email you a 6-digit code: no password needed.</p>
+    <form id="emailForm" novalidate>
+      <div class="field"><label for="email">Your email</label>
+        <input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required></div>
+      <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+      <button class="btn" type="submit" id="emailBtn">Email me a code</button>
+      <div class="err" id="emailErr" role="alert"></div>
+    </form>
+    <p class="fine">No password needed, so this works even if someone changed it.</p>
+  </section>
+
+  <section id="a-code" hidden>
+    <ol class="prog" aria-label="Your progress">
+      <li class="now"><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Sign in</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Freeze it</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Frozen</span></span></li>
+    </ol>
+    <h1 tabindex="-1">Check your inbox</h1>
+    <p class="lede">We emailed a 6-digit code to <b id="codeTo"></b>.</p>
+    <form id="codeForm" novalidate>
+      <div class="field"><label for="code">Your code</label>
+        <input id="code" class="codein" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="12" spellcheck="false"></div>
+      <button class="btn" type="submit" id="codeBtn">Confirm my email</button>
+      <div class="err" id="codeErr" role="alert"></div>
+    </form>
+    <p class="fine">No email? Check your spam folder. <button class="link" type="button" id="resend">Send again</button> · <button class="link" type="button" id="different">Use a different email</button></p>
+  </section>
+
+  <!-- 2 · Freeze it -->
+  <section id="a-freeze" hidden>
+    <ol class="prog" aria-label="Your progress">
+      <li class="done"><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Sign in</span></span></li>
+      <li class="now"><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Freeze it</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Frozen</span></span></li>
+    </ol>
+    <p class="ok" id="signedIn"></p>
+    <div class="kicker">Keep your account safe</div>
+    <h1 tabindex="-1">Freeze my account</h1>
+    <p class="lede">Someone else got into your account? Freeze it.</p>
+    <ul class="freeze-list">
+      <li><b>Everyone gets signed out,</b> you too.</li>
+      <li><b>Nobody can sign in</b> or change your account or your page until you get back in.</li>
+      <li><b>You can get back in yourself,</b> any time, with a code we email you.</li>
+    </ul>
+    <button class="btn" type="button" id="freezeBtn">Freeze my account</button>
+    <p class="fine">Was it you? Close this page and nothing changes.</p>
+  </section>
+
+  <section id="a-confirm" hidden>
+    <ol class="prog" aria-label="Your progress">
+      <li class="done"><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Sign in</span></span></li>
+      <li class="now"><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Freeze it</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Frozen</span></span></li>
+    </ol>
+    <div class="kicker">One more tap</div>
+    <h1 tabindex="-1">Freeze it now?</h1>
+    <p class="lede">Everyone is signed out, you too, and nobody can sign in or change your account or page until you get back in at showfuseapp.com/get-back-in.</p>
+    <div class="actions">
+      <button class="btn danger" type="button" id="yesBtn">Yes, freeze my account</button>
+      <button class="btn ghost" type="button" id="backBtn">Go back</button>
+    </div>
+    <div class="err" id="yesErr" role="alert"></div>
+  </section>
+
+  <!-- 3 · Frozen -->
+  <section id="a-done" hidden>
+    <ol class="prog" aria-label="Your progress">
+      <li class="done"><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Sign in</span></span></li>
+      <li class="done"><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Freeze it</span></span></li>
+      <li class="done"><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Frozen</span></span></li>
+    </ol>
+    <div class="kicker">Done</div>
+    <h1 tabindex="-1">Frozen. Nobody can use it.</h1>
+    <p class="lede">Everyone was signed out, you too. Nobody can sign in or change your account or page.</p>
+    <ul class="track">
+      <li class="done"><span class="d"></span><span><b>Frozen</b><small>Every device is signed out.</small></span></li>
+      <li class="now"><span class="d"></span><span><b>Get back in when you're ready</b><small>Confirm your email with a code, then pick a new password.</small></span></li>
+    </ul>
+    <div class="actions" style="margin-top:18px"><a class="btn" href="/get-back-in/">Get back in</a></div>
+    <p class="fine">Not you, or stuck? Email <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a>.</p>
+  </section>
+</main>
+
+<footer><div class="wrap"><a href="/">Home</a> · <a href="/faq.html">FAQ</a> · <a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy</a> · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a><br>
+  © 2026 ShowFuse. All rights reserved.
+</div></footer>
+</body>
+</html>
