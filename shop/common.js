@@ -11,7 +11,7 @@
   var loadedAt = Date.now();
   var MIN_MS = 2600;                     // the server wants t >= 2500 ms on the page for a website checkout
   var MAIL = 'info@showfuseapp.com';
-  var NET_MSG = 'We couldn’t reach ShowFuse. Check your connection and try again.';
+  var NET_MSG = 'We couldn\'t reach ShowFuse. Check your connection and try again.';
   var limits = { items: 10, qty: 5 };    // replaced by what GET /v1/shop/config says
 
   function $(id) { return id ? document.getElementById(id) : null; }
@@ -62,7 +62,7 @@
     function done() { if (timer) clearTimeout(timer); }
     // Wait for the dev fake (if any), so a fake-mode request can never reach a real server.
     return Base.ready.then(function () {
-      if (Base.fake && !window.SF_SHOP_FAKE_READY) throw problem(0, 'network', 'The fake API didn’t load. Reload the page.');
+      if (Base.fake && !window.SF_SHOP_FAKE_READY) throw problem(0, 'network', 'The fake API didn\'t load. Reload the page.');
       timer = ctl ? setTimeout(function () { ctl.abort(); }, o.timeout || 25000) : null;
       return fetch(Base.api + path, {
         method: method, headers: headers, body: body,
@@ -259,7 +259,7 @@
     var parts = [];
     if (c.note) parts.push(c.note);
     if (c.code === 'CA' && c.note && /duties/i.test(c.note)) parts.push('Canada may charge them when the parcel arrives.');
-    c.excluded.forEach(function (r) { parts.push(regionName(r) + ': we don’t ship there yet.'); });
+    c.excluded.forEach(function (r) { parts.push(regionName(r) + ': we don\'t ship there yet.'); });
     var phone = c.collectsPhone === null ? c.code === 'CA' : c.collectsPhone;
     if (phone) parts.push('The next page asks for a phone number (' + c.name + ' only), because the carrier needs one.');
     return parts.join(' ');
@@ -501,7 +501,7 @@
     main.className = 'wrap';
     return [
       el('div', { cls: 'kicker', text: 'ShowFuse merch' }),
-      el('h1', { tabindex: '-1', text: 'The shop isn’t open yet.' }),
+      el('h1', { tabindex: '-1', text: 'The shop isn\'t open yet.' }),
       el('p', { cls: 'lede', text: 'Nothing is for sale here right now.' }),
       el('a', { cls: 'btn small ghost', href: '/', text: 'Back to ShowFuse' })
     ];
