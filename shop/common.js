@@ -1,8 +1,10 @@
 /* ShowFuse shop: helpers shared by the shop pages. Built against docs/SHOP_API.md.
    No third-party code. Every piece of server or user text goes into the page with
-   textContent, never innerHTML. The only thing kept on the device is the bag (localStorage,
-   with a fallback when the browser blocks storage). Nothing is stored about whether the shop is
-   open: every page asks the server and, if it can't get a clear "visible", shows no shop doors. */
+   textContent, never innerHTML. What is kept on the device: the bag (localStorage, with a fallback when the
+   browser blocks storage) and, for one checkout attempt, its key (sessionStorage). That record also notes whether
+   the newsletter box was ticked for that attempt, so Back from Stripe can show the box as it was; it goes when the
+   attempt ends, after 40 minutes, or with the tab. Nothing is stored about whether the shop is open: every page
+   asks the server and, if it can't get a clear "visible", shows no shop doors. */
 (function () {
   'use strict';
   var Base = window.SFBase;
@@ -402,8 +404,10 @@
 
     // One checkout attempt = one key. The same bag to the same country reuses it, so a double tap,
     // a reload or "back" from Stripe gets the same payment page, never a second hold on the stock.
+    // b.news (the "Email me when new merch drops" tick) is part of it only when ticked, so an unticked bag hashes exactly as
+    // it always did. A changed tick starts a new attempt: the old payment page must not carry yesterday's answer.
     function bagHash(b) {
-      return b.country + '|' + b.lines.map(function (l) { return l.id + ':' + l.q; }).sort().join(',');
+      return b.country + '|' + b.lines.map(function (l) { return l.id + ':' + l.q; }).sort().join(',') + (b.news ? '|news' : '');
     }
     function newKey() {
       var bytes = new Uint8Array(18);
@@ -414,13 +418,17 @@
       return window.btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');   // 24 characters of A-Za-z0-9_-
     }
     var memKey = null;
-    function checkoutKey(b, fresh) {
-      var h = bagHash(b);
+    function heldRecord() {
       var held = memKey;
       try {
         var raw = window.sessionStorage.getItem(CK_KEY);
         if (raw) held = JSON.parse(raw);
       } catch (e) { /* storage blocked: the key lives in memory */ }
+      return held;
+    }
+    function checkoutKey(b, fresh) {
+      var h = bagHash(b);
+      var held = heldRecord();
       if (!fresh && held && held.h === h && typeof held.k === 'string' && Date.now() - held.t < 40 * 60 * 1000) return held.k;
       var made = { h: h, k: newKey(), t: Date.now() };
       memKey = made;
@@ -431,10 +439,19 @@
       memKey = null;
       try { window.sessionStorage.removeItem(CK_KEY); } catch (e) { /* nothing */ }
     }
+    // Back from Stripe can load the bag page again. If this very bag was just sent to Stripe with the newsletter box ticked,
+    // the box comes back ticked, so pressing Checkout again is still the same attempt (same key, same payment page, no
+    // second hold). Any other time the box starts unticked: nothing about it is kept beyond that one attempt.
+    function wasTicked(b) {
+      var held = heldRecord();
+      return !!(held && typeof held.h === 'string' && Date.now() - held.t < 40 * 60 * 1000 &&
+        held.h === bagHash({ country: b.country, lines: b.lines, news: true }));
+    }
 
     return {
       read: read, write: write, count: count, qtyOf: qtyOf, room: room, add: add, setQty: setQty,
-      remove: remove, clear: clearLines, setCountry: setCountry, checkoutKey: checkoutKey, forgetCheckoutKey: forgetCheckoutKey
+      remove: remove, clear: clearLines, setCountry: setCountry, checkoutKey: checkoutKey, forgetCheckoutKey: forgetCheckoutKey,
+      wasTicked: wasTicked
     };
   })();
 

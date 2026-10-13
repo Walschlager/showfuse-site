@@ -16,7 +16,8 @@
 
   var S = {
     cfg: null, country: '', info: {}, quote: null, shown: null,
-    loaded: false, busy: false, qerr: '', co: false, coErr: '', qSeq: 0, timer: null, focus: ''
+    loaded: false, busy: false, qerr: '', co: false, coErr: '', qSeq: 0, timer: null, focus: '',
+    news: false   // "Email me when new merch drops": starts unticked (Back from Stripe restores it, see Bag.wasTicked)
   };
   var photoNodes = {};   // variant id -> its picture, so redrawing the bag doesn't reload the images
 
@@ -268,6 +269,10 @@
     parts.push(words);
 
     var off = blocked();
+    // R3: an unticked box, just above Checkout. It is only ever sent when ticked.
+    var news = el('input', { type: 'checkbox', id: 'newsBox', 'data-k': 'news', disabled: S.co, on: { change: function (e) { S.news = !!e.target.checked; } } });
+    news.checked = S.news;
+    parts.push(el('label', { cls: 'check', 'for': 'newsBox' }, [news, el('span', { text: 'Email me when new merch drops' })]));
     // A screen reader that lands on the greyed-out Checkout is told which line is in the way.
     var stuck = bag.lines.filter(function (l) { return S.info[l.id] && S.info[l.id].problem; })[0];
     parts.push(el('button', {
@@ -414,11 +419,17 @@
     render();
     var bag = Bag.read();
     bag.country = S.country;
+    // What is ticked when Checkout is pressed is what this attempt carries. It is part of what makes two attempts "the same"
+    // (Bag.checkoutKey), so a changed tick after Back from Stripe never rides on the old payment page's answer.
+    var news = S.news;
+    bag.news = news;
     var items = bag.lines.map(function (l) { return { variant_id: l.id, qty: l.q }; });
     function send(fresh) {
       var key = Bag.checkoutKey(bag, fresh);
       return SF.afterMinTime().then(function () {
-        return SF.request('POST', '/v1/shop/checkout', { json: SF.withBot({ country: S.country, items: items, source: 'web', checkout_key: key }) });
+        var body = { country: S.country, items: items, source: 'web', checkout_key: key };
+        if (news) body.newsletter = true;   // left out when unticked: the request is then exactly what it was before this box existed
+        return SF.request('POST', '/v1/shop/checkout', { json: SF.withBot(body) });
       });
     }
     send(false).catch(function (err) {
@@ -457,6 +468,9 @@
       var bag = Bag.read();
       S.country = defaultCountry(cfg, bag.country);
       if (S.country !== bag.country) Bag.setCountry(S.country);
+      bag.country = S.country;
+      // Back from Stripe with the box ticked: it comes back ticked (see Bag.wasTicked). Otherwise it starts unticked.
+      if (!S.news) S.news = Bag.wasTicked(bag);
       if (!bag.lines.length) { S.loaded = true; render(); return; }
       runQuote();
     }, function (err) {

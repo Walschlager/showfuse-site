@@ -221,6 +221,8 @@
     var bag = checkBag(b);
     if (bag.err) return fail(bag.err[0], bag.err[1], bag.err[2]);
     if (b.source !== 'web') return fail(400, 'invalid_request', 'Say where the order is from.');
+    // R3: "newsletter" is optional, and when it is there it is true or false.
+    if (b.newsletter !== undefined && typeof b.newsletter !== 'boolean') return fail(400, 'invalid_request', 'newsletter must be true or false.');
     if (typeof b.checkout_key !== 'string' || !/^[A-Za-z0-9_-]{16,80}$/.test(b.checkout_key)) return fail(400, 'invalid_request', 'That checkout key isn\'t valid.');
     if (b.website) return fail(400, 'rejected', 'Could not start the checkout.');
     if (typeof b.t !== 'number' || b.t < 2500 || b.t > 86400000) return fail(400, 'too_fast', 'Give the page a second and try again.');
