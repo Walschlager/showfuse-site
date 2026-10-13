@@ -40,7 +40,6 @@
       <option value="account">My account or signing in</option>
       <option value="claim">Claiming my artist or venue page</option>
       <option value="app">Something isn't working</option>
-      <option value="merch">Merch or an order</option>
       <option value="other" selected>Something else</option>
     </select>
   </div>
@@ -54,6 +53,7 @@
 <h2>Email</h2>
 <p>You can also write to <b>info@showfuseapp.com</b>.</p>
 </main><footer><div class="wrap">ShowFuse · <a href="/faq">FAQ</a> · <a href="/support">Support</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a><br>© 2026 ShowFuse. All rights reserved.</div></footer>
+<script src="/shop/base.js"></script>
 <script>
 (function(){
   var API = 'https://showfuse-api-production.up.railway.app/v1/support';
@@ -79,6 +79,24 @@
       })
       .catch(function(){ fail('Couldn’t reach us. Check your connection, or email info@showfuseapp.com.'); });
   });
+})();
+
+// "Merch or an order" is offered only while the shop is visible (GET /v1/shop/config says visible: true).
+// If the answer is anything else, or never comes, the topic stays out. Same API choice as the shop pages (/shop/base.js).
+(function(){
+  var B = window.SFBase;
+  if (!B) return;
+  B.ready.then(function(){
+    return fetch(B.api + '/v1/shop/config', { headers: { Accept: 'application/json' }, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' });
+  }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+    if (!j || j.open !== true || j.visible !== true) return;
+    var sel = document.getElementById('topic'), other = sel && sel.querySelector('option[value="other"]');
+    if (!sel || !other || sel.querySelector('option[value="merch"]')) return;
+    var opt = document.createElement('option');
+    opt.value = 'merch';
+    opt.textContent = 'Merch or an order';
+    sel.insertBefore(opt, other);
+  }).catch(function(){ /* no clear answer: no merch topic */ });
 })();
 </script>
 </body></html>
