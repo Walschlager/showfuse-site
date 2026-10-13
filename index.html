@@ -69,6 +69,8 @@
   .hdr{display:flex;justify-content:space-between;align-items:center;gap:16px}
   .claimbtn{display:inline-block;background:var(--accent);color:var(--ink);font-family:Outfit,system-ui,sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:11px 14px;white-space:nowrap}
   .claimbtn:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
+  .news{display:flex;gap:12px;align-items:flex-start;margin-top:18px;font-size:15px;line-height:1.45;color:var(--paper);cursor:pointer}
+  .news input{flex:none;width:22px;height:22px;margin:0;accent-color:var(--accent);color-scheme:dark;cursor:pointer}
 </style>
 </head>
 <body>
@@ -110,6 +112,7 @@
         <div class="field"><label for="j-email">Email</label><input id="j-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required></div>
         <div class="field"><label for="j-phone">Phone <span style="color:var(--text3);letter-spacing:0;text-transform:none">(optional)</span></label><input id="j-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="32" placeholder="+1 (555) 555-5555"></div>
       </div>
+      <label class="news"><input type="checkbox" name="newsletter" id="j-news"><span>Email me when new merch drops</span></label>
       <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
       <button class="btn" id="joinBtn" type="submit">Put me on the list</button>
       <div class="err" id="joinErr"></div>
@@ -157,6 +160,7 @@
     var role = (form.querySelector('input[name=role]:checked') || {}).value || 'listener';
     // t = ms since the page loaded. The server refuses more than a day (86,400,000), so a tab left open longer sends the cap.
     var payload = { email: email, name: form.name.value.trim(), phone: form.phone.value.trim(), city: form.city.value.trim(), role: role, website: form.website.value, t: Math.min(Date.now() - loaded, 86000000) };
+    if (form.newsletter && form.newsletter.checked) payload.newsletter = true;   // only when ticked: unticked sends exactly what it always did
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
       .then(function(res){
