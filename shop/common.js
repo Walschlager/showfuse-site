@@ -237,7 +237,12 @@
   var cfgPromise = null;
   function config(force) {
     if (cfgPromise && !force) return cfgPromise;
-    cfgPromise = request('GET', '/v1/shop/config', { timeout: 12000 }).then(normalizeConfig);
+    cfgPromise = request('GET', '/v1/shop/config', { timeout: 12000 }).then(normalizeConfig, function (err) {
+      // A server that doesn't have the shop yet answers 404 for this route. That is "no shop here", so the closed page,
+      // not a technical error. Any other failure (no connection, a server error) still throws: we don't know, so no doors.
+      if (err && err.status === 404) return normalizeConfig({ open: false, visible: false });
+      throw err;
+    });
     return cfgPromise;
   }
 
@@ -507,7 +512,7 @@
     ];
   }
 
-  window.SF = {
+  window.SFShop = {
     Base: Base, MAIL: MAIL, NET_MSG: NET_MSG, limits: limits, Bag: Bag,
     $: $, el: el, clear: clear, request: request, withBot: withBot, afterMinTime: afterMinTime,
     usd: usd, usdShort: usdShort, shortDate: shortDate, plural: plural, joinList: joinList,

@@ -4,7 +4,7 @@
    Server text always goes in with textContent. */
 (function () {
   'use strict';
-  var SF = window.SF;
+  var SF = window.SFShop;
   if (!SF) return;
   var el = SF.el, Bag = SF.Bag;
   var view = SF.$('view');

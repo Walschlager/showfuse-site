@@ -5,7 +5,7 @@
    to the Stripe page the server hands back. Server text always goes in with textContent. */
 (function () {
   'use strict';
-  var SF = window.SF;
+  var SF = window.SFShop;
   if (!SF) return;
   var el = SF.el, Bag = SF.Bag;
   var view = SF.$('view');
@@ -38,7 +38,7 @@
       if (!l || typeof l.variant_id !== 'string') return;
       out.lines.push({
         id: l.variant_id.toLowerCase(), name: str(l.name, 120), label: str(l.label, 30), photo: typeof l.photo === 'string' ? l.photo : null,
-        qty: num(l.qty), unit: num(l.unit_cents), left: typeof l.left === 'number' ? Math.max(0, Math.round(l.left)) : null,
+        qty: num(l.qty), unit: num(l.unit_cents), lineCents: num(l.line_cents), left: typeof l.left === 'number' ? Math.max(0, Math.round(l.left)) : null,
         problem: PROBLEMS[l.problem] ? l.problem : null
       });
     });
@@ -161,7 +161,10 @@
     var shown = name + (info.label ? ' (' + info.label + ')' : '');
     if (!photoNodes[l.id]) photoNodes[l.id] = SF.photo(info.photo, name);
     var mid = el('div', null, [el('b', { text: name }), info.label ? el('small', { text: info.label }) : el('small', { text: ' ' })]);
-    var amt = el('div', { cls: 'amt', text: info.name ? SF.usd(info.unit * l.q) : '' });
+    // The line's price is the server's own number. Between a tap on + or - and the server's answer, it is
+    // the server's price for one times the new quantity, for a moment.
+    var lineCents = info.qty === l.q ? info.lineCents : info.unit * l.q;
+    var amt = el('div', { cls: 'amt', text: info.name ? SF.usd(lineCents) : '' });
 
     if (isGone) {
       var c = countryNow();
@@ -188,7 +191,8 @@
       el('button', { type: 'button', cls: 'rm', text: 'Remove', 'data-k': 'rm:' + l.id, 'aria-label': 'Remove ' + shown + ' from your bag', on: { click: function () { removeLine(l.id); } } })
     ]);
     mid.appendChild(tools);
-    if (left !== null && left > 0) mid.appendChild(el('div', { cls: 'lowhint', id: 'note-' + l.id, text: 'Only ' + left + ' left' }));
+    // "Only 2 left" when the line is asking for all of what's left (or more): it is why the + is dimmed.
+    if (left !== null && left > 0 && q >= left) mid.appendChild(el('div', { cls: 'lowhint', id: 'note-' + l.id, text: 'Only ' + left + ' left' }));
     return el('div', { cls: 'ln' }, [photoNodes[l.id], mid, amt]);
   }
 
@@ -289,7 +293,9 @@
     view.appendChild(el('div', { cls: 'kicker', text: 'Your bag' }));
     view.appendChild(el('h1', { tabindex: '-1', text: 'Your bag is empty.' }));
     view.appendChild(el('p', { cls: 'lede', text: 'Add something from the shop and it will wait here.' }));
-    view.appendChild(el('a', { cls: 'btn small', href: cfg.visible ? SF.href('/shop/') : '/', text: cfg.visible ? 'Back to the shop' : 'Back to ShowFuse' }));
+    view.appendChild(el('div', { cls: 'pagebtns' }, [
+      el('a', { cls: 'btn small', href: cfg.visible ? SF.href('/shop/') : '/', text: cfg.visible ? 'Back to the shop' : 'Back to ShowFuse' })
+    ]));
   }
 
   function render() {

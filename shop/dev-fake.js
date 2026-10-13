@@ -11,6 +11,7 @@
    shop=closed      the store switch is off: config says open false
    shop=linkonly    open, but nothing is listed (only /shop/p/?s=m_beanie works), like the $1 test product
    shop=error       config fails (503)
+   shop=none        config answers 404, like a server that doesn't have the shop yet (shows the closed page)
    tax=none         the bag has no tax line (config says tax: none)
    pay=paid         Checkout "pays" and lands on the thank-you page (default)
    pay=pending      ...lands on the thank-you page while the payment is still being confirmed
@@ -24,7 +25,8 @@
    Order links  /shop/thanks/?n=SF-1042&t=...  and  /shop/order/?n=SF-1042&t=...
    t=fake-paid | fake-pending (pending twice, then paid) | fake-shipped | fake-refunded | fake-expired
    t=fake-canada (paid, to Canada) | fake-slow (paid after 4 seconds) | fake-fail (the call fails) | anything else: not found
-   Cancel link  /shop/cancelled/?n=SF-1042&t=fake-cancel | fake-paid-cancel (already paid) | fake-pending-cancel | anything else: not found
+   Cancel link  /shop/cancelled/?n=SF-1042&t=fake-cancel | fake-cancel-again (opened a second time) | fake-paid-cancel (already paid)
+                | fake-pending-cancel | anything else: not found
 
    Product photos are /shop/dev-photos/<slug>.jpg. They are NOT in the site's files (the demo merch isn't
    public). Without them the pages show their quiet "no photo" blocks. */
@@ -262,6 +264,8 @@
       orders.forEach(function (o) { if (o.number === b.number) o.cancelled = true; });
       return reply(200, { ok: true, status: 'expired', released: true });
     }
+    // the same link opened a second time: already over, nothing left to release (the real server answers this way)
+    if (t === 'fake-cancel-again') return reply(200, { ok: true, status: 'expired', released: false });
     return fail(404, 'not_found', 'We couldn\'t find that order.');
   }
 
@@ -305,6 +309,7 @@
   // ---------- routing ----------
   function config() {
     if (SHOP === 'error') return fail(503, 'unavailable', 'Something went wrong on our side. Try again in a minute.');
+    if (SHOP === 'none') return fail(404, 'not_found', 'Route not found.');   // a server that doesn't have the shop yet
     if (closed()) return reply(200, { open: false, visible: false, test_mode: false });
     return reply(200, {
       open: true, visible: SHOP !== 'linkonly', test_mode: false, currency: 'USD',

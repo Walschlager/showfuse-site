@@ -3,7 +3,7 @@
    from GET /v1/shop/products. Server text always goes in with textContent. */
 (function () {
   'use strict';
-  var SF = window.SF;
+  var SF = window.SFShop;
   if (!SF) return;
   var el = SF.el;
   var view = SF.$('view');

@@ -4,7 +4,7 @@
    The bag is left exactly as it was. Server text always goes in with textContent. */
 (function () {
   'use strict';
-  var SF = window.SF;
+  var SF = window.SFShop;
   if (!SF) return;
 
   function query(name) {
@@ -32,7 +32,8 @@
         say('You already paid for this order, so it wasn\'t cancelled. Your confirmation email has the details.');
       } else if (res && res.status === 'pending') {
         say(BASE + 'We\'re still ending this checkout. No charge was made.' + (haveBag ? ' ' + BAG : ''));
-      } else if (res && res.released === true) {
+      } else if (res && (res.released === true || res.status === 'expired' || res.status === 'failed')) {
+        // "expired" means the checkout is over and its stock is back, whether this call or an earlier one did it.
         SF.Bag.forgetCheckoutKey();   // that checkout has ended: the next try gets a fresh key
         say(BASE + 'We\'ve let go of the items we were holding' + (haveBag ? ', and your bag is just as you left it.' : '.'));
       }

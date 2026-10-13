@@ -4,7 +4,7 @@
    without any way to buy it. Server text always goes in with textContent. */
 (function () {
   'use strict';
-  var SF = window.SF;
+  var SF = window.SFShop;
   if (!SF) return;
   var el = SF.el, Bag = SF.Bag;
   var view = SF.$('view');
@@ -64,9 +64,18 @@
     var times = to.filter(function (c) { return c.delivery; });
     if (times.length) {
       var same = times.every(function (c) { return c.delivery === times[0].delivery; });
-      bits.push('arrives in about ' + (same || times.length === 1
-        ? times[0].delivery
-        : SF.joinList(times.map(function (c) { return c.delivery + ' (' + (c.code === 'US' ? 'US' : c.name) + ')'; })).replace(/ and /, ' or ')));
+      if (same || times.length === 1) {
+        bits.push('arrives in about ' + times[0].delivery);
+      } else {
+        // "5 to 10 business days (US) or 7 to 14 (Canada)": the unit is said once.
+        var unit = /(business days?)$/.exec(times[0].delivery);
+        var each = times.map(function (c, i) {
+          var d = c.delivery;
+          if (i > 0 && unit && /(business days?)$/.test(d) && /(business days?)$/.exec(d)[1] === unit[1]) d = d.slice(0, d.length - unit[1].length - 1);
+          return d + ' (' + (c.code === 'US' ? 'US' : c.name) + ')';
+        });
+        bits.push('arrives in about ' + each.slice(0, -1).join(', ') + ' or ' + each[each.length - 1]);
+      }
     }
     var first = bits.join('; ');
     if (first) first = first.charAt(0).toUpperCase() + first.slice(1) + '. ';
@@ -145,12 +154,13 @@
       qtyNum.textContent = String(S.qty);
       minus.disabled = S.qty <= 1;
       plus.disabled = S.qty >= room.n;
-      SF.clear(hint);
       hint.textContent = S.size && S.size.left !== null && S.size.left > 0
         ? 'Only ' + S.size.left + ' left' + (multi ? ' in ' + S.size.label : '') : '';
+      hint.hidden = !hint.textContent;
       var atCap = S.qty >= room.n;
       cap.textContent = atCap && room.why === 'order' ? SF.limits.items + ' items is the most in one order.'
         : atCap && room.why === 'line' ? SF.limits.qty + ' max' : '';
+      cap.hidden = !cap.textContent;
       addBtn.setAttribute('aria-disabled', room.n < 1 ? 'true' : 'false');
     }
 

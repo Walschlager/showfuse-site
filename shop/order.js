@@ -3,7 +3,7 @@
    state, never the street, and neither does this page. Server text always goes in with textContent. */
 (function () {
   'use strict';
-  var SF = window.SF;
+  var SF = window.SFShop;
   if (!SF) return;
   var el = SF.el;
   var view = SF.$('view');
@@ -51,7 +51,7 @@
   function headline(o) {
     if (o.status === 'pending') return 'We\'re confirming your payment. Check back in a minute.';
     if (o.status === 'paid') return 'Paid. We\'ll email you a tracking number when it ships.';
-    if (o.status === 'shipped') return 'On its way' + (o.shippedAt ? '. Shipped ' + SF.shortDate(o.shippedAt) + '.' : '.');
+    if (o.status === 'shipped') return 'On its way. The tracking number is below.';
     if (o.status === 'refunded') return 'Refunded. The money is going back to your card.';
     if (o.status === 'expired') return 'No charge was made for this order.';
     if (o.status === 'failed') return 'The payment didn\'t go through, so no charge was made.';
