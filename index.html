@@ -71,6 +71,7 @@
   .claimbtn:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
   .news{display:flex;gap:12px;align-items:flex-start;margin-top:18px;font-size:15px;line-height:1.45;color:var(--paper);cursor:pointer}
   .news input{flex:none;width:22px;height:22px;margin:0;accent-color:var(--accent);color-scheme:dark;cursor:pointer}
+  .newsnote{margin:4px 0 0 34px;font-size:12px;line-height:1.5;color:var(--text3)}
 </style>
 </head>
 <body>
@@ -112,11 +113,12 @@
         <div class="field"><label for="j-email">Email</label><input id="j-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required></div>
         <div class="field"><label for="j-phone">Phone <span style="color:var(--text3);letter-spacing:0;text-transform:none">(optional)</span></label><input id="j-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="32" placeholder="+1 (555) 555-5555"></div>
       </div>
-      <label class="news"><input type="checkbox" name="newsletter" id="j-news"><span>Email me when new merch drops</span></label>
+      <label class="news"><input type="checkbox" name="newsletter" id="j-news" aria-describedby="j-news-note"><span>Email me when new merch drops</span></label>
+      <p class="newsnote" id="j-news-note">Unsubscribe any time.</p>
       <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
       <button class="btn" id="joinBtn" type="submit">Put me on the list</button>
       <div class="err" id="joinErr"></div>
-      <p class="fine">By joining you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. 13+. One email, when your door opens. No spam, ever.</p>
+      <p class="fine">By joining you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. 13+. One email when your door opens, plus merch news only if you tick the box. No spam, ever.</p>
     </form>
     <div id="joinDone" style="display:none">
       <div class="kicker" style="margin-top:8px">You're in</div>
