@@ -89,8 +89,9 @@
     var soon = p.status === 'coming_soon';
     var showcase = !!cfg.showcase;   // the shop can be looked at; nothing can be bought
     var selling = !p.preview && (p.status === 'live' || p.status === 'unlisted');
-    // Never in showcase, and never a demo item (R1): a DEMO item is only to look at.
-    var canBuy = selling && cfg.open && !p.demo && p.buyable && p.shipsTo.length > 0;
+    // The server says buyable: never in showcase, and never for a demo item on a real store. On the practice server a demo
+    // item is bought like any other (it is the whole test shop there), so the page does not second-guess the flag.
+    var canBuy = selling && cfg.open && p.buyable && p.shipsTo.length > 0;
     var multi = p.sizes.length > 1;
     var S = { size: null, qty: 1, photo: 0 };
     if (canBuy && p.sizes.length === 1 && !p.sizes[0].soldOut) S.size = p.sizes[0];

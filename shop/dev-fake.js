@@ -16,8 +16,10 @@
    shop=showcasemin the same, but config is only { mode, open: false, visible: true }
    shop=nomode      an older server: config has no "mode" at all (open + visible still decide)
    shop=weirdmode   config says mode "sale", open and visible: a mode the page doesn't know, so it stays closed
-   demo=1           the Emblem Hoodie (Coming soon) is a DEMO item: a DEMO stamp on its photos
-   demo=live        ...and so is the Fuse Hoodie, which this fake still lists as on sale: the page must refuse to sell a DEMO item
+   demo=1           the Emblem Hoodie (Coming soon) is a DEMO item: a DEMO tag on its photos
+   demo=live        ...and so is the Fuse Hoodie, which is on sale and buyable (like the practice server): the page lets it be bought
+   demo=all         all eight items are demo items, and config says test_mode (the practice server's look)
+   demo=real        all eight are demo items and all are Coming soon (a real store's seed); best with shop=showcase
    tax=none         the bag has no tax line (config says tax: none)
    pay=paid         Checkout "pays" and lands on the thank-you page (default)
    pay=pending      ...lands on the thank-you page while the payment is still being confirmed
@@ -102,9 +104,16 @@
   function L(s) { return EVIL ? '<i>' + s + '</i>' : s; }
 
   var LOW = 5;
-  // demo=1: the Emblem Hoodie (Coming soon, like the real DEMO items) is a DEMO item. demo=live: the Fuse Hoodie too, which
-  // this fake still lists as on sale, to prove the page won't sell a DEMO item even if a server ever said it could be bought.
-  var DEMO_SLUGS = DEMO === '1' ? ['m_hoodie_emblem'] : DEMO === 'live' ? ['m_hoodie_emblem', 'm_hoodie'] : [];
+  // Demo items, as the real server has them (docs/SHOP_API.md, "Demo products"):
+  //   demo=1     the Emblem Hoodie (Coming soon) is a DEMO item
+  //   demo=live  ...and so is the Fuse Hoodie, which is on sale and buyable: like the practice server, where a demo item is
+  //              bought like any other. The page must let it be added to the bag (the server says buyable, the page follows)
+  //   demo=all   all eight are demo items, statuses as in this fake, and config says test_mode: the practice server's look
+  //   demo=real  all eight are demo items and all are Coming soon: a real store's seed (best seen with shop=showcase)
+  var ALL_SLUGS = ['m_hoodie', 'm_hoodie_pro', 'm_hoodie_pro_back', 'm_hoodie_emblem', 'm_tee', 'm_tee_pro', 'm_hat', 'm_beanie'];
+  var DEMO_SLUGS = DEMO === '1' ? ['m_hoodie_emblem'] : DEMO === 'live' ? ['m_hoodie_emblem', 'm_hoodie'] : (DEMO === 'all' || DEMO === 'real') ? ALL_SLUGS : [];
+  // A real store's demo items are all Coming soon, whatever the catalog above says.
+  function statusOf(p) { return DEMO === 'real' ? 'coming_soon' : p.status; }
   function publicProduct(p, preview) {
     var sizes = p.variants.map(function (v) { return { id: v.id, label: L(v.label), sold_out: v.stock <= 0, left: v.stock <= LOW ? v.stock : null }; });
     var any = sizes.some(function (s) { return !s.sold_out; });
@@ -114,7 +123,7 @@
     var photos = demo && p.photos.length < 3 ? p.photos.concat(['m_hoodie', 'm_hoodie_pro_back']).slice(0, 3) : p.photos;
     return {
       id: p.id, slug: p.slug, name: E(p.name), blurb: E(p.blurb), description: E(p.desc), price_cents: p.price, currency: 'USD',
-      photos: photos.map(photoUrl), status: p.status, buyable: !preview && !showcaseOn() && sellable(p) && any, demo: demo,
+      photos: photos.map(photoUrl), status: statusOf(p), buyable: !preview && !showcaseOn() && sellable(p) && any, demo: demo,
       sold_out: !any, sizes: sizes, shipping: shipping,
       ships_to: Object.keys(ZONES).filter(function (c) { return typeof p.ship[c] === 'number'; }), preview: !!preview
     };
@@ -137,9 +146,9 @@
   // Showcase: visible and browsable; the server turns away every quote and checkout.
   function showcaseOn() { return SHOP === 'showcase' || SHOP === 'showcasemin'; }
   // What the shop window lists, what a link can reach, and what can be bought.
-  function liveCatalog() { return SHOP === 'linkonly' ? [] : CATALOG.filter(function (p) { return p.status === 'live' || p.status === 'coming_soon'; }); }
-  function reachable(p) { return !closed() && (SHOP === 'linkonly' ? p.slug === 'm_beanie' : p.status === 'live' || p.status === 'coming_soon' || p.status === 'unlisted'); }
-  function sellable(p) { return SHOP === 'linkonly' ? p.slug === 'm_beanie' : p.status === 'live' || p.status === 'unlisted'; }
+  function liveCatalog() { return SHOP === 'linkonly' ? [] : CATALOG.filter(function (p) { return statusOf(p) === 'live' || statusOf(p) === 'coming_soon'; }); }
+  function reachable(p) { return !closed() && (SHOP === 'linkonly' ? p.slug === 'm_beanie' : statusOf(p) === 'live' || statusOf(p) === 'coming_soon' || statusOf(p) === 'unlisted'); }
+  function sellable(p) { return SHOP === 'linkonly' ? p.slug === 'm_beanie' : statusOf(p) === 'live' || statusOf(p) === 'unlisted'; }
 
   // ---------- the rules (the same as the server's) ----------
   function checkBag(b) {
@@ -331,7 +340,7 @@
     if (SHOP === 'showcasemin') return reply(200, { mode: 'showcase', open: false, visible: true, test_mode: false });
     var full = {
       mode: SHOP === 'showcase' ? 'showcase' : 'open',
-      open: SHOP !== 'showcase', visible: SHOP !== 'linkonly', test_mode: false, currency: 'USD',
+      open: SHOP !== 'showcase', visible: SHOP !== 'linkonly', test_mode: DEMO === 'all', currency: 'USD',
       tax: TAX === 'none' ? 'none' : 'calculated_at_checkout', pack_time: '3 business days',
       countries: Object.keys(ZONES).map(function (c) {
         var z = ZONES[c];
