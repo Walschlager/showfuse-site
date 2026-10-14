@@ -56,9 +56,12 @@
       href: SF.href('/shop/p/?s=' + encodeURIComponent(p.slug))
     });
     var ph = SF.photo(p.photos[0], p.name, 'ph', index >= 4);
-    if (sold) ph.appendChild(el('div', { cls: 'sticker', text: 'Sold out' }));
-    if (soon) ph.appendChild(el('div', { cls: 'sticker soon', text: 'Coming soon' }));
-    if (p.demo) ph.appendChild(SF.demoStamp());
+    // The tags over the photo: Sold out or Coming soon at the left, DEMO at the right (see .tags in shop.css).
+    var tags = [];
+    if (sold) tags.push(el('div', { cls: 'sticker', text: 'Sold out' }));
+    if (soon) tags.push(el('div', { cls: 'sticker soon', text: 'Coming soon' }));
+    if (p.demo) tags.push(SF.demoStamp());
+    if (tags.length) ph.appendChild(el('div', { cls: 'tags' + (tags.length > 1 ? ' two' : '') }, tags));
     var price;
     if (soon) price = el('div', { cls: 'pr', text: 'Coming soon' });
     else if (sold) price = el('div', { cls: 'pr', text: 'Sold out' });

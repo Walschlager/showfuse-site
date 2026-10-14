@@ -172,8 +172,8 @@
     return box;
   }
 
-  // The "DEMO" stamp over a demo item's photos (R1). size: '' (a card in the grid), 'big' (the product photo) or 'thumb'.
-  // The size classes are demo-big / demo-thumb: a plain "big" would pick up the product gallery's own .big rules.
+  // The small yellow "DEMO" tag on a demo item's photos, as in the app (R1). size: '' (a card in the grid), 'big' (the product
+  // photo) or 'thumb'. The size classes are demo-big / demo-thumb: a plain "big" would pick up the product gallery's own .big rules.
   function demoStamp(size) {
     return el('div', { cls: 'demo' + (size ? ' demo-' + size : ''), text: 'DEMO' });
   }

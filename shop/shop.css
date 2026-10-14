@@ -255,12 +255,17 @@ header .hdr .links a.bag b{display:inline-grid;place-items:center;min-width:18px
 .pc.sold .pr{color:var(--text3)}
 .pc .sticker{position:absolute;left:10px;top:10px;background:#0b0b0d;color:var(--paper);padding:6px 9px;font-weight:800;font-size:10.5px;letter-spacing:2px;text-transform:uppercase}
 .pc .sticker.soon{background:var(--accent);color:var(--ink)}
-/* "DEMO" over a demo item's photos: a boxed word, turned a little, readable on a dark or a light picture */
-.demo{position:absolute;left:50%;top:50%;z-index:2;transform:translate(-50%,-50%) rotate(-12deg);pointer-events:none;white-space:nowrap;
-  font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:34px;line-height:1;letter-spacing:6px;color:#fff;
-  padding:7px 12px 7px 18px;border:3px solid #fff;background:rgba(17,16,19,.62)}
-.demo-big{font-size:64px;letter-spacing:12px;padding:12px 20px 12px 32px;border-width:5px}
-.demo-thumb{font-size:15px;letter-spacing:3px;padding:3px 5px 3px 8px;border-width:2px}
+/* "DEMO" on a demo item's photos: the app's own tag (a small yellow tag, ink letters, square corners) in the photo's top-right corner.
+   Sizes follow the app: 9 px on a card, 11 px on the product page's big photo; the thumbnails get a smaller one. */
+.demo{position:absolute;right:10px;top:10px;z-index:2;pointer-events:none;white-space:nowrap;background:var(--accent);color:var(--ink);
+  font-family:Outfit,system-ui,sans-serif;font-weight:800;font-size:9px;line-height:1.2;letter-spacing:1.8px;text-transform:uppercase;padding:3px 7px}
+.demo-big{font-size:11px;letter-spacing:2.2px;padding:5px 10px}
+.demo-thumb{right:4px;top:4px;font-size:7px;letter-spacing:1.2px;padding:2px 4px}
+/* The tags over a card's photo sit in one row: Sold out or Coming soon at the left, DEMO at the right. They never overlap:
+   on a card too narrow for both, DEMO drops to a second row (still at the right). A card with a single tag looks as it always did. */
+.pc .tags{position:absolute;left:10px;right:10px;top:10px;display:flex;flex-wrap:wrap;gap:4px 6px;align-items:flex-start;pointer-events:none}
+.pc .tags .sticker{position:static}
+.pc .tags .demo{position:static;margin-left:auto}
 
 /* a product */
 .pdp{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:44px;align-items:start}
@@ -380,6 +385,13 @@ header .hdr .links a.bag b{display:inline-grid;place-items:center;min-width:18px
   .lines .ln{grid-template-columns:60px minmax(0,1fr);gap:12px}
   .lines .ln .amt{grid-column:2}
   .lines .ph{width:60px;height:60px}
-  .pc .demo{font-size:26px;letter-spacing:5px;padding:5px 9px 5px 14px;border-width:2px}
-  .demo-big{font-size:52px;letter-spacing:10px;padding:10px 16px 10px 26px;border-width:4px}
+  /* A card with two tags (Sold out or Coming soon, and DEMO): a little smaller, so both fit in one row on a phone. */
+  .pc .tags.two{left:8px;right:8px;top:8px}
+  .pc .tags.two .sticker{font-size:9px;letter-spacing:1.4px;padding:5px 7px}
+}
+/* ...and on the narrowest phones (an iPhone SE is 375 wide) a touch smaller again. Below about 350 DEMO drops to a second row. */
+@media (max-width:400px){
+  .pc .tags.two{gap:3px}
+  .pc .tags.two .sticker{font-size:8.5px;letter-spacing:1px;padding:4px 6px}
+  .pc .tags.two .demo{letter-spacing:1.2px;padding:3px 5px}
 }
