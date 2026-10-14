@@ -84,8 +84,8 @@
     var grid = el('div', { cls: 'pgrid' });
     products.forEach(function (p, i) { grid.appendChild(card(p, cfg, i)); });
     // Showcase: the shop can be looked at and nothing can be bought, so no words about shipping or a bag. The note is the app's
-    // line for this state ("Nothing is for sale yet. Tap I WANT THIS on what you'd wear."), with "in the ShowFuse app" added:
-    // the I WANT THIS button is the app's, this website has none, so it must not tell anyone to tap one here.
+    // line for this state, except that its second sentence says where the I WANT THIS button is (in the ShowFuse app): the
+    // button is the app's, this website has none, so it must not tell anyone to tap one here.
     var intro = cfg.showcase
       ? [el('p', { cls: 'lede', text: 'Hoodies, tees and hats from ShowFuse.' }),
          el('div', { cls: 'shipnote' }, [el('div', null, [
