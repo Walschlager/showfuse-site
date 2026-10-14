@@ -18,6 +18,9 @@
              invite code SF-7Q2K-9XM4 works, anything else is refused
              a screenshot named fail… is refused · DM codes look like SF-K7Q2M
    Add me    Spotify: https://open.spotify.com/… or spotify:artist:<22 letters/digits>
+   Freeze    /account/freeze/?fake=1 and /get-back-in/?fake=1: any email, the code is 123456 (000000 expired, 999999 too many tries)
+             limit@… too many codes · get back in: reviewer@… a reviewer froze it · closing@… waiting to be deleted · open@… not frozen
+             freeze: frozen@… already frozen · password for get back in: 8 or more characters
    Links     /claim/?fake=1#invite=good | existing | owner | venue | used | expired | claimed | (else invalid)
              /claim/?fake=1#status=submitted | asked | approved | rejected | superseded | expired | report | (else bad)
              /freeze/?fake=1#t=good | noname | (else used or expired, like the server)
@@ -256,6 +259,37 @@
       if (b.token === 'good') return reply(200, { ok: true, artist_name: 'Tsunoki' });
       if (b.token === 'done') return fail(409, 'hold_done', 'That change already happened or was stopped. Email info@showfuseapp.com.');
       return fail(410, 'link_expired', 'This link was already used or expired. Email info@showfuseapp.com if you need help.');
+    }
+    // Freeze yourself / get back in (build 13): a code we email, then the page's own taps. Code 123456 works.
+    if (method === 'POST' && (path === '/v1/account/freeze/code' || path === '/v1/account/get-back-in/code')) {
+      if ((f = bot(b))) return f;
+      if (!b.email) return fail(400, 'invalid_request', 'Type your email.');
+      if (/^limit@/i.test(b.email)) return fail(400, 'too_many_codes', 'Too many codes for now. Try again in 15 minutes.');
+      console.info('[dev-fake] code sent to', b.email, '(the code is 123456)');
+      return reply(202, { ok: true });
+    }
+    if (method === 'POST' && (path === '/v1/account/freeze/verify' || path === '/v1/account/get-back-in/verify')) {
+      if (!b || !b.email) return fail(400, 'invalid_request', 'Type your email.');
+      if (b.code === '000000') return fail(400, 'code_expired', 'That code expired. Send a new one.');
+      if (b.code === '999999') return fail(400, 'too_many_tries', 'Too many tries on that code. Send a new one.');
+      if (b.code !== '123456') return fail(400, 'wrong_code', 'That code doesn’t match. 4 tries left.');
+      var back = path === '/v1/account/get-back-in/verify';
+      if (back && /^reviewer@/i.test(b.email)) return fail(403, 'frozen_by_reviewer', 'A reviewer froze this account, so it can’t be unfrozen here. Email info@showfuseapp.com to appeal.');
+      if (back && /^closing@/i.test(b.email)) return fail(409, 'closing', 'This account is set to be deleted on Oct 20. Open ShowFuse and sign in to keep it.');
+      if (back && /^open@/i.test(b.email)) return fail(409, 'not_frozen', 'This account isn’t frozen.');
+      if (!back && /^frozen@/i.test(b.email)) return fail(409, 'already_frozen', 'This account is already frozen.');
+      return reply(200, { ok: true, token: back ? 'fake-back-in' : 'fake-freeze-session', email: mask(b.email) });
+    }
+    if (method === 'POST' && path === '/v1/account/freeze/confirm') {
+      if (!b || b.token !== 'fake-freeze-session') return fail(410, 'freeze_session_expired', 'This page timed out. Sign in again to freeze your account.');
+      console.info('[dev-fake] frozen');
+      return reply(200, { ok: true });
+    }
+    if (method === 'POST' && path === '/v1/account/get-back-in/finish') {
+      if (!b || b.token !== 'fake-back-in') return fail(410, 'back_in_expired', 'This page timed out. Start again to get back in.');
+      if (typeof b.password !== 'string' || b.password.length < 8) return fail(400, 'invalid_password', 'Use at least 8 characters.');
+      console.info('[dev-fake] unfrozen with a new password');
+      return reply(200, { ok: true });
     }
     return fail(404, 'not_found', 'Route not found.');
   }

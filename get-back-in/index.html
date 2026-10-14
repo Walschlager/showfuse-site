@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src https://showfuse-api-production.up.railway.app http://localhost:3000; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<title>Get back in · ShowFuse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/claim/claim.css">
+<script src="/claim/common.js" defer></script>
+<script src="/claim/steps.js" defer></script>
+<script src="/get-back-in/get-back-in.js" defer></script>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+<header><div class="wrap hdr">
+  <a href="/" aria-label="ShowFuse home"><span class="headmark" aria-hidden="true"></span></a>
+  <a class="help" href="mailto:info@showfuseapp.com?subject=Help%20getting%20back%20into%20my%20ShowFuse%20account">Need help?</a>
+</div></header>
+
+<main class="wrap">
+  <noscript><p class="note">This page needs JavaScript. Turn it on and reload, or email <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a> and we'll help you right away.</p></noscript>
+
+  <!-- 1 · Confirm your email -->
+  <section id="g-email">
+    <ol class="prog" aria-label="Your progress">
+      <li class="now"><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Confirm your email</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Choose a new password</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Back in</span></span></li>
+    </ol>
+    <div class="kicker">Frozen account</div>
+    <h1 tabindex="-1">Get back in</h1>
+    <p class="lede">Froze your account? Prove it's you with a code we email you, then pick a new password. It takes a minute.</p>
+    <form id="emailForm" novalidate>
+      <div class="field"><label for="email">Your account email</label>
+        <input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required></div>
+      <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+      <button class="btn" type="submit" id="emailBtn">Email me a code</button>
+      <div class="err" id="emailErr" role="alert"></div>
+    </form>
+    <p class="fine">Can't get in this way, or didn't freeze it? Email <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a> and we'll look at it.</p>
+  </section>
+
+  <section id="g-code" hidden>
+    <ol class="prog" aria-label="Your progress">
+      <li class="now"><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Confirm your email</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Choose a new password</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Back in</span></span></li>
+    </ol>
+    <h1 tabindex="-1">Check your inbox</h1>
+    <p class="lede">We emailed a 6-digit code to <b id="codeTo"></b>.</p>
+    <form id="codeForm" novalidate>
+      <div class="field"><label for="code">Your code</label>
+        <input id="code" class="codein" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="12" spellcheck="false"></div>
+      <button class="btn" type="submit" id="codeBtn">Confirm my email</button>
+      <div class="err" id="codeErr" role="alert"></div>
+    </form>
+    <p class="fine">No email? Check your spam folder. <button class="link" type="button" id="resend">Send again</button> · <button class="link" type="button" id="different">Use a different email</button></p>
+  </section>
+
+  <!-- 2 · A new password -->
+  <section id="g-pass" hidden>
+    <ol class="prog" aria-label="Your progress">
+      <li class="done"><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Confirm your email</span></span></li>
+      <li class="now"><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Choose a new password</span></span></li>
+      <li><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Back in</span></span></li>
+    </ol>
+    <h1 tabindex="-1">Choose a new password</h1>
+    <p class="ok" id="confirmed"></p>
+    <p class="lede">Everyone was signed out when you froze the account. A new password keeps it that way. The old one stops working.</p>
+    <form id="passForm" novalidate>
+      <div class="field"><label for="p1">New password</label>
+        <input id="p1" type="password" autocomplete="new-password" maxlength="128"></div>
+      <p class="fine" style="margin-top:8px"><span class="strength weak" id="strength">Too short</span>&nbsp; At least 8 characters.</p>
+      <div class="field"><label for="p2">Type it again</label>
+        <input id="p2" type="password" autocomplete="new-password" maxlength="128"></div>
+      <button class="btn" type="submit" id="passBtn">Save it and unfreeze</button>
+      <div class="err" id="passErr" role="alert"></div>
+    </form>
+  </section>
+
+  <!-- 3 · Back in -->
+  <section id="g-done" hidden>
+    <ol class="prog" aria-label="Your progress">
+      <li class="done"><span class="bar"></span><span class="pt"><span class="pn">1</span><span class="pl">Confirm your email</span></span></li>
+      <li class="done"><span class="bar"></span><span class="pt"><span class="pn">2</span><span class="pl">Choose a new password</span></span></li>
+      <li class="done"><span class="bar"></span><span class="pt"><span class="pn">3</span><span class="pl">Back in</span></span></li>
+    </ol>
+    <div class="kicker">Done</div>
+    <h1 tabindex="-1">You're back in.</h1>
+    <p class="lede">Your account is unfrozen and your new password is set. Open ShowFuse and sign in.</p>
+    <ul class="track">
+      <li class="done"><span class="d"></span><span><b>Email confirmed</b><small id="doneEmail"></small></span></li>
+      <li class="done"><span class="d"></span><span><b>New password set</b><small>Everyone else stays signed out.</small></span></li>
+      <li class="now"><span class="d"></span><span><b>Sign in on your phone</b><small>Use your email and the new password.</small></span></li>
+    </ul>
+    <p class="fine">Not you? Email <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a> right away.</p>
+  </section>
+</main>
+
+<footer><div class="wrap"><a href="/">Home</a> · <a href="/faq.html">FAQ</a> · <a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy</a> · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a><br>
+  © 2026 ShowFuse. All rights reserved.
+</div></footer>
+</body>
+</html>
