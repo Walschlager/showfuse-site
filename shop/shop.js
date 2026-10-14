@@ -83,12 +83,13 @@
     var where = cfg.countries.map(SF.countryShort);
     var grid = el('div', { cls: 'pgrid' });
     products.forEach(function (p, i) { grid.appendChild(card(p, cfg, i)); });
-    // Showcase: the shop can be looked at and nothing can be bought, so no words about shipping or a bag.
+    // Showcase: the shop can be looked at and nothing can be bought, so no words about shipping or a bag. The note is the app's
+    // own line for this state ("Nothing is for sale yet. Tap I WANT THIS on what you'd wear.").
     var intro = cfg.showcase
       ? [el('p', { cls: 'lede', text: 'Hoodies, tees and hats from ShowFuse.' }),
          el('div', { cls: 'shipnote' }, [el('div', null, [
-           el('b', { text: 'Just looking for now.' }),
-           el('small', { text: 'Nothing can be bought yet.' })
+           el('b', { text: 'Nothing is for sale yet.' }),
+           el('small', { text: 'Tap I WANT THIS on what you\'d wear.' })
          ])])]
       : [el('p', { cls: 'lede', text: 'Hoodies, tees and hats from ShowFuse. We ship to ' + SF.joinList(where) + '.' }),
          el('div', { cls: 'shipnote' }, [el('div', null, [
