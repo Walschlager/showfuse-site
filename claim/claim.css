@@ -205,6 +205,9 @@ input[type=password]:focus{outline:none;border-color:var(--accent)}
 .btn.danger:hover{border-color:var(--stop)}
 .strength.ok{border-color:rgba(255,195,0,.55);color:var(--accent)}
 .strength.weak{border-color:rgba(255,71,87,.5);color:#FF6B72}
+/* two spacings those pages are drawn with. They were style="" attributes in the page; the pages' content policy allows no inline styles, so the browser threw them away (and logged an error). */
+.actions.after-track{margin-top:18px}
+.fine.snug{margin-top:8px}
 
 /* dev-fake badge (only shows with ?fake=1 on localhost) */
 .fakebadge{position:fixed;right:8px;bottom:8px;z-index:9;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;background:#5AD1FF;color:#0a0a0a;padding:3px 6px;pointer-events:none}
