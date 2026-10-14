@@ -378,10 +378,10 @@ header .hdr .links a.bag b{display:inline-grid;place-items:center;min-width:18px
 @media (max-width:760px){
   .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .pdp{grid-template-columns:minmax(0,1fr);gap:24px}
-  /* Exactly as in the approved phone mockups. NOTE: this shorthand also zeroes the top and bottom space of the
-     wide pages (shop, product, bag) on phones: content sits right under the header and on the footer line.
-     To give them back claim.css's space, use  padding-left:20px;padding-right:20px  here (proposal in the report). */
-  .wrap.wide{padding:0 20px}
+  /* The wide pages (shop, product, bag) get the same room on a phone as the claim pages: 20 px at the sides, 28 px above the
+     content and 56 px below it (those two come from main.wrap). The approved mockups had the shorthand  padding:0 20px  here,
+     which also zeroed the top and bottom space, so content sat right under the header and on the footer line (W1: fixed). */
+  .wrap.wide{padding-left:20px;padding-right:20px}
   header .hdr .links{gap:14px}
   .baggrid{grid-template-columns:minmax(0,1fr);gap:22px}
   .lines .ln{grid-template-columns:60px minmax(0,1fr);gap:12px}
