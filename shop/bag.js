@@ -271,9 +271,10 @@
 
     var off = blocked();
     // R3: an unticked box, just above Checkout. It is only ever sent when ticked.
-    var news = el('input', { type: 'checkbox', id: 'newsBox', 'data-k': 'news', disabled: S.co, on: { change: function (e) { S.news = !!e.target.checked; } } });
+    var news = el('input', { type: 'checkbox', id: 'newsBox', 'data-k': 'news', 'aria-describedby': 'newsNote', disabled: S.co, on: { change: function (e) { S.news = !!e.target.checked; } } });
     news.checked = S.news;
     parts.push(el('label', { cls: 'check', 'for': 'newsBox' }, [news, el('span', { text: 'Email me when new merch drops' })]));
+    parts.push(el('p', { cls: 'fine newsnote', id: 'newsNote', text: 'Unsubscribe any time.' }));
     // A screen reader that lands on the greyed-out Checkout is told which line is in the way.
     var stuck = bag.lines.filter(function (l) { return S.info[l.id] && S.info[l.id].problem; })[0];
     parts.push(el('button', {

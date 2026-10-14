@@ -346,6 +346,8 @@ header .hdr .links a.bag b{display:inline-grid;place-items:center;min-width:18px
 .summary .ln2.tot span:last-child{color:var(--accent);font-size:17px}
 .summary .polsum{margin-top:12px}
 .summary .check{margin-top:16px}
+/* "Unsubscribe any time." under the newsletter box, lined up with the box's words (22 px box + 12 px gap) */
+.summary .newsnote{margin:4px 0 0 34px}
 .summary .err{margin-top:14px}
 .summary .btn{margin-top:22px}
 .summary .btn.small{margin-top:12px}
