@@ -8,7 +8,11 @@
      localhost + ?fake=1             canned answers for every shop call from /shop/dev-fake.js,
                                      so the pages can be reviewed with no server
      localhost + ?fake=checkout      the API above for config, products and quote; canned answers
-                                     for checkout, cancel and order (so nothing can reach Stripe) */
+                                     for checkout, cancel and order (so nothing can reach Stripe)
+
+   The home page's and the support page's forms carry this same rule in their own script. The pages' content-security tag allows only
+   the real API (all the published site may reach), so on localhost the browser would block the other two; try the site with its dev
+   server (node _dev/serve.mjs), which allows them for localhost only. ?fake=1 needs no server and makes no calls. */
 (function () {
   'use strict';
 

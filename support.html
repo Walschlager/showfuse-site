@@ -55,7 +55,15 @@
 </main><footer><div class="wrap">ShowFuse · <a href="/faq">FAQ</a> · <a href="/support">Support</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a><br>© 2026 ShowFuse. All rights reserved.</div></footer>
 <script>
 (function(){
-  var API = 'https://showfuse-api-production.up.railway.app/v1/support';
+  // Where the form posts: the real API on the real site. Only a page opened on localhost may post anywhere else (the local API, or the practice
+  // server with ?api=practice), so trying the form while building never writes a real sign-up. The same rule as /shop/base.js.
+  var API = (function () {
+    var h = location.hostname;
+    if (h !== 'localhost' && h !== '127.0.0.1') return 'https://showfuse-api-production.up.railway.app/v1/support';
+    var m = /(?:^|[?&])api=([^&]*)/.exec(location.search), v = null;
+    try { v = m && decodeURIComponent(m[1]); } catch (e) { /* a bad escape: not a switch */ }
+    return (v === 'practice' ? 'https://showfuse-app-dev-staging.up.railway.app' : 'http://localhost:3000') + '/v1/support';
+  })();
   var form = document.getElementById('supportForm'), btn = document.getElementById('sendBtn'), err = document.getElementById('sendErr');
   var msg = document.getElementById('message'), count = document.getElementById('count');
   var loaded = Date.now();

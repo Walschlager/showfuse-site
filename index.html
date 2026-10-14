@@ -150,7 +150,15 @@
 </div></footer>
 <script>
 (function(){
-  var API = 'https://showfuse-api-production.up.railway.app/v1/waitlist';
+  // Where the form posts: the real API on the real site. Only a page opened on localhost may post anywhere else (the local API, or the practice
+  // server with ?api=practice), so trying the form while building never writes a real sign-up. The same rule as /shop/base.js.
+  var API = (function () {
+    var h = location.hostname;
+    if (h !== 'localhost' && h !== '127.0.0.1') return 'https://showfuse-api-production.up.railway.app/v1/waitlist';
+    var m = /(?:^|[?&])api=([^&]*)/.exec(location.search), v = null;
+    try { v = m && decodeURIComponent(m[1]); } catch (e) { /* a bad escape: not a switch */ }
+    return (v === 'practice' ? 'https://showfuse-app-dev-staging.up.railway.app' : 'http://localhost:3000') + '/v1/waitlist';
+  })();
   var form = document.getElementById('joinForm'), btn = document.getElementById('joinBtn'), err = document.getElementById('joinErr');
   var loaded = Date.now();
   function fail(msg){ err.textContent = msg; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Put me on the list'; }

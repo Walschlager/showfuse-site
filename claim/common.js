@@ -8,6 +8,7 @@
   var host = location.hostname;
   var local = host === 'localhost' || host === '127.0.0.1';
   var fake = local && /(?:^|[?&])fake=1(?:&|$)/.test(location.search);
+  // (On localhost the page's content-security tag lets the local API through only when the site is served by _dev/serve.mjs.)
   var API = local ? 'http://localhost:3000' : 'https://showfuse-api-production.up.railway.app';
   var MIN_MS = 2600; // the server wants t >= 2500 ms on the page
 
