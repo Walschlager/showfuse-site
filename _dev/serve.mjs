@@ -4,7 +4,7 @@
      node _dev/serve.mjs 8080     the site on another port
 
    It serves this folder the way GitHub Pages does (/support finds support.html, /shop/ finds shop/index.html, a missing page shows
-   404.html) and listens on this machine only. It is read-only: nothing it sends is stored.
+   404.html). It listens on this machine only, only reads (GET and HEAD), and tells the browser to keep nothing.
 
    WHY IT EXISTS. The pages that talk to the API carry a content-security tag, and that tag allows ONLY the real API
    (https://showfuse-api-production.up.railway.app), because that is all visitors on showfuseapp.com may reach. Testing on your own machine
