@@ -80,8 +80,9 @@
   });
 })();
 
-// "Merch or an order" is offered only while the shop is visible (GET /v1/shop/config says visible: true).
-// If the answer is anything else, or never comes, the topic stays out. This runs after the form code above and
+// "Merch or an order" is offered only while the store is Open (GET /v1/shop/config says mode: "open" and visible: true).
+// While it only shows items (mode "showcase") nothing can be ordered, so the topic stays out. If the answer is anything
+// else, or never comes, the topic stays out too. This runs after the form code above and
 // never waits for anything the form needs: /shop/base.js (which picks the same API as the shop pages) is loaded
 // on the side, so a slow or missing file can't hold the form back.
 (function(){
@@ -94,7 +95,7 @@
       B.ready.then(function(){
         return fetch(B.api + '/v1/shop/config', { headers: { Accept: 'application/json' }, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' });
       }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
-        if (!j || j.visible !== true) return;
+        if (!j || j.visible !== true || j.mode !== 'open') return;
         var sel = document.getElementById('topic'), other = sel && sel.querySelector('option[value="other"]');
         if (!sel || !other || sel.querySelector('option[value="merch"]')) return;
         var opt = document.createElement('option');
