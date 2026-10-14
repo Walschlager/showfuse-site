@@ -348,7 +348,7 @@
     [
       el('div', { cls: 'kicker', text: 'ShowFuse merch' }),
       el('h1', { tabindex: '-1', text: 'Buying isn\'t open yet.' }),
-      el('p', { cls: 'lede', text: 'You can look around the shop. Nothing can be bought yet.' }),
+      el('p', { cls: 'lede', text: 'Nothing is for sale yet. You can look around the shop.' }),
       el('a', { cls: 'btn small ghost', href: SF.href('/shop/'), text: 'Back to the shop' })
     ].forEach(function (n) { view.appendChild(n); });
     SF.renderNav(S.cfg, { here: 'bag' });
