@@ -92,9 +92,9 @@
            el('b', { text: 'Ships to ' + where.join(' + ') + '.' }),
            el('small', { text: 'Prices are in US dollars. Shipping is worked out in your bag.' })
          ])])];
+    // The heading is the page's name, so there is no small "ShowFuse merch" line above it (it would only say the same thing).
     put([
-      el('div', { cls: 'kicker', text: 'ShowFuse merch' }),
-      el('h1', { tabindex: '-1', text: 'Wear the fuse.' })
+      el('h1', { tabindex: '-1', text: 'ShowFuse merch' })
     ].concat(intro, [grid]));
   }
 
