@@ -1,0 +1,4 @@
+# GitHub Pages builds this site with Jekyll, which skips folders that start with a dot.
+# Publish .well-known so https://showfuseapp.com/.well-known/security.txt works (where to report a security problem).
+include:
+  - .well-known
