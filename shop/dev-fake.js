@@ -15,7 +15,9 @@
    shop=showcase    mode "showcase": the shop can be looked at, nothing can be bought (no Bag link, no Add to bag, no Checkout)
    shop=showcasemin the same, but config is only { mode, open: false, visible: true }
    shop=nomode      an older server: config has no "mode" at all (open + visible still decide)
-   shop=nofinal     a 13.2-shaped server: products and bag lines carry no "final_sale" field at all, so no FINAL SALE tag shows
+   shop=v132        a 13.2-shaped server: no "returns" block in the config and no "final_sale" anywhere, so the bag and the product page keep their old
+                    returns words and nothing says final sale (shop=nofinal and shop=noreturns are the two halves of it)
+   days=15          the store's return window setting is 15 (default 30): the bag and the product page say "Returns within 15 days of shipping..." 
    shop=weirdmode   config says mode "sale", open and visible: a mode the page doesn't know, so it stays closed
    (final sale, build 14: like the practice server, the Sticker Pack and the Pin Set are final sale; every other item is not.
     /shop/p/?s=s01_sticker_pack and /shop/p/?s=p01_pin_set show the tag; the bag shows it on those lines)
@@ -50,7 +52,7 @@
    ret=rate (429 rate_limited)   ret=toofast (400 too_fast)   ret=rejected (400)   ret=window (409 return_window_closed)   ret=final (409 final_sale)
    ret=nothing (409 nothing_to_return)   ret=toomany (409 too_many_open_returns)   ret=busy (503)   ret=slow (the request takes 3 seconds)
    ret=photo413 | photo415 | photomany | photolimit | photo429 | photo503   photo upload answers   ret=wrongstate (409 return_wrong_state on track/cancel)
-   shop=noreturns   config has no "returns" block (an older server, or the store off): the form falls back to the six standard reasons
+   shop=noreturns   config has no "returns" block (an older server, or the store off): the form falls back to the six standard reasons, and the old returns words show
 
    Product photos are /shop/dev-photos/<slug>.jpg. They are NOT in the site's files (the demo merch isn't
    public). Without them the pages show their quiet "no photo" blocks. */
@@ -68,6 +70,10 @@
     return m ? decodeURIComponent(m[1]) : '';
   }
   var SHOP = flag('shop'), TAX = flag('tax'), PAY = flag('pay'), CO = flag('co'), RET = flag('ret'), EVIL = flag('evil') === '1', DEMO = flag('demo');
+  // shop=v132 answers like the 13.2 server: no "returns" block in the config and no "final_sale" anywhere. shop=nofinal and shop=noreturns are the two halves.
+  var NOFINAL = SHOP === 'nofinal' || SHOP === 'v132', NORETURNS = SHOP === 'noreturns' || SHOP === 'v132';
+  // The store's return window, as the dashboard setting has it: 30 by default, ?days=15 for the other setting.
+  var WINDOW_DAYS = flag('days') === '15' ? 15 : 30;
   // ?evil=1 puts HTML and script-looking text in every server string (names, notes, messages, links, photo
   // addresses), to prove the pages show it as plain text and never run it. window.__pwned must stay unset.
   var n = 0;
@@ -144,7 +150,7 @@
     return {
       id: p.id, slug: p.slug, name: E(p.name), blurb: E(p.blurb), description: E(p.desc), price_cents: p.price, currency: 'USD',
       photos: photos.map(photoUrl), status: statusOf(p), buyable: !preview && !showcaseOn() && sellable(p) && any, demo: demo,
-      final_sale: SHOP === 'nofinal' ? undefined : !!p.final,
+      final_sale: NOFINAL ? undefined : !!p.final,
       sold_out: !any, sizes: sizes, shipping: shipping,
       ships_to: Object.keys(ZONES).filter(function (c) { return typeof p.ship[c] === 'number'; }), preview: !!preview
     };
@@ -212,7 +218,7 @@
       lines.push({
         variant_id: it.variant_id, product_id: v ? v.product.id : null, slug: v ? v.product.slug : null, name: v ? E(v.product.name) : '',
         label: v ? L(v.label) : '', sku: v ? v.sku : '', photo: v ? photoUrl(v.product.photos[0]) : null, qty: it.qty,
-        final_sale: SHOP === 'nofinal' ? undefined : !!(v && v.product.final),
+        final_sale: NOFINAL ? undefined : !!(v && v.product.final),
         unit_cents: unit, line_cents: unit * it.qty, left: v && v.stock <= LOW ? v.stock : null, problem: problem
       });
       if (problem) {
@@ -402,7 +408,7 @@
       approved_at: '2026-10-24T17:05:00.000Z', ship_by: '2026-11-08T07:59:59.999Z', ship_by_date: '2026-11-07',
       pays_return_shipping: buyerPays ? 'buyer' : 'shop', return_address: JSON.parse(JSON.stringify(ADDRESS)),
       shipping_note: E(buyerPays
-        ? 'You pay for return shipping. We refund the items you send back and the tax on them. The shipping you paid to get your order is not refunded.'
+        ? 'You pay return shipping. We refund the items you send back, not the original shipping.'
         : 'Because it arrived damaged, we\'re covering your return shipping. Pay for the postage, then add what you paid on your order page. We add it to your refund.')
     };
   }
@@ -628,7 +634,7 @@
         return { code: c, name: z.name, zone_id: z.id, zone: z.name, extra_item_cents: z.extra, delivery: z.delivery, note: z.note ? E(z.note) : null, excluded_regions: z.excluded };
       }),
       limits: { max_items: 10, max_qty_per_line: 5 }, low_stock_at: LOW,
-      returns: SHOP === 'noreturns' ? undefined : { window_days: 30, ship_within_days: 14, shipping_mode: 'buyer_unless_our_mistake', reasons: REASONS },
+      returns: NORETURNS ? undefined : { window_days: WINDOW_DAYS, ship_within_days: 14, shipping_mode: 'buyer_unless_our_mistake', reasons: REASONS },
       links: EVIL
         ? { shipping_returns: 'javascript:window.__pwned=5', terms_of_sale: 'https://evil.example/terms' }
         : { shipping_returns: 'https://showfuseapp.com/shipping-returns', terms_of_sale: 'https://showfuseapp.com/terms-of-sale' }

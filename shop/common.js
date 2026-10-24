@@ -539,6 +539,14 @@
     return out.length ? el('div', { cls: 'pol-links' + (mt ? ' ' + mt : '') }, out) : null;
   }
 
+  // Build 14: the approved short returns line, the same sentence the server builds (server/src/shop/returns-rules.ts, returnsSummary).
+  // The number is the store's own setting (config returns.window_days). A store whose answer has no returns block (13.2) gets null,
+  // and the page keeps the words it always had.
+  function returnsLine(cfg) {
+    var d = cfg && cfg.returns ? cfg.returns.windowDays : 0;
+    return d >= 1 ? 'Returns within ' + d + ' days of shipping. Ask first. Refunds after we receive and check the package. Final-sale items can\'t be returned.' : null;
+  }
+
   function focusHeading(root) {
     var h = root && root.querySelector('h1');
     if (h) { try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } }
@@ -579,7 +587,7 @@
     safeHttps: safeHttps, photo: photo, demoStamp: demoStamp, normalizeProduct: normalizeProduct, href: href,
     config: config, countryByCode: countryByCode, countryLabel: countryLabel, countryNote: countryNote,
     countryShort: countryShort, countryLong: countryLong,
-    renderNav: renderNav, renderFooter: renderFooter, policyLinks: policyLinks,
+    renderNav: renderNav, renderFooter: renderFooter, policyLinks: policyLinks, returnsLine: returnsLine,
     focusHeading: focusHeading, setTitle: setTitle, closedPage: closedPage, errorBlock: errorBlock
   };
 })();

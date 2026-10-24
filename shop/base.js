@@ -20,7 +20,7 @@
   var LOCAL = 'http://localhost:3000';
   var PRACTICE = 'https://showfuse-app-dev-staging.up.railway.app';
   // Dev switches that ride along on links between shop pages (localhost only).
-  var DEV_KEYS = ['fake', 'api', 'shop', 'tax', 'pay', 'co', 'ret', 'evil', 'nobadge', 'demo'];
+  var DEV_KEYS = ['fake', 'api', 'shop', 'tax', 'pay', 'co', 'ret', 'days', 'evil', 'nobadge', 'demo'];
 
   var host = location.hostname;
   var local = host === 'localhost' || host === '127.0.0.1';

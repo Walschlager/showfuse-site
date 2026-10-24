@@ -12,7 +12,9 @@
   var main = SF.$('main');
 
   var PROBLEMS = { sold_out: 1, short: 1, unavailable: 1, cant_ship_here: 1 };
-  var RETURNS = 'Problems are fully covered. One size exchange within 30 days (you pay return shipping). Otherwise final sale for the first run.';
+  // The words under the totals. Build 14 shows the approved short returns line (SF.returnsLine, from the store's setting); a server that
+  // sends no returns block (13.2) keeps these words as they were.
+  var OLD_RETURNS = 'Problems are fully covered. One size exchange within 30 days (you pay return shipping). Otherwise final sale for the first run.';
 
   var S = {
     cfg: null, country: '', info: {}, quote: null, shown: null,
@@ -267,7 +269,7 @@
       parts.push(totalsEl(bag));
     }
 
-    var words = el('div', { cls: 'polsum' }, [RETURNS]);
+    var words = el('div', { cls: 'polsum' }, [SF.returnsLine(cfg) || OLD_RETURNS]);
     var pl = SF.policyLinks(cfg);
     if (pl) words.appendChild(pl);
     parts.push(words);

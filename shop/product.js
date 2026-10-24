@@ -55,7 +55,9 @@
   }
 
   // "Packed within 3 business days; arrives in about 5 to 10 business days (US) or 7 to 14 business days (Canada).
-  //  Problems are fully covered; one size exchange within 30 days."
+  //  Returns within 30 days of shipping. Ask first. Refunds after we receive and check the package. Final-sale items can't be returned."
+  // The returns part is the approved short line (SF.returnsLine, the number from the store's setting). A server that sends no returns
+  // block (13.2) keeps "Problems are fully covered; one size exchange within 30 days." as it was.
   function shippingWords(cfg, p) {
     var to = cfg.countries.filter(function (c) { return p.shipsTo.indexOf(c.code) >= 0; });
     var lead = to.length >= 2 ? 'Ships to ' + SF.joinList(to.map(SF.countryShort)) + '. ' : '';
@@ -79,8 +81,9 @@
     }
     var first = bits.join('; ');
     if (first) first = first.charAt(0).toUpperCase() + first.slice(1) + '. ';
-    // A final-sale item says so (the approved words of the picker), instead of the one-size-exchange sentence that would contradict it.
-    return lead + first + (p.finalSale ? 'Final sale, so it can\'t be returned.' : 'Problems are fully covered; one size exchange within 30 days.');
+    // A final-sale item says so (the approved words of the picker), instead of the general line.
+    var tail = p.finalSale ? 'Final sale, so it can\'t be returned.' : (SF.returnsLine(cfg) || 'Problems are fully covered; one size exchange within 30 days.');
+    return lead + first + tail;
   }
 
   function showProduct(cfg, p) {
