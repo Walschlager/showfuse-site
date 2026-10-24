@@ -37,6 +37,18 @@
    Cancel link  /shop/cancelled/?n=SF-1042&t=fake-cancel | fake-cancel-again (opened a second time) | fake-paid-cancel (already paid)
                 | fake-pending-cancel | anything else: not found
 
+   Returns (build 14, docs/BUILD_14_API_CONTRACT.md). The demo order SF-1002 is a shipped order of a Fuse Hoodie, two Pro Beanies and a Pro Tee
+   (final sale), $168.50, shipped Oct 16 with the return window open until Nov 15. One order link per state:
+   t=fake-ret-none (can be returned, no request yet) | fake-ret-requested | fake-ret-approved (our mistake, we pay) | fake-ret-approved-buyer (they pay)
+   | fake-ret-shipped | fake-ret-received | fake-ret-problem | fake-ret-refunded | fake-ret-custom (refunded, one typed amount) | fake-ret-declined
+   | fake-ret-cancelled | fake-ret-expired | fake-ret-closed | fake-ret-two (two requests) | fake-ret-final (SF-1031: everything final sale)
+   | fake-ret-window (closed Nov 15) | fake-ret-unshipped (paid, not shipped)
+   Everything on the request routes works in this page's life: ask, add photos, track, cancel. The orders above change as you go.
+   ret=rate (429 rate_limited)   ret=toofast (400 too_fast)   ret=rejected (400)   ret=window (409 return_window_closed)   ret=final (409 final_sale)
+   ret=nothing (409 nothing_to_return)   ret=toomany (409 too_many_open_returns)   ret=busy (503)   ret=slow (the request takes 3 seconds)
+   ret=photo413 | photo415 | photomany | photolimit | photo429 | photo503   photo upload answers   ret=wrongstate (409 return_wrong_state on track/cancel)
+   shop=noreturns   config has no "returns" block (an older server, or the store off): the form falls back to the six standard reasons
+
    Product photos are /shop/dev-photos/<slug>.jpg. They are NOT in the site's files (the demo merch isn't
    public). Without them the pages show their quiet "no photo" blocks. */
 (function () {
@@ -52,7 +64,7 @@
     var m = new RegExp('(?:^|[?&])' + name + '=([^&]*)').exec(location.search);
     return m ? decodeURIComponent(m[1]) : '';
   }
-  var SHOP = flag('shop'), TAX = flag('tax'), PAY = flag('pay'), CO = flag('co'), EVIL = flag('evil') === '1', DEMO = flag('demo');
+  var SHOP = flag('shop'), TAX = flag('tax'), PAY = flag('pay'), CO = flag('co'), RET = flag('ret'), EVIL = flag('evil') === '1', DEMO = flag('demo');
   // ?evil=1 puts HTML and script-looking text in every server string (names, notes, messages, links, photo
   // addresses), to prove the pages show it as plain text and never run it. window.__pwned must stay unset.
   var n = 0;
@@ -326,10 +338,269 @@
     var n = params.get('n'), t = params.get('t');
     if (!/^SF-\d{3,9}$/.test(n || '') || !t) return fail(404, 'not_found', 'We couldn\'t find that order.');
     if (t === 'fake-fail') return fail(503, 'unavailable', 'Something went wrong on our side. Try again in a minute.');
+    if (/^fake-ret-/.test(t)) return retKnown(t) ? reply(200, retOrder(n, t)) : fail(404, 'not_found', 'We couldn\'t find that order.');
     if (['fake-paid', 'fake-pending', 'fake-shipped', 'fake-refunded', 'fake-expired', 'fake-canada', 'fake-slow'].indexOf(t) < 0) {
       return fail(404, 'not_found', 'We couldn\'t find that order.');
     }
     return reply(200, orderView(n, t), t === 'fake-slow' ? 4000 : undefined);
+  }
+
+  // ---------- returns (build 14) ----------
+  // The same rules as the server's (docs/BUILD_14_API_CONTRACT.md, sections 2 to 5), kept in memory for this page's life.
+  var REASONS = [
+    { code: 'wrong_size', label: 'Wrong size', our_mistake: false, photos: false },
+    { code: 'damaged_defective', label: 'Damaged or defective', our_mistake: true, photos: true },
+    { code: 'wrong_item', label: 'Wrong item sent', our_mistake: true, photos: true },
+    { code: 'not_as_expected', label: 'Not as expected', our_mistake: false, photos: false },
+    { code: 'changed_mind', label: 'Changed my mind', our_mistake: false, photos: false },
+    { code: 'other', label: 'Other', our_mistake: false, photos: false }
+  ];
+  function reasonOf(code) { for (var i = 0; i < REASONS.length; i++) if (REASONS[i].code === code) return REASONS[i]; return null; }
+  var LIVE = { requested: 1, approved: 1, shipped_back: 1, received: 1, refunded: 1 };   // statuses that hold units
+  var STATUS_LABEL = { requested: 'Requested', approved: 'Approved', shipped_back: 'Shipped back', received: 'Received', refunded: 'Refunded', declined: 'Declined', cancelled: 'Cancelled', expired: 'Expired', closed: 'Closed' };
+
+  // SF-1002: the demo order of the returns mockup. SF-1031: everything final sale.
+  var HOODIE = 'a1b2c3d4-0001-4000-8000-000000000001', BEANIE = 'a1b2c3d4-0001-4000-8000-000000000002', TEE = 'a1b2c3d4-0001-4000-8000-000000000003';
+  var RET_LINES = [
+    { id: HOODIE, name: 'Fuse Hoodie', label: 'M', qty: 1, unit: 6500, photo: 'm_hoodie', fs: false },
+    { id: BEANIE, name: 'Pro Beanie', label: 'One size', qty: 2, unit: 2800, photo: 'm_beanie', fs: false },
+    { id: TEE, name: 'Pro Tee', label: 'M', qty: 1, unit: 3400, photo: 'm_tee_pro', fs: true }
+  ];
+  var FINAL_LINES = [{ id: TEE, name: 'Pro Tee', label: 'M', qty: 1, unit: 3400, photo: 'm_tee_pro', fs: true }];
+  var ADDRESS = { name: 'ShowFuse Returns, c/o Demo Fulfillment Co.', line1: '1200 Example Way', line2: null, city: 'Reno', state: 'NV', postal_code: '89501', country: 'US' };
+
+  function itemOf(id, qty, received) {
+    var l = RET_LINES.filter(function (x) { return x.id === id; })[0];
+    return { id: id, name: E(l.name), label: L(l.label), qty: qty, received_qty: received === undefined ? null : received, photo: photoUrl(l.photo) };
+  }
+  // A return, with the mockup's RET-0007 as the starting point; over changes it.
+  function mkReturn(number, status, over) {
+    var r = {
+      number: number, status: status, status_label: STATUS_LABEL[status], reason: 'damaged_defective', reason_label: 'Damaged or defective', our_mistake: true,
+      note: E('The seam on the left sleeve came apart the first time I tried it on.'), photo_count: 1, items: [itemOf(HOODIE, 1)],
+      requested_at: '2026-10-24T16:41:00.000Z', approved_at: null, declined_at: null, received_at: null, refunded_at: null, ship_by: null, ship_by_date: null,
+      pays_return_shipping: null, shipping_note: null, return_address: null, tracking: null, postage_cents: null, decline_reason: null, closed_note: null,
+      check: null, refund: null, can_cancel: status === 'requested' || status === 'approved', can_add_tracking: status === 'approved' || status === 'shipped_back', currency: 'USD'
+    };
+    Object.keys(over || {}).forEach(function (k) { r[k] = over[k]; });
+    r.can_cancel = status === 'requested' || status === 'approved';
+    r.can_add_tracking = status === 'approved' || status === 'shipped_back';
+    return r;
+  }
+  function approvedBits(buyerPays) {
+    return {
+      approved_at: '2026-10-24T17:05:00.000Z', ship_by: '2026-11-08T07:59:59.999Z', ship_by_date: '2026-11-07',
+      pays_return_shipping: buyerPays ? 'buyer' : 'shop', return_address: JSON.parse(JSON.stringify(ADDRESS)),
+      shipping_note: E(buyerPays
+        ? 'You pay for return shipping. We refund the items you send back and the tax on them. The shipping you paid to get your order is not refunded.'
+        : 'Because it arrived damaged, we\'re covering your return shipping. Pay for the postage, then add what you paid on your order page. We add it to your refund.')
+    };
+  }
+  function beanieReturn(number, status) {
+    return mkReturn(number, status, { reason: 'changed_mind', reason_label: 'Changed my mind', our_mistake: false, note: E('Not my style.'), photo_count: 0, items: [itemOf(BEANIE, 2)] });
+  }
+  var SENT = { carrier: 'USPS', number: '9400111899223344559900', added_at: '2026-10-28T21:12:00.000Z' };
+  function seedReturns(t) {
+    var A = approvedBits(false);
+    function plus(r, bits) { Object.keys(bits).forEach(function (k) { r[k] = bits[k]; }); return r; }
+    if (t === 'fake-ret-requested') return [mkReturn('RET-0007', 'requested')];
+    if (t === 'fake-ret-approved') return [mkReturn('RET-0007', 'approved', A)];
+    if (t === 'fake-ret-approved-buyer') return [plus(beanieReturn('RET-0008', 'approved'), approvedBits(true))];
+    if (t === 'fake-ret-shipped') return [mkReturn('RET-0007', 'shipped_back', plus(A, { tracking: { carrier: E(SENT.carrier), number: E(SENT.number), added_at: SENT.added_at }, postage_cents: 840 }))];
+    var recv = plus(plus({}, A), { tracking: { carrier: SENT.carrier, number: SENT.number, added_at: SENT.added_at }, postage_cents: 840, received_at: '2026-11-02T19:30:00.000Z', items: [itemOf(HOODIE, 1, 1)] });
+    if (t === 'fake-ret-received') return [mkReturn('RET-0007', 'received', plus(recv, { check: { condition: 'ok', note: null } }))];
+    if (t === 'fake-ret-problem') return [mkReturn('RET-0007', 'received', plus(recv, { check: { condition: 'problem', note: E('The cuff has a stain and the tags were cut off.') } }))];
+    if (t === 'fake-ret-refunded') {
+      return [mkReturn('RET-0007', 'refunded', plus(recv, { check: { condition: 'ok', note: null }, refunded_at: '2026-11-02T22:10:00.000Z',
+        refund: { amount_cents: 8690, refunded_at: '2026-11-02T22:10:00.000Z', items_cents: 6500, tax_cents: 0, shipping_cents: 1350, postage_cents: 840, custom: false, currency: 'USD' } }))];
+    }
+    if (t === 'fake-ret-custom') {
+      return [mkReturn('RET-0007', 'refunded', plus(recv, { check: { condition: 'ok', note: null }, refunded_at: '2026-11-02T22:10:00.000Z',
+        refund: { amount_cents: 5000, refunded_at: '2026-11-02T22:10:00.000Z', items_cents: null, tax_cents: null, shipping_cents: null, postage_cents: null, custom: true, currency: 'USD' } }))];
+    }
+    if (t === 'fake-ret-declined') {
+      return [mkReturn('RET-0007', 'declined', { declined_at: '2026-10-24T17:05:00.000Z',
+        decline_reason: E('Thanks for the photo. We can\'t see the damage you described, so we can\'t approve this one. If you have a clearer photo, send it and we\'ll look again.') })];
+    }
+    if (t === 'fake-ret-cancelled') return [mkReturn('RET-0007', 'cancelled')];
+    if (t === 'fake-ret-expired') return [mkReturn('RET-0007', 'expired', plus(plus({}, A), { approved_at: '2026-09-20T17:05:00.000Z', ship_by: '2026-10-05T06:59:59.999Z', ship_by_date: '2026-10-04' }))];
+    if (t === 'fake-ret-closed') {
+      return [mkReturn('RET-0007', 'closed', plus(recv, { check: { condition: 'problem', note: E('The hem stitching is cut and there is a stain.') },
+        closed_note: E('Hem stitching is cut and there is a stain, so there is nothing we can refund.') }))];
+    }
+    if (t === 'fake-ret-two') {
+      var done = mkReturn('RET-0007', 'refunded', plus(recv, { check: { condition: 'ok', note: null }, refunded_at: '2026-11-02T22:10:00.000Z',
+        refund: { amount_cents: 8690, refunded_at: '2026-11-02T22:10:00.000Z', items_cents: 6500, tax_cents: 0, shipping_cents: 1350, postage_cents: 840, custom: false, currency: 'USD' } }));
+      return [beanieReturn('RET-0009', 'requested'), done];
+    }
+    return [];
+  }
+  var RET_TOKENS = ['none', 'requested', 'approved', 'approved-buyer', 'shipped', 'received', 'problem', 'refunded', 'custom', 'declined', 'cancelled', 'expired', 'closed', 'two', 'final', 'window', 'unshipped'];
+  function retKnown(t) { return RET_TOKENS.indexOf(String(t).replace(/^fake-ret-/, '')) >= 0; }
+  var RETSTATE = {};
+  function retState(t) {
+    if (!RETSTATE[t]) RETSTATE[t] = { returns: seedReturns(t), made: {}, photos: [], nextNo: 12 };
+    return RETSTATE[t];
+  }
+  function retLines(t) { return t === 'fake-ret-final' ? FINAL_LINES : RET_LINES; }
+  function leftOf(t, line) {
+    var used = 0;
+    retState(t).returns.forEach(function (r) {
+      if (!LIVE[r.status]) return;
+      r.items.forEach(function (i) { if (i.id === line.id) used += i.qty; });
+    });
+    return Math.max(0, line.qty - used);
+  }
+
+  function retOrder(number, t) {
+    var st = retState(t), lines = retLines(t), final = t === 'fake-ret-final';
+    var shipped = t !== 'fake-ret-unshipped', windowOpen = t !== 'fake-ret-window';
+    var items = lines.map(function (l) {
+      return { id: l.id, name: E(l.name), label: L(l.label), qty: l.qty, unit_cents: l.unit, photo: photoUrl(l.photo), final_sale: l.fs, returnable_qty: leftOf(t, l) };
+    });
+    var left = items.some(function (i) { return i.returnable_qty > 0; });
+    var leftOpen = items.some(function (i) { return i.returnable_qty > 0 && !i.final_sale; });
+    var closedWhy = !shipped ? 'not_shipped' : !windowOpen ? 'window' : !left ? 'nothing_left' : !leftOpen ? 'final_sale' : null;
+    var refunded = 0;
+    st.returns.forEach(function (r) { if (r.refund) refunded += r.refund.amount_cents; });
+    var subtotal = lines.reduce(function (n, l) { return n + l.qty * l.unit; }, 0), ship = final ? 500 : 1350;
+    var o = {
+      number: number, status: shipped ? 'shipped' : 'paid', placed_at: '2026-10-14T16:21:03.000Z', paid_at: '2026-10-14T16:22:40.000Z',
+      shipped_at: shipped ? (final ? '2026-10-21T11:08:00.000Z' : '2026-10-16T18:08:00.000Z') : null,
+      country: 'US', city: 'Detroit', region: 'MI', items: items, subtotal_cents: subtotal, shipping_cents: ship, tax_cents: 0, total_cents: subtotal + ship,
+      refunded_cents: refunded, currency: 'USD', test_mode: false,
+      tracking: shipped ? { carrier: 'USPS', number: final ? '9400111899223344557788' : '9400111899223344556677',
+        url: 'https://tools.usps.com/go/TrackConfirmAction?tLabels=' + (final ? '9400111899223344557788' : '9400111899223344556677') } : null,
+      return_window_days: 30, return_by: shipped ? '2026-11-16T07:59:59.999Z' : null, return_by_date: shipped ? (final ? '2026-11-20' : '2026-11-15') : null,
+      can_return: closedWhy === null, can_report_problem: shipped && windowOpen && left, return_closed: closedWhy,
+      returns: st.returns.map(function (r) { return JSON.parse(JSON.stringify(r)); })
+    };
+    if (final && !windowOpen) o.can_report_problem = false;
+    return o;
+  }
+
+  // ---- the request routes (guest: ?n=&t= in the query, the bot checks in the body) ----
+  var UUIDRE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+  function guestToken(params) {
+    var n = params.get('n'), t = params.get('t');
+    if (!/^SF-\d{3,9}$/.test(n || '') || !/^fake-ret-/.test(t || '') || !retKnown(t)) return null;
+    return t;
+  }
+  function botCheck(b) {
+    if (!b || typeof b !== 'object') return fail(400, 'invalid_request', 'Invalid request.');
+    if (RET === 'rejected' || b.website) return fail(400, 'rejected', 'We couldn\'t send that. Reload the page and try again.');
+    if (RET === 'toofast' || typeof b.t !== 'number' || b.t < 2500 || b.t > 86400000) return fail(400, 'too_fast', 'Give the page a second and try again.');
+    if (RET === 'rate') return fail(429, 'rate_limited', 'Too many requests from your network. Wait a minute and try again.');
+    return null;
+  }
+  function pretty(ymd) { var m = /^\d{4}-(\d{2})-(\d{2})$/.exec(ymd); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[1] - 1] + ' ' + (+m[2]); }
+
+  function retCreate(params, b) {
+    var t = guestToken(params);
+    if (!t) return fail(404, 'not_found', 'We couldn\'t find that order.');
+    var bad = botCheck(b);
+    if (bad) return bad;
+    var st = retState(t), lines = retLines(t);
+    if (typeof b.request_id !== 'string' || !/^[A-Za-z0-9_-]{8,80}$/.test(b.request_id)) return fail(400, 'invalid_request', 'That request id isn\'t valid.');
+    if (st.made[b.request_id]) return reply(201, { return: JSON.parse(JSON.stringify(st.made[b.request_id])), already: true });
+    console.info('[dev-fake] return request', JSON.stringify(b));
+    if (!Array.isArray(b.items) || !b.items.length) return fail(400, 'invalid_request', 'Pick at least one item to send back.');
+    var seen = {}, picked = [];
+    for (var i = 0; i < b.items.length; i++) {
+      var it = b.items[i];
+      var line = it && typeof it.id === 'string' && UUIDRE.test(it.id) ? lines.filter(function (l) { return l.id === it.id; })[0] : null;
+      if (!line || seen[it.id] || typeof it.qty !== 'number' || it.qty % 1 !== 0 || it.qty < 1) return fail(400, 'invalid_request', 'One of the items isn\'t valid.');
+      seen[it.id] = 1;
+      picked.push({ line: line, qty: it.qty });
+    }
+    var reason = typeof b.reason === 'string' ? reasonOf(b.reason) : null;
+    if (!reason) return fail(400, 'invalid_request', 'Pick a reason.');
+    if (b.note !== undefined && (typeof b.note !== 'string' || b.note.length > 500)) return fail(400, 'invalid_request', 'Your note can be up to 500 characters.');
+    var ids = b.photo_ids === undefined ? [] : b.photo_ids;
+    if (!Array.isArray(ids) || ids.length > 3 || (ids.length && !reason.photos) || ids.some(function (x) { return st.photos.indexOf(x) < 0; })) return fail(400, 'invalid_request', 'Those photos can\'t be used with this request.');
+
+    if (RET === 'busy') return fail(503, 'busy', 'We\'re busy for a moment. Try again in a few seconds.');
+    var shipped = t !== 'fake-ret-unshipped';
+    if (!shipped) return fail(409, 'not_shipped', 'This order hasn\'t shipped yet, so it can\'t be returned.');
+    if (t === 'fake-ret-window' || RET === 'window') return fail(409, 'return_window_closed', 'The return window for this order closed on ' + pretty('2026-11-15') + '. Email us and we\'ll take a look.', { closed_on: '2026-11-15' });
+    var finals = picked.filter(function (p) { return p.line.fs; });
+    var problemReason = reason.code === 'damaged_defective' || reason.code === 'wrong_item';
+    if ((finals.length && !problemReason) || RET === 'final') {
+      var fl = (finals.length ? finals : [{ line: RET_LINES[2] }]).map(function (p) { return { id: p.line.id, name: p.line.name, label: p.line.label }; });
+      return fail(409, 'final_sale', fl[0].name + ' is final sale, so it can\'t be returned. If it arrived damaged or isn\'t what you ordered, pick that reason instead.', { lines: fl });
+    }
+    var few = picked.filter(function (p) { return p.qty > leftOf(t, p.line); });
+    if (few.length || RET === 'nothing') {
+      var nl = (few.length ? few : [{ line: RET_LINES[1] }]).map(function (p) { return { id: p.line.id, name: p.line.name, label: p.line.label, returnable_qty: leftOf(t, p.line) }; });
+      return fail(409, 'nothing_to_return', nl[0].name + ' has fewer left to return than you asked for.', { lines: nl });
+    }
+    var open = st.returns.filter(function (r) { return r.status === 'requested' || r.status === 'approved' || r.status === 'shipped_back' || r.status === 'received'; }).length;
+    if (open >= 3 || RET === 'toomany') return fail(409, 'too_many_open_returns', 'There are too many open return requests from your network. Try again tomorrow, or email us.', { scope: 'network', limit: 10 });
+
+    var no = 'RET-' + ('000' + (st.nextNo++)).slice(-4);
+    var r = mkReturn(no, 'requested', {
+      reason: reason.code, reason_label: reason.label, our_mistake: reason.our_mistake, note: b.note ? E(b.note) : null, photo_count: ids.length,
+      items: picked.map(function (p) { return itemOf(p.line.id, p.qty); }), requested_at: new Date().toISOString()
+    });
+    st.photos = st.photos.filter(function (x) { return ids.indexOf(x) < 0; });
+    st.returns.unshift(r);
+    st.made[b.request_id] = r;
+    return reply(201, { return: JSON.parse(JSON.stringify(r)), already: false }, RET === 'slow' ? 3000 : 700);
+  }
+
+  function retFind(t, number) { var l = retState(t).returns.filter(function (r) { return r.number === number; }); return l[0] || null; }
+  function retDone(r, code) {
+    if (code) r.status = code;
+    r.status_label = STATUS_LABEL[r.status];
+    r.can_cancel = r.status === 'requested' || r.status === 'approved';
+    r.can_add_tracking = r.status === 'approved' || r.status === 'shipped_back';
+    return reply(200, { return: JSON.parse(JSON.stringify(r)) });
+  }
+  function retTracking(params, number, b) {
+    var t = guestToken(params);
+    if (!t) return fail(404, 'not_found', 'We couldn\'t find that order.');
+    var bad = botCheck(b);
+    if (bad) return bad;
+    var r = retFind(t, number);
+    if (!r) return fail(404, 'not_found', 'We couldn\'t find that return.');
+    if (RET === 'wrongstate' || (r.status !== 'approved' && r.status !== 'shipped_back')) return fail(409, 'return_wrong_state', 'That return can\'t take tracking right now.', { status: r.status });
+    var hasC = typeof b.carrier === 'string' && b.carrier.trim(), hasN = typeof b.tracking_number === 'string' && b.tracking_number, hasP = typeof b.postage_cents === 'number';
+    if (!hasC && !hasN && !hasP) return fail(400, 'invalid_request', 'Add a tracking number, a carrier or the postage you paid.');
+    if (hasC && b.carrier.length > 30) return fail(400, 'invalid_request', 'The carrier can be up to 30 characters.');
+    if (hasN && !/^[A-Za-z0-9 -]{5,40}$/.test(b.tracking_number)) return fail(400, 'invalid_request', 'A tracking number is 5 to 40 letters, numbers, spaces or dashes.');
+    if (hasP && (b.postage_cents % 1 !== 0 || b.postage_cents < 0 || b.postage_cents > 10000)) return fail(400, 'invalid_request', 'The postage can be $0 to $100.');
+    if (hasP && r.pays_return_shipping !== 'shop') return fail(400, 'invalid_request', 'You pay return shipping on this one, so there\'s no postage to add.');
+    console.info('[dev-fake] return tracking', number, JSON.stringify(b));
+    r.tracking = { carrier: hasC ? E(b.carrier.trim()) : null, number: hasN ? E(b.tracking_number) : null, added_at: new Date().toISOString() };
+    if (hasP) r.postage_cents = b.postage_cents;
+    return retDone(r, 'shipped_back');
+  }
+  function retCancel(params, number, b) {
+    var t = guestToken(params);
+    if (!t) return fail(404, 'not_found', 'We couldn\'t find that order.');
+    var bad = botCheck(b);
+    if (bad) return bad;
+    var r = retFind(t, number);
+    if (!r) return fail(404, 'not_found', 'We couldn\'t find that return.');
+    if (r.status === 'cancelled') return retDone(r);
+    if (RET === 'wrongstate' || (r.status !== 'requested' && r.status !== 'approved')) return fail(409, 'return_wrong_state', 'That return can\'t be cancelled any more.', { status: r.status });
+    return retDone(r, 'cancelled');
+  }
+  function retPhoto(params, fd) {
+    var t = guestToken(params);
+    if (!t) return fail(404, 'not_found', 'We couldn\'t find that order.');
+    if (RET === 'photo429') return fail(429, 'rate_limited', 'Too many requests from your network. Wait a minute and try again.');
+    if (RET === 'photo503') return fail(503, 'busy', 'We\'re busy for a moment. Try again in a few seconds.');
+    var f = fd && typeof fd.get === 'function' ? fd.get('file') : null;
+    if (!f || typeof f === 'string') return fail(400, 'file_required', 'Choose a photo to add.');
+    if (RET === 'photo415' || !/^image\/(jpeg|png)$/.test(f.type)) return fail(415, 'unsupported_media', 'Use a JPEG or PNG photo.');
+    if (RET === 'photo413' || f.size > 8388608) return fail(413, 'file_too_large', 'That photo is over 8 MB. Choose a smaller one.');
+    if (RET === 'photolimit') return fail(403, 'upload_limit', 'You\'ve added the most photos for today. Try again tomorrow.');
+    var st = retState(t);
+    if (RET === 'photomany' || st.photos.length >= 3) return fail(409, 'too_many_photos', 'Three photos are already waiting for this order.');
+    var id = 'f0f0f0f0-' + ('0000' + (st.photos.length + 1)).slice(-4) + '-4000-8000-' + ('000000000000' + Math.floor(Math.random() * 1e12)).slice(-12);
+    st.photos.push(id);
+    return reply(201, { photo: { id: id, content_type: f.type, bytes: f.size }, attached: st.photos.length, limit: 3 }, 500);
   }
 
   // ---------- routing ----------
@@ -347,6 +618,7 @@
         return { code: c, name: z.name, zone_id: z.id, zone: z.name, extra_item_cents: z.extra, delivery: z.delivery, note: z.note ? E(z.note) : null, excluded_regions: z.excluded };
       }),
       limits: { max_items: 10, max_qty_per_line: 5 }, low_stock_at: LOW,
+      returns: SHOP === 'noreturns' ? undefined : { window_days: 30, ship_within_days: 14, shipping_mode: 'buyer_unless_our_mistake', reasons: REASONS },
       links: EVIL
         ? { shipping_returns: 'javascript:window.__pwned=5', terms_of_sale: 'https://evil.example/terms' }
         : { shipping_returns: 'https://showfuseapp.com/shipping-returns', terms_of_sale: 'https://showfuseapp.com/terms-of-sale' }
@@ -378,20 +650,26 @@
     if (method === 'POST' && path === '/v1/shop/checkout') return checkout(body);
     if (method === 'POST' && path === '/v1/shop/checkout/cancel') return cancel(body);
     if (method === 'GET' && path === '/v1/shop/order') return order(params);
+    if (method === 'POST' && path === '/v1/shop/order/returns') return retCreate(params, body);
+    var rm = /^\/v1\/shop\/order\/returns\/(RET-\d{3,9})\/(tracking|cancel)$/.exec(path);
+    if (method === 'POST' && rm) return rm[2] === 'tracking' ? retTracking(params, rm[1], body) : retCancel(params, rm[1], body);
+    if (method === 'POST' && path === '/v1/shop/return-photos') return retPhoto(params, body);
     return fail(404, 'not_found', 'Route not found.');
   }
 
   // In ?fake=checkout only these three are faked.
   var ONLY = { '/v1/shop/checkout': 1, '/v1/shop/checkout/cancel': 1, '/v1/shop/order': 1 };
+  function faked(pathname) { return ONLY[pathname] || /^\/v1\/shop\/(order\/returns|return-photos)/.test(pathname); }
 
   window.fetch = function (input, init) {
     var url = typeof input === 'string' ? input : input.url;
     if (!API || url.indexOf(API + '/v1/shop/') !== 0) return realFetch(input, init);
     init = init || {};
     var u = new URL(url), method = String(init.method || 'GET').toUpperCase();
-    if (mode === 'checkout' && !ONLY[u.pathname]) return realFetch(input, init);
+    if (mode === 'checkout' && !faked(u.pathname)) return realFetch(input, init);
     var body = null;
     if (typeof init.body === 'string') { try { body = JSON.parse(init.body); } catch (e) { body = null; } }
+    else if (typeof FormData === 'function' && init.body instanceof FormData) body = init.body;
     console.info('[dev-fake]', method, u.pathname + u.search);
     try { return handle(method, u.pathname, u.searchParams, body); }
     catch (e) { console.error(e); return fail(500, 'fake_crash', 'The fake API crashed: ' + e.message); }
