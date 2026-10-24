@@ -59,6 +59,7 @@
     var headers = { Accept: 'application/json' };
     var body;
     if (o.json) { headers['Content-Type'] = 'application/json'; body = JSON.stringify(o.json); }
+    else if (o.form) { body = o.form; }
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
     var timer = null;
     function done() { if (timer) clearTimeout(timer); }
@@ -222,7 +223,7 @@
     var cfg = {
       mode: mode, open: j.open === true && mode === 'open', visible: false, showcase: false, testMode: j.test_mode === true,
       tax: j.tax === 'calculated_at_checkout' ? 'calculated_at_checkout' : 'none',
-      packTime: cleanStr(j.pack_time, 40), countries: [], lowStockAt: 5, links: { shippingReturns: null, termsOfSale: null }
+      packTime: cleanStr(j.pack_time, 40), countries: [], lowStockAt: 5, links: { shippingReturns: null, termsOfSale: null }, returns: null
     };
     (Array.isArray(j.countries) ? j.countries : []).forEach(function (c) {
       if (!c || typeof c.code !== 'string' || !/^[A-Z]{2}$/.test(c.code)) return;
@@ -245,6 +246,23 @@
     var links = j.links || {};
     cfg.links.shippingReturns = safeSiteUrl(links.shipping_returns);
     cfg.links.termsOfSale = safeSiteUrl(links.terms_of_sale);
+    // Build 14: the return rules and the reasons for the picker (docs/BUILD_14_API_CONTRACT.md, section 1). A store that is off, or an older
+    // server, sends none of this: cfg.returns stays null.
+    var rt = j.returns;
+    if (rt && typeof rt === 'object') {
+      var reasons = [];
+      (Array.isArray(rt.reasons) ? rt.reasons : []).forEach(function (r) {
+        if (r && typeof r.code === 'string' && /^[a-z_]{2,30}$/.test(r.code) && typeof r.label === 'string' && r.label) {
+          reasons.push({ code: r.code, label: cleanStr(r.label, 60), ourMistake: r.our_mistake === true, photos: r.photos === true });
+        }
+      });
+      if (reasons.length) {
+        cfg.returns = {
+          windowDays: intOr(rt.window_days, 0), shipWithinDays: intOr(rt.ship_within_days, 0),
+          shippingMode: rt.shipping_mode === 'shop_always' ? 'shop_always' : 'buyer_unless_our_mistake', reasons: reasons
+        };
+      }
+    }
     return cfg;
   }
 
