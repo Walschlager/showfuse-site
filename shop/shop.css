@@ -397,3 +397,214 @@ header .hdr .links a.bag b{display:inline-grid;place-items:center;min-width:18px
   .pc .tags.two .sticker{font-size:8.5px;letter-spacing:1px;padding:4px 6px}
   .pc .tags.two .demo{letter-spacing:1.2px;padding:3px 5px}
 }
+
+/* ===== Part 3: returns (build 14). The order page's return cards, the button and its lines, and the request pages. ===== */
+.ico{display:inline-flex;vertical-align:middle}
+.btn .ico{margin-right:9px;vertical-align:-3px}
+
+/* FINAL SALE: the small red tag by a line's name */
+.fs{display:inline-block;font:800 9px/1 Outfit,system-ui,sans-serif;letter-spacing:1.4px;text-transform:uppercase;padding:3px 5px;border:1px solid rgba(255,107,114,.6);color:#FF6B72;vertical-align:2px;margin-left:6px;white-space:nowrap}
+
+/* the "Return or refund" button, and the lines that stand in for it (window closed, final sale) */
+.btn.line{background:transparent;color:var(--accent);border:1px solid rgba(255,195,0,.55)}
+.btn.line:hover{border-color:var(--accent)}
+.pagebtns .until{margin:0;text-align:center;font-size:14px;line-height:1.5;color:var(--text2)}
+.pagebtns .until b{color:var(--paper);font-weight:600}
+.pagebtns .until + .btn,.pagebtns .rclosed + .btn,.pagebtns .fsnote + .btn{margin-top:12px}
+.pagebtns .rclosed{margin:0;padding:12px 14px;border-left:3px solid var(--hair2);font-size:14.5px;line-height:1.5;color:var(--text2)}
+.pagebtns .rclosed b{color:var(--paper);font-weight:600}
+.pagebtns .rclosed a{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.pagebtns .btn[disabled]{opacity:.5}
+.pagebtns .fsnote{margin:0;padding:12px 14px;border-left:3px solid var(--stop);font-size:14.5px;line-height:1.55;color:var(--text2)}
+.pagebtns .fsnote b{color:var(--paper);font-weight:600}
+.link.strong{display:inline;font-weight:600;text-decoration:none}
+
+/* a return's card: its number, where it stands, and what to do next */
+.rcard{margin-top:18px;border:1px solid var(--hair2);background:var(--card);padding:16px 16px 18px}
+.rcard + .rcard{margin-top:12px}
+.rcard .rh{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px}
+.rcard .rh .lbl{margin:0}
+.rcard .rno{font-size:15px;letter-spacing:1px;color:var(--paper)}
+.rcard .rwhen{margin-left:auto;display:flex;align-items:center;gap:10px}
+.rcard .rdate{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);white-space:nowrap}
+.rchip{display:inline-block;font:800 10px/1 Outfit,system-ui,sans-serif;letter-spacing:1.4px;text-transform:uppercase;padding:6px 9px;border:1px solid var(--hair2);color:var(--text3);white-space:nowrap}
+.rchip.s-ask{color:var(--accent);border-color:#705600}
+.rchip.s-ok{color:var(--go-t);border-color:rgba(46,213,115,.7)}
+.rchip.s-done{color:var(--text2)}
+.rchip.s-no{color:#FF6B72;border-color:rgba(255,71,87,.6)}
+.rchip.s-off{color:var(--text3)}
+.rsteps{display:grid;gap:4px;list-style:none;margin:14px 0 0}
+.rsteps.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.rsteps.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.rsteps.n4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.rsteps.n5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.rsteps li{font:800 9px/1.35 Outfit,system-ui,sans-serif;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);overflow-wrap:anywhere}
+.rsteps li::before{content:"";display:block;height:4px;background:var(--hair2);margin-bottom:7px}
+.rsteps li.done{color:var(--text2)}
+.rsteps li.done::before{background:var(--go)}
+.rsteps li.now{color:var(--paper)}
+.rsteps li.now::before{background:var(--accent)}
+.rsteps li.bad{color:#FF6B72}
+.rsteps li.bad::before{background:var(--stop)}
+.rsteps li.off{color:var(--text2)}
+.rsteps li.off::before{background:var(--text3)}
+.rcard .ritems{margin:14px 0 0;font-size:14px;line-height:1.5;color:var(--text2);overflow-wrap:anywhere}
+.rnote{margin:12px 0 0;font-size:14.5px;line-height:1.55;color:var(--text2)}
+.rnote b{color:var(--paper);font-weight:600}
+.rcard .rwhy{margin:14px 0 0;padding:2px 0 2px 13px;border-left:3px solid var(--stop)}
+.rcard.closed .rwhy{border-left-color:var(--text3)}
+.rwhy p{margin:0 0 6px;font-size:15px;line-height:1.55;color:var(--text2);overflow-wrap:anywhere}
+.rwhy b{color:var(--paper);font-weight:600}
+.rquote{margin:8px 0 0;font-size:15px;line-height:1.55;color:var(--text2);overflow-wrap:anywhere}
+.rmail{margin-top:14px}
+.rmail .btn{margin-top:0}
+.rsmall{margin:8px 0 0;font-size:12.5px;line-height:1.5;color:var(--text3)}
+.rmail .rsmall{text-align:center}
+
+/* what we refunded */
+.refbox{margin-top:14px}
+.refbox .lbl{margin-bottom:6px}
+.refbox .big{font-size:26px;letter-spacing:.5px;color:var(--accent);margin-bottom:10px}
+.refbox .rl{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid var(--hair);font-size:14.5px;line-height:1.45;color:var(--text2)}
+.refbox .rl span:last-child{flex:none;color:var(--paper)}
+
+/* "Send it back": the steps after an approval */
+.ins{margin-top:18px}
+.ins h3.lbl{margin-bottom:2px}
+.ins .ir{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;padding:13px 0;border-bottom:1px solid var(--hair)}
+.ins .ir:last-child{border-bottom:0;padding-bottom:0}
+.ins .no{width:24px;height:24px;display:grid;place-items:center;border:1px solid var(--hair2);color:var(--text2);font:500 11px/1 'JetBrains Mono',monospace;margin-top:1px}
+.ins .ir b{display:block;font-weight:600;font-size:15px;line-height:1.35}
+.ins .ir .s{display:block;margin-top:4px;font-size:13.5px;line-height:1.55;color:var(--text2);overflow-wrap:anywhere}
+.adr{margin-top:6px;font:500 13.5px/1.6 'JetBrains Mono',monospace;color:var(--paper);overflow-wrap:anywhere;-webkit-user-select:all;user-select:all}
+.copy{display:inline-flex;align-items:center;gap:7px;margin-top:2px;min-height:44px;padding:0;background:none;border:0;font:800 10.5px/1.2 Outfit,system-ui,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent);cursor:pointer;text-align:left}
+.copy .ico{margin:0}
+.copy:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.boxcode{display:inline-block;margin-top:8px;font:500 20px/1 'JetBrains Mono',monospace;letter-spacing:3px;color:var(--accent);border:1px dashed rgba(255,195,0,.5);padding:9px 12px}
+.ins .optl{font-weight:400}
+
+/* tracking and postage */
+.tform{margin-top:10px}
+.tform .tfields{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:0 10px}
+.tform .field{margin-top:12px}
+.tform .field label{margin-bottom:6px}
+.tform .money{position:relative}
+.tform .money .cur{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:16px;pointer-events:none}
+.tform .money input{padding-left:30px}
+.tform .hint{display:block;margin-top:6px;font-size:12.5px;color:var(--text3)}
+.tform .btn.small{margin-top:14px}
+.tform .err{margin-top:12px}
+.tsum{margin-top:14px;padding-top:12px;border-top:1px solid var(--hair)}
+.tsum .thead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tsum .lbl{margin:0}
+.tsum .thead .link{font-size:13.5px;padding:12px 0}
+.tsum .tline{margin-top:6px;font-size:14px;color:var(--paper);overflow-wrap:anywhere}
+.tsum .tpost{margin-top:4px;font-size:13.5px;color:var(--text2)}
+.tsum .okline{margin-top:8px}
+.where{margin-top:14px;padding-top:12px;border-top:1px solid var(--hair);font-size:14px;color:var(--text2)}
+.where summary{cursor:pointer;color:var(--accent);list-style:none;padding:12px 0;text-decoration:underline;text-underline-offset:3px}
+.where summary::-webkit-details-marker{display:none}
+.where[open] summary{margin-bottom:6px}
+.cancelbox{margin-top:16px;text-align:center}
+.quietlnk{background:none;border:0;min-height:44px;padding:0 12px;font:600 13px/1 Outfit,system-ui,sans-serif;color:var(--text3);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.quietlnk:hover{color:var(--text2)}
+.quietlnk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cancelbox .cq{margin:0 0 10px;font-size:15px;color:var(--paper)}
+.cancelbox .cbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cancelbox .btn.small{margin-top:0}
+.cancelbox .err{text-align:left}
+
+/* the request pages: pick what to send back, review, request sent */
+button.crumb{background:none;border:0;padding:0;cursor:pointer}
+.crumb:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+h2.lbl,h3.lbl{font-weight:400;line-height:1.4}
+.rmeta{margin:-4px 0 22px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;line-height:1.7;color:var(--text3);overflow-wrap:anywhere}
+.rform h2.lbl,.rform .lbl{margin-bottom:10px}
+.rform h2.lbl{margin-top:4px}
+.rpick{list-style:none;border:1px solid var(--hair2);background:var(--card)}
+.rrow{border-bottom:1px solid var(--hair)}
+.rrow:last-child{border-bottom:0}
+.rrow .rmain{display:grid;grid-template-columns:24px 56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px}
+.rrow label.rmain{cursor:pointer}
+.rrow .ph{width:56px;height:56px;aspect-ratio:auto}
+.rrow .rtx b{display:block;font-weight:600;font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.rrow .rtx small{display:block;color:var(--text3);font-size:13px;line-height:1.4;margin-top:2px}
+.rrow .rtx small.why{color:var(--text2);margin-top:5px}
+.rrow .rtx .link{margin-top:3px;font-size:13.5px;line-height:1.35}
+.rrow .rmain > .mono{font-size:14.5px;align-self:start;margin-top:2px}
+.rbox{width:22px;height:22px;display:grid;place-items:center;border:2px solid var(--text3);font-size:13px;font-weight:800;line-height:1;color:transparent}
+.rrow.on .rbox{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.rrow .sr:focus-visible + .rbox{outline:2px solid var(--paper);outline-offset:2px}
+.rbox.lock{border:1px dashed var(--text3);color:var(--text3)}
+.rrow.final .ph,.rrow.final .rtx b,.rrow.final .rtx small,.rrow.final .rmain > .mono,.rrow.used .ph,.rrow.used .rtx b,.rrow.used .rtx small,.rrow.used .rmain > .mono{opacity:.6}
+.rrow.final .rtx small.why{opacity:1}
+.rqty{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:0 14px 14px 50px}
+.rqty .lbl{margin:0}
+.rqty .qty button{min-width:44px;height:44px}
+.rqty .qty span{min-width:44px;height:44px}
+.rqty .of{font-size:13px;color:var(--text3)}
+.cond{display:flex;gap:10px;align-items:flex-start;margin:14px 2px 0;font-size:13.5px;line-height:1.55;color:var(--text2)}
+.cond .ico{flex:none;margin-top:2px;color:var(--text3)}
+.rsnset{border:0;padding:0;margin:22px 0 0;min-width:0}
+.rsnset legend.lbl{padding:0;margin-bottom:10px}
+.rsn{display:flex;flex-wrap:wrap;gap:8px}
+.rsnb{cursor:pointer}
+.rsnb span{display:inline-flex;align-items:center;min-height:44px;padding:0 15px;border:1px solid var(--hair2);background:var(--field);color:var(--paper);font:800 11px/1.2 Outfit,system-ui,sans-serif;letter-spacing:1.3px;text-transform:uppercase}
+.rsnb:hover span{border-color:var(--text3)}
+.rsnb input:checked + span{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.rsnb input:focus-visible + span{outline:2px solid var(--paper);outline-offset:2px}
+.photobox{margin-top:22px}
+.photobox[hidden]{display:none}
+.photobox .lbl{margin-bottom:10px}
+.ptiles{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.ptile{position:relative;width:72px;height:72px;display:grid;place-items:center;background:#1d1b20;border:1px solid var(--hair2);color:var(--text3);overflow:hidden}
+.ptile img{width:100%;height:100%;object-fit:cover;display:block}
+.ptile.up img{opacity:.45}
+.ptile .spin{position:absolute;left:50%;top:50%;margin:-9px 0 0 -9px}
+.ptile .rm{position:absolute;top:2px;right:2px;width:36px;height:36px;display:grid;place-items:center;padding:0;background:rgba(10,10,10,.82);border:1px solid var(--hair2);color:var(--paper);cursor:pointer}
+.ptile .rm:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.padd{display:grid;place-items:center;width:72px;height:72px;border:1px dashed rgba(255,195,0,.55);color:var(--accent);cursor:pointer}
+.padd:hover{border-color:var(--accent)}
+.padd:focus-within{outline:2px solid var(--paper);outline-offset:2px}
+.phint{flex:1 1 150px;min-width:140px;font-size:13.5px;line-height:1.45;color:var(--text2)}
+.photobox .err{margin-top:12px}
+.count{margin-top:6px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)}
+.rsum{margin-top:4px;border-top:1px solid var(--hair)}
+.rsum .rr{display:grid;grid-template-columns:104px minmax(0,1fr);gap:12px;padding:13px 0;border-bottom:1px solid var(--hair)}
+.rsum dt{padding-top:4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3)}
+.rsum dd{min-width:0;font-size:15px;line-height:1.5;color:var(--paper);overflow-wrap:anywhere}
+.rsum .rit{display:flex;justify-content:space-between;gap:12px}
+.rsum .rit .mono{flex:none;font-size:13.5px;color:var(--text2)}
+.rsum em{color:var(--text2)}
+.who{margin:18px 0 22px;padding:12px 14px;border-left:3px solid var(--text3);background:rgba(255,255,255,.02);font-size:14.5px;line-height:1.55;color:var(--text2)}
+.who.ours{border-left-color:var(--go)}
+.who b{color:var(--paper);font-weight:600}
+.nexts{list-style:none;margin-top:2px}
+.nexts li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--hair)}
+.nexts .no{width:26px;height:26px;display:grid;place-items:center;border:1px solid var(--hair2);color:var(--text2);font:500 11px/1 'JetBrains Mono',monospace}
+.nexts .done .no{background:var(--go);border-color:transparent;color:var(--ink);font-size:13px;font-weight:800}
+.nexts b{display:block;font-weight:600;font-size:15px;line-height:1.35}
+.nexts .s{display:block;margin-top:3px;font-size:13.5px;line-height:1.5;color:var(--text2)}
+.polink{margin:14px 0 0}
+.polink a{font-size:14px;font-weight:600;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.sentmark{width:56px;height:56px;margin:6px auto 18px;display:grid;place-items:center;background:var(--go);color:var(--ink);font-size:30px;font-weight:800;line-height:1}
+.sentt{margin-bottom:8px;text-align:center}
+.sentno{margin:0 0 10px;text-align:center;font-size:22px;letter-spacing:4px;color:var(--accent)}
+.sentsub{margin:0 0 24px;text-align:center;font-size:16px;line-height:1.5;color:var(--text2)}
+.sentsub b{color:var(--paper);font-weight:600}
+.fine.ctr{text-align:center}
+
+@media (min-width:560px){
+  .rsteps li{font-size:10.5px;letter-spacing:1px}
+}
+@media (max-width:520px){
+  .tform .tfields{grid-template-columns:minmax(0,1fr)}
+  /* five labels in a row: this size keeps "REQUESTED" whole down to a 345 px screen */
+  .rcard{padding-left:14px;padding-right:14px}
+  .rsteps{gap:3px}
+  .rsteps li{font-size:8.5px;letter-spacing:.3px}
+  .rrow .rmain{grid-template-columns:24px 48px minmax(0,1fr) auto;gap:10px;padding:12px}
+  .rrow .ph{width:48px;height:48px}
+  .rqty{padding-left:46px}
+  .rsum .rr{grid-template-columns:84px minmax(0,1fr)}
+}

@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://showfuse-api-production.up.railway.app; connect-src https://showfuse-api-production.up.railway.app; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' blob: https://showfuse-api-production.up.railway.app; connect-src https://showfuse-api-production.up.railway.app; base-uri 'none'; form-action 'none'">
+<!-- img-src has blob: only so the return form can show a small preview of a photo the buyer has just picked. The picture stays in this browser. -->
 <meta name="color-scheme" content="dark">
 <!-- NOINDEX: KEEP IT, FOR GOOD.
      This is a personal page (one order's status page). It is never meant to be found in search, so when the store opens
@@ -23,6 +24,8 @@
 <script src="/shop/base.js" defer></script>
 <script src="/shop/common.js" defer></script>
 <script src="/shop/order-view.js" defer></script>
+<script src="/shop/returns-view.js" defer></script>
+<script src="/shop/returns-flow.js" defer></script>
 <script src="/shop/order.js" defer></script>
 </head>
 <body>
