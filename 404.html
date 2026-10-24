@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ShowFuse</title>
+<title>Not found · ShowFuse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -19,16 +19,33 @@
   p{color:var(--text2);font-weight:300;line-height:1.6;font-size:17px}
   .beta{display:inline-block;margin-top:30px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--ink);background:var(--accent);padding:10px 16px;text-transform:uppercase}
   a.home{display:block;margin-top:26px;color:var(--text2);font-size:14px;text-decoration:none;border-bottom:none}
+  .links{margin-top:22px}
+  .links a{color:var(--accent);text-decoration:none}
+  [hidden]{display:none!important}
 </style>
 </head>
 <body>
   <div class="card">
     <div class="logo"><a href="/" aria-label="ShowFuse"><span class="wordmark" role="img" aria-label="ShowFuse"></span></a></div>
-    <h1>THIS ONE LIVES<br>IN THE APP</h1>
-    <p>Shows, artists, and tickets on ShowFuse open inside the app.
-    We're in closed beta on iOS. If a friend sent you this link, ask them for an invite.</p>
-    <div class="beta">iOS · Closed beta</div>
-    <a class="home" href="/">← showfuseapp.com</a>
+    <div id="lost">
+      <h1>PAGE NOT<br>FOUND</h1>
+      <p>That link doesn't go anywhere. Check the address, or try one of these.</p>
+      <p class="links"><a href="/">Home</a> · <a href="/faq">FAQ</a> · <a href="/support">Support</a></p>
+    </div>
+    <div id="inapp" hidden>
+      <h1>THIS ONE LIVES<br>IN THE APP</h1>
+      <p>Shows, artists, and tickets on ShowFuse open inside the app.
+      We're in closed beta on iOS. If a friend sent you this link, ask them for an invite.</p>
+      <div class="beta">iOS · Closed beta</div>
+      <a class="home" href="/">← showfuseapp.com</a>
+    </div>
+    <script>
+      // Links the app shares (shows, artists, venues) get the "lives in the app" note; everything else is a plain not-found.
+      if (/^\/(s|a|v|artist|show|venue)\//.test(location.pathname)) {
+        document.getElementById('lost').hidden = true;
+        document.getElementById('inapp').hidden = false;
+      }
+    </script>
   </div>
 </body>
 </html>

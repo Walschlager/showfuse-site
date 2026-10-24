@@ -176,8 +176,9 @@
       .then(function(res){
         if (!res.ok || !res.j || !res.j.ok) { fail((res.j && res.j.error && res.j.error.message) || 'Something went wrong. Try again in a minute.'); return; }
         form.style.display = 'none';
-        document.getElementById('joinNum').textContent = '#' + String(res.j.founding_number).padStart(4, '0');
-        if (res.j.existing) document.getElementById('joinMsg').textContent = 'You were already on the list \u2014 this is your number.';
+        // The founding number goes only to the inbox (13.2): the page never shows it, so nobody can look up someone else's.
+        document.getElementById('joinNum').style.display = 'none';
+        document.getElementById('joinMsg').textContent = 'You\u2019re on the list! Your number is in the email we just sent.';
         var done = document.getElementById('joinDone'); done.style.display = 'block'; done.scrollIntoView({ behavior: 'smooth', block: 'center' });
       })
       .catch(function(){ fail('Couldn\u2019t reach the server. Check your connection and try again.'); });
