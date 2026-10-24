@@ -79,7 +79,8 @@
     }
     var first = bits.join('; ');
     if (first) first = first.charAt(0).toUpperCase() + first.slice(1) + '. ';
-    return lead + first + 'Problems are fully covered; one size exchange within 30 days.';
+    // A final-sale item says so (the approved words of the picker), instead of the one-size-exchange sentence that would contradict it.
+    return lead + first + (p.finalSale ? 'Final sale, so it can\'t be returned.' : 'Problems are fully covered; one size exchange within 30 days.');
   }
 
   function showProduct(cfg, p) {
@@ -106,6 +107,7 @@
       SF.clear(big);
       var bp = SF.photo(p.photos[i], photoAlt(i));
       if (p.demo) bp.appendChild(SF.demoStamp('big'));
+      if (p.finalSale) bp.appendChild(el('div', { cls: 'fs onphoto', text: 'Final sale' }));   // the same tag as on the order, on the photo as in the app
       big.appendChild(bp);
       thumbBtns.forEach(function (b, k) {
         b.className = 'th' + (k === i ? ' on' : '');
@@ -141,6 +143,8 @@
 
     var desc = p.description || p.blurb;
     if (desc) right.appendChild(el('p', { cls: 'lede', text: desc }));
+    // The approved line of the final-sale product page (returns mockup, screen 7a).
+    if (p.finalSale) right.appendChild(el('p', { cls: 'fsline' }, [el('b', { text: 'Final sale.' }), ' This item can\'t be returned, like other limited or signed items. A damaged or wrong item can still always be fixed.']));
     if (p.preview) right.appendChild(el('p', { cls: 'note', text: 'Preview. This is how the page will look. It isn\'t on sale, so there is nothing to buy here.' }));
 
     var sizeBtns = [];

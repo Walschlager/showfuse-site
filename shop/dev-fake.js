@@ -15,7 +15,10 @@
    shop=showcase    mode "showcase": the shop can be looked at, nothing can be bought (no Bag link, no Add to bag, no Checkout)
    shop=showcasemin the same, but config is only { mode, open: false, visible: true }
    shop=nomode      an older server: config has no "mode" at all (open + visible still decide)
+   shop=nofinal     a 13.2-shaped server: products and bag lines carry no "final_sale" field at all, so no FINAL SALE tag shows
    shop=weirdmode   config says mode "sale", open and visible: a mode the page doesn't know, so it stays closed
+   (final sale, build 14: like the practice server, the Sticker Pack and the Pin Set are final sale; every other item is not.
+    /shop/p/?s=s01_sticker_pack and /shop/p/?s=p01_pin_set show the tag; the bag shows it on those lines)
    demo=1           the Emblem Hoodie (Coming soon) is a DEMO item: a DEMO tag on its photos
    demo=live        ...and so is the Fuse Hoodie, which is on sale and buyable (like the practice server): the page lets it be bought
    demo=all         all eight items are demo items, and config says test_mode (the practice server's look)
@@ -95,7 +98,12 @@
     { slug: 'm_hat', name: 'Pro Cap', blurb: 'Distressed black, embroidered PRO', price: 3500, ship: { US: 500, CA: 900 }, sizes: ONE, stock: { 'One size': 3 },
       desc: 'Distressed black cap with embroidered PRO.', photos: ['m_hat'] },
     { slug: 'm_beanie', name: 'Pro Beanie', blurb: 'Ribbed cuff, woven PRO label', price: 2800, ship: { US: 500, CA: 900 }, sizes: ONE,
-      desc: 'Ribbed-cuff beanie with a woven PRO label.', photos: ['m_beanie'] }
+      desc: 'Ribbed-cuff beanie with a woven PRO label.', photos: ['m_beanie'] },
+    // Build 14: the practice demo shop marks these two final sale (the Sticker Pack and the Pin Set).
+    { slug: 's01_sticker_pack', name: 'Sticker Pack', blurb: 'Nine die-cut vinyl stickers', price: 1000, ship: { US: 300, CA: 700 }, sizes: ONE, final: true,
+      desc: 'Nine die-cut vinyl stickers: the ADMIT ONE ticket, the logo (reversed, on black), the app icon, showfuse, the verified check, PRO in two styles, the stacked-logo circle and a TOUR / DISCOVER / GROW strip.\nDemo item on the practice server.', photos: ['s01_sticker_pack'] },
+    { slug: 'p01_pin_set', name: 'Pin Set', blurb: 'Three hard-enamel pins on a backer card', price: 2400, ship: { US: 300, CA: 700 }, sizes: ONE, final: true,
+      desc: 'Three hard-enamel pins, gold plated, on a backer card: the ticket, the verified check and PRO.\nDemo item on the practice server.', photos: ['p01_pin_set'] }
   ];
   var VARIANTS = {};   // variant id -> { product, label, stock }
   CATALOG.forEach(function (p, pi) {
@@ -122,7 +130,7 @@
   //              bought like any other. The page must let it be added to the bag (the server says buyable, the page follows)
   //   demo=all   all eight are demo items, statuses as in this fake, and config says test_mode: the practice server's look
   //   demo=real  all eight are demo items and all are Coming soon: a real store's seed (best seen with shop=showcase)
-  var ALL_SLUGS = ['m_hoodie', 'm_hoodie_pro', 'm_hoodie_pro_back', 'm_hoodie_emblem', 'm_tee', 'm_tee_pro', 'm_hat', 'm_beanie'];
+  var ALL_SLUGS = ['m_hoodie', 'm_hoodie_pro', 'm_hoodie_pro_back', 'm_hoodie_emblem', 'm_tee', 'm_tee_pro', 'm_hat', 'm_beanie', 's01_sticker_pack', 'p01_pin_set'];
   var DEMO_SLUGS = DEMO === '1' ? ['m_hoodie_emblem'] : DEMO === 'live' ? ['m_hoodie_emblem', 'm_hoodie'] : (DEMO === 'all' || DEMO === 'real') ? ALL_SLUGS : [];
   // A real store's demo items are all Coming soon, whatever the catalog above says.
   function statusOf(p) { return DEMO === 'real' ? 'coming_soon' : p.status; }
@@ -136,6 +144,7 @@
     return {
       id: p.id, slug: p.slug, name: E(p.name), blurb: E(p.blurb), description: E(p.desc), price_cents: p.price, currency: 'USD',
       photos: photos.map(photoUrl), status: statusOf(p), buyable: !preview && !showcaseOn() && sellable(p) && any, demo: demo,
+      final_sale: SHOP === 'nofinal' ? undefined : !!p.final,
       sold_out: !any, sizes: sizes, shipping: shipping,
       ships_to: Object.keys(ZONES).filter(function (c) { return typeof p.ship[c] === 'number'; }), preview: !!preview
     };
@@ -203,6 +212,7 @@
       lines.push({
         variant_id: it.variant_id, product_id: v ? v.product.id : null, slug: v ? v.product.slug : null, name: v ? E(v.product.name) : '',
         label: v ? L(v.label) : '', sku: v ? v.sku : '', photo: v ? photoUrl(v.product.photos[0]) : null, qty: it.qty,
+        final_sale: SHOP === 'nofinal' ? undefined : !!(v && v.product.final),
         unit_cents: unit, line_cents: unit * it.qty, left: v && v.stock <= LOW ? v.stock : null, problem: problem
       });
       if (problem) {

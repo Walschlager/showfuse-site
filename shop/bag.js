@@ -41,7 +41,8 @@
       out.lines.push({
         id: l.variant_id.toLowerCase(), name: str(l.name, 120), label: str(l.label, 30), photo: typeof l.photo === 'string' ? l.photo : null,
         qty: num(l.qty), unit: num(l.unit_cents), lineCents: num(l.line_cents), left: typeof l.left === 'number' ? Math.max(0, Math.round(l.left)) : null,
-        problem: PROBLEMS[l.problem] ? l.problem : null
+        problem: PROBLEMS[l.problem] ? l.problem : null,
+        finalSale: l.final_sale === true   // build 14: shown as a FINAL SALE tag (an older server doesn't say, and then no tag)
       });
     });
     // A line that is short always has its count in "problems", even above the low-stock line.
@@ -164,7 +165,9 @@
     var name = info.name || 'An item in your bag';
     var shown = name + (info.label ? ' (' + info.label + ')' : '');
     if (!photoNodes[l.id]) photoNodes[l.id] = SF.photo(info.photo, name);
-    var mid = el('div', null, [el('b', { text: name }), info.label ? el('small', { text: info.label }) : el('small', { text: ' ' })]);
+    var nameEl = el('b', { text: name });
+    if (info.finalSale) { nameEl.appendChild(document.createTextNode(' ')); nameEl.appendChild(el('span', { cls: 'fs', text: 'Final sale' })); }
+    var mid = el('div', null, [nameEl, info.label ? el('small', { text: info.label }) : el('small', { text: ' ' })]);
     // The line's price is the server's own number. Between a tap on + or - and the server's answer, it is
     // the server's price for one times the new quantity, for a moment.
     var lineCents = info.qty === l.q ? info.lineCents : info.unit * l.q;

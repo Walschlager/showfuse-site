@@ -418,6 +418,10 @@ header .hdr .links a.bag b{display:inline-grid;place-items:center;min-width:18px
 .pagebtns .fsnote{margin:0;padding:12px 14px;border-left:3px solid var(--stop);font-size:14.5px;line-height:1.55;color:var(--text2)}
 .pagebtns .fsnote b{color:var(--paper);font-weight:600}
 .link.strong{display:inline;font-weight:600;text-decoration:none}
+/* the same tag on a product photo (the app's product page has it there), and the approved line under the description */
+.fs.onphoto{position:absolute;left:10px;top:10px;z-index:2;margin:0;padding:6px 9px;font-size:10.5px;letter-spacing:2px;background:#0b0b0d;pointer-events:none}
+.fsline{margin:0 0 14px;padding:12px 14px;border-left:3px solid var(--stop);font-size:14.5px;line-height:1.55;color:var(--text2)}
+.fsline b{color:var(--paper);font-weight:600}
 
 /* a return's card: its number, where it stands, and what to do next */
 .rcard{margin-top:18px;border:1px solid var(--hair2);background:var(--card);padding:16px 16px 18px}

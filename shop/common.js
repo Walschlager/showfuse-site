@@ -186,6 +186,7 @@
       id: cleanStr(p.id, 60), slug: p.slug, name: cleanStr(p.name, 120), blurb: cleanStr(p.blurb, 200),
       description: cleanStr(p.description, 4000), priceCents: intOr(p.price_cents, 0), status: cleanStr(p.status, 20),
       buyable: p.buyable === true, soldOut: p.sold_out === true, preview: p.preview === true, demo: p.demo === true,
+      finalSale: p.final_sale === true,   // build 14: can't be returned (an older server doesn't say, and then it isn't)
       photos: [], sizes: [], shipping: [], shipsTo: []
     };
     (Array.isArray(p.photos) ? p.photos : []).forEach(function (u) { if (safeImg(u)) out.photos.push(u); });
