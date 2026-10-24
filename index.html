@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/AppIcon_Night_32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/AppIcon_Night_192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/AppIcon_Night_512.png">
+<link rel="apple-touch-icon" href="/assets/AppIcon_Night_180.png">
 <title>ShowFuse</title>
 <meta name="description" content="Stop missing the shows you'd love. ShowFuse is the first swipe-to-discover live music app: every show near you, in one swipeable deck. iOS, in closed beta.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,11 +21,10 @@
   .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px}
   .logo span{color:var(--accent)}
 
-.wordmark{display:block;width:124px;height:41px;background:var(--accent);-webkit-mask:url(/assets/wordmark.png) center/contain no-repeat;mask:url(/assets/wordmark.png) center/contain no-repeat}
-.headmark{display:block;width:34px;height:34px;background:var(--accent);-webkit-mask:url(/assets/fuse.png) center/contain no-repeat;mask:url(/assets/fuse.png) center/contain no-repeat}
+.headmark{display:block;width:46px;height:34px;background:url(/assets/ShowFuse_Mark_Reversed_Yellow.svg) center/contain no-repeat}
 .lockup{display:flex;align-items:center;margin-bottom:34px}
-  .lockup .mark{display:block;width:min(440px,100%);aspect-ratio:1200/396;background:var(--accent);-webkit-mask:url(/assets/wordmark.png) center/contain no-repeat;mask:url(/assets/wordmark.png) center/contain no-repeat}
-  .lockup .emblem{display:block;flex:none;width:clamp(58px,15vw,96px);aspect-ratio:1;background:var(--accent);-webkit-mask:url(/assets/fuse.png) center/contain no-repeat;mask:url(/assets/fuse.png) center/contain no-repeat;filter:drop-shadow(0 0 26px rgba(255,195,0,.45))}
+  /* The lockup file carries its own clear space (5.357% of its width on every side). The shift lines the ticket's edge up with the text below. */
+  .lockup .mark{display:block;width:min(520px,100%);aspect-ratio:961.02/257.97;background:url(/assets/ShowFuse_Lockup_Horizontal_Reversed_Yellow.svg) center/contain no-repeat;transform:translateX(-5.357%)}
   .hero{padding:88px 0 64px;border-bottom:1px solid var(--hair)}
   .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--accent);text-transform:uppercase}
   h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,12vw,96px);line-height:.95;letter-spacing:1px;margin:18px 0 22px}
