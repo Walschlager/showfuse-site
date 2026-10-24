@@ -1,4 +1,4 @@
-:root{--bg:#111013;--ink:#1a181b;--paper:#f2efe6;--accent:#FFC300;--text2:#b9b4a8;--text3:#7a766c;--hair:#2c2a2e}
+:root{--bg:#111013;--ink:#1a181b;--paper:#f2efe6;--accent:#FFC300;--text2:#b9b4a8;--text3:#7a766c;--hair:#2c2a2e;--hair2:#3b383e;--card:#18161a}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--paper);font-family:Outfit,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .wrap{max-width:680px;margin:0 auto;padding:0 24px}
@@ -20,3 +20,10 @@ b{color:var(--paper);font-weight:600}
 a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--hair)}
 footer{margin-top:64px;padding:36px 0 64px;border-top:1px solid var(--hair);color:var(--text3);font-size:13px;line-height:2}
 footer a{color:var(--text2)}
+
+/* The shipping & returns page: the short-version box, numbered steps, a callout and the closing line */
+ol{padding-left:22px;margin:8px 0}
+.short{border:1px solid var(--hair2);background:var(--card);padding:6px 18px 10px;margin:8px 0 6px}
+.short h3{font-family:Outfit,system-ui,sans-serif;font-weight:600;font-size:16px;color:var(--paper);margin:14px 0 2px}
+.callout{border-left:3px solid var(--accent);background:rgba(255,195,0,.06);padding:14px 16px;margin:14px 0;font-size:16px;line-height:1.6;color:var(--paper)}
+.same{margin-top:30px;padding-top:16px;border-top:1px solid var(--hair);font-size:14px;color:var(--text3)}
