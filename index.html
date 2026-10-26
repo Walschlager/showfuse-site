@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#100F0D" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F4EFE4" media="(prefers-color-scheme: light)">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/AppIcon_Night_32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/AppIcon_Night_192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/assets/AppIcon_Night_512.png">
@@ -11,146 +14,164 @@
 <meta name="description" content="Stop missing the shows you'd love. ShowFuse is the first swipe-to-discover live music app: every show near you, in one swipeable deck. iOS, in closed beta.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{--bg:#111013;--ink:#1a181b;--paper:#f2efe6;--accent:#FFC300;--text2:#b9b4a8;--text3:#7a766c;--hair:#2c2a2e}
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--paper);font-family:Outfit,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:680px;margin:0 auto;padding:0 24px}
-  header{padding:26px 0;border-bottom:1px solid var(--hair)}
-  .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px}
-  .logo span{color:var(--accent)}
-
-.headmark{display:block;width:46px;height:34px;background:url(/assets/ShowFuse_Mark_Reversed_Yellow.svg) center/contain no-repeat}
-.lockup{display:flex;align-items:center;margin-bottom:34px}
-  /* The lockup file carries its own clear space (5.357% of its width on every side). The shift lines the ticket's edge up with the text below. */
-  .lockup .mark{display:block;width:min(520px,100%);aspect-ratio:961.02/257.97;background:url(/assets/ShowFuse_Lockup_Horizontal_Reversed_Yellow.svg) center/contain no-repeat;transform:translateX(-5.357%)}
-  .hero{padding:88px 0 64px;border-bottom:1px solid var(--hair)}
-  .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--accent);text-transform:uppercase}
-  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,12vw,96px);line-height:.95;letter-spacing:1px;margin:18px 0 22px}
-  .sub{font-size:19px;font-weight:300;color:var(--text2);line-height:1.55;max-width:34em}
-  .beta{display:inline-block;margin-top:34px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--ink);background:var(--accent);padding:10px 16px;text-transform:uppercase}
-  section{padding:56px 0;border-bottom:1px solid var(--hair)}
-  .join{padding:56px 0;border-bottom:1px solid var(--hair);background:rgba(255,195,0,.04)}
-  .join .num{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,16vw,120px);line-height:.9;color:var(--accent);margin:8px 0 12px}
-  .field{margin-top:16px}
-  .field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
-  .field input,.field select{width:100%;background:#0b0b0d;border:1px solid var(--hair);color:var(--paper);font-family:Outfit,system-ui,sans-serif;font-size:16px;padding:14px;border-radius:0;-webkit-appearance:none;appearance:none}
-  .field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width:520px){.grid2{grid-template-columns:1fr}}
-  .roles{display:flex;gap:10px;margin-top:8px}
-  .roles label{flex:1;border:1px solid var(--hair);background:#0b0b0d;padding:14px 12px;cursor:pointer;text-transform:none;letter-spacing:0;font-family:Outfit,system-ui,sans-serif;font-size:14px;color:var(--paper);margin:0}
-  .roles label b{display:block;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--paper)}
-  .roles label span{display:block;color:var(--text2);font-size:12px;margin-top:4px;line-height:1.4}
-  .roles input{position:absolute;opacity:0;width:0;height:0}
-  .roles input:checked+label{border-color:var(--accent);background:rgba(255,195,0,.08)}
-  .btn{display:block;width:100%;margin-top:22px;padding:17px;background:var(--accent);color:var(--ink);border:0;font-family:Outfit,system-ui,sans-serif;font-weight:800;font-size:13px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;border-radius:0}
-  .btn[disabled]{opacity:.5;cursor:default}
-  .fine{margin-top:12px;font-size:12px;color:var(--text3);line-height:1.6}
-  .fine a{color:var(--text2);border-bottom:1px solid var(--hair)}
-  .err{margin-top:14px;padding:12px 14px;border-left:3px solid #FF4757;color:var(--paper);font-size:14px;background:rgba(255,71,87,.08);display:none}
-  .hp{position:absolute;left:-9999px;top:-9999px;height:0;overflow:hidden}
-  h2{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1.5px;margin-bottom:26px}
-  .row{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--hair);align-items:baseline}
-  .row:last-child{border-bottom:1px solid var(--hair)}
-  .n{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:13px;min-width:2.2em}
-  .row b{font-weight:600}
-  .row p{color:var(--text2);font-weight:300;margin-top:4px;line-height:1.5}
-  .row b a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--hair)}
-  footer{padding:44px 0 64px;color:var(--text3);font-size:13px;line-height:2}
-  footer a{color:var(--text2);text-decoration:none;border-bottom:1px solid var(--hair)}
-  .mono{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase}
-  .glow{position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:radial-gradient(600px 600px at 50% 45%, rgba(255,195,0,.10), transparent 70%)}
-  .sparks{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-  .sparks i{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--accent);
-    opacity:0;animation:fup linear infinite}
-  @keyframes fup{0%{transform:translateY(60px);opacity:.6}100%{transform:translateY(-250px);opacity:0}}
-  @media (prefers-reduced-motion:reduce){.sparks{display:none}}
-  header,main,footer{position:relative;z-index:1}
-  .hdr{display:flex;justify-content:space-between;align-items:center;gap:16px}
-  .claimbtn{display:inline-block;background:var(--accent);color:var(--ink);font-family:Outfit,system-ui,sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:11px 14px;white-space:nowrap}
-  .claimbtn:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
-  .news{display:flex;gap:12px;align-items:flex-start;margin-top:18px;font-size:15px;line-height:1.45;color:var(--paper);cursor:pointer}
-  .news input{flex:none;width:22px;height:22px;margin:0;accent-color:var(--accent);color-scheme:dark;cursor:pointer}
-  .newsnote{margin:4px 0 0 34px;font-size:12px;line-height:1.5;color:var(--text3)}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/tokens.css">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/config.js"></script>
+<script src="/assets/site.js" defer></script>
 </head>
 <body>
-<div class="glow"></div>
-<div class="sparks"><i style="left:32.4%;top:57.5%;animation-duration:6.0s;animation-delay:0.4s"></i><i style="left:53.6%;top:68.3%;animation-duration:4.2s;animation-delay:2.5s"></i><i style="left:3.7%;top:71.7%;animation-duration:4.2s;animation-delay:0.5s"></i><i style="left:42.5%;top:91.3%;animation-duration:4.4s;animation-delay:1.1s"></i><i style="left:62.7%;top:97.4%;animation-duration:5.7s;animation-delay:2.0s"></i><i style="left:97.6%;top:52.3%;animation-duration:6.6s;animation-delay:1.4s"></i><i style="left:14.4%;top:55.9%;animation-duration:4.9s;animation-delay:4.1s"></i><i style="left:18.1%;top:79.1%;animation-duration:5.9s;animation-delay:1.9s"></i><i style="left:54.8%;top:53.1%;animation-duration:4.2s;animation-delay:1.0s"></i><i style="left:68.0%;top:71.4%;animation-duration:4.9s;animation-delay:2.9s"></i><i style="left:45.3%;top:65.0%;animation-duration:6.4s;animation-delay:3.5s"></i><i style="left:24.4%;top:78.7%;animation-duration:5.6s;animation-delay:4.4s"></i><i style="left:72.9%;top:64.4%;animation-duration:6.9s;animation-delay:0.6s"></i><i style="left:41.8%;top:87.9%;animation-duration:4.5s;animation-delay:2.4s"></i><i style="left:3.9%;top:83.4%;animation-duration:6.3s;animation-delay:2.9s"></i><i style="left:87.5%;top:65.7%;animation-duration:6.1s;animation-delay:3.0s"></i><i style="left:58.0%;top:72.8%;animation-duration:6.5s;animation-delay:4.7s"></i><i style="left:47.4%;top:83.2%;animation-duration:4.2s;animation-delay:3.5s"></i><i style="left:64.7%;top:99.7%;animation-duration:6.5s;animation-delay:1.4s"></i><i style="left:38.6%;top:83.4%;animation-duration:4.1s;animation-delay:2.3s"></i><i style="left:16.8%;top:55.9%;animation-duration:4.2s;animation-delay:3.8s"></i><i style="left:12.9%;top:62.4%;animation-duration:5.2s;animation-delay:4.4s"></i><i style="left:8.1%;top:72.5%;animation-duration:5.6s;animation-delay:4.4s"></i><i style="left:81.9%;top:93.2%;animation-duration:4.8s;animation-delay:2.1s"></i><i style="left:35.9%;top:94.2%;animation-duration:6.9s;animation-delay:0.8s"></i></div>
-<header><div class="wrap hdr"><a href="/" aria-label="ShowFuse"><span class="headmark" role="img" aria-label="ShowFuse"></span></a><a class="claimbtn" href="/claim/">Claim your page</a></div></header>
+<div class="glow" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to the page</a>
 
-<main>
-  <div class="hero"><div class="wrap">
-    <div class="lockup" role="img" aria-label="ShowFuse">
-      <span class="mark"></span>
-    </div>
-    <div class="kicker">Live music discovery</div>
-    <h1>STOP MISSING<br>THE SHOWS<br>YOU'D LOVE.</h1>
-    <p class="sub">ShowFuse is the first swipe-to-discover live music app. We stack all the shows
-    happening near you into a swipeable deck, so you never miss a live show. Whether you're
-    discovering your next favorite artist or just looking for something to do this weekend,
-    ShowFuse plugs you into the live music happening around you.</p>
-    <div class="beta">iOS · Closed beta</div>
-  </div></div>
+<header class="top">
+  <div class="wide top-in">
+    <a class="brand" href="/" aria-label="ShowFuse home"><span class="brand-img" role="img" aria-label="ShowFuse"></span></a>
+    <nav class="top-actions" aria-label="Account">
+      <a class="btn btn-ghost btn-sm" data-app href="/" hidden>Sign in</a>
+      <a class="btn btn-primary btn-sm" href="/claim/">Claim your page</a>
+    </nav>
+  </div>
+</header>
 
-  <section class="join" id="join"><div class="wrap">
-    <div class="kicker">Founding members</div>
-    <h2 style="margin-top:14px">Get in first.</h2>
-    <p class="sub">Put your name down and you're numbered from day one. The app opens to founding members before anyone else, by email.</p>
-    <form id="joinForm" novalidate>
-      <div class="field"><label>I am a</label>
-        <div class="roles">
-          <input type="radio" name="role" id="r-listener" value="listener" checked><label for="r-listener"><b>Listener</b><span>Find shows near you, follow artists, go.</span></label>
-          <input type="radio" name="role" id="r-artist" value="artist"><label for="r-artist"><b>Artist</b><span>Post your dates, sell your tickets.</span></label>
-          <input type="radio" name="role" id="r-venue" value="venue"><label for="r-venue"><b>Venue</b><span>Who's coming through, who's coming out.</span></label>
+<main id="main">
+  <section class="hero">
+    <div class="wide hero-grid">
+      <div class="hero-copy">
+        <p class="kicker">Live music discovery</p>
+        <h1>STOP MISSING<br>THE SHOWS<br><span class="hl">YOU'D LOVE.</span></h1>
+        <p class="lede">ShowFuse is the first swipe-to-discover live music app. We stack all the shows
+        happening near you into a swipeable deck, so you never miss a live show. Whether you're
+        discovering your next favorite artist or just looking for something to do this weekend,
+        ShowFuse plugs you into the live music happening around you.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" data-store href="/" hidden>Get the app</a>
+          <a class="btn btn-primary btn-lg btn-join" href="#join">Get in first</a>
+          <a class="btn btn-ghost btn-lg" data-app href="/" hidden>Open on web</a>
+          <a class="btn btn-quiet btn-lg" data-app href="/" hidden>Sign in</a>
+        </div>
+        <div class="beta" data-beta>
+          <span class="tix"><span class="tix-in">iOS · Closed beta</span></span>
+          <p>Founding members get their TestFlight invite first, by email.</p>
         </div>
       </div>
-      <div class="grid2">
-        <div class="field"><label for="j-name">Name</label><input id="j-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Your name"></div>
-        <div class="field"><label for="j-city">Home city</label><input id="j-city" name="city" type="text" autocomplete="address-level2" maxlength="80" placeholder="Los Angeles, CA"></div>
+      <div class="hero-shot" aria-hidden="false">
+        <div class="phone">
+          <picture>
+            <source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-discover.webp">
+            <img src="/assets/screens/dark-discover.webp" width="398" height="870" alt="The ShowFuse deck: a show card for tonight, with the venue, the date, the price and two songs to hear." fetchpriority="high">
+          </picture>
+        </div>
       </div>
-      <div class="grid2">
-        <div class="field"><label for="j-email">Email</label><input id="j-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required></div>
-        <div class="field"><label for="j-phone">Phone <span style="color:var(--text3);letter-spacing:0;text-transform:none">(optional)</span></label><input id="j-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="32" placeholder="+1 (555) 555-5555"></div>
-      </div>
-      <label class="news"><input type="checkbox" name="newsletter" id="j-news" aria-describedby="j-news-note"><span>Email me when new merch drops</span></label>
-      <p class="newsnote" id="j-news-note">Unsubscribe any time.</p>
-      <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
-      <button class="btn" id="joinBtn" type="submit">Put me on the list</button>
-      <div class="err" id="joinErr"></div>
-      <p class="fine">By joining you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. 13+. One email when your door opens, plus merch news only if you tick the box. No spam, ever.</p>
-    </form>
-    <div id="joinDone" style="display:none">
-      <div class="kicker" style="margin-top:8px">You're in</div>
-      <div class="num" id="joinNum">#—</div>
-      <p class="sub" id="joinMsg">Founding member. Watch your inbox for the invite.</p>
-      <p class="fine">Already on the list? We kept your original number.</p>
     </div>
-  </div></section>
+  </section>
 
-  <section><div class="wrap">
-    <h2>How it works</h2>
-    <div class="row"><span class="n">01</span><div><b>Swipe the deck.</b><p>Artists near you, with their music playing as you browse. Right to follow, up when you're going.</p></div></div>
-    <div class="row"><span class="n">02</span><div><b>Never miss the date.</b><p>Artists you follow come back as a show card when they're playing close, with the ticket link at the seller's own door.</p></div></div>
-    <div class="row"><span class="n">03</span><div><b>Built for artists too.</b><p>Post your dates, see who's going and who said maybe, city by city.</p></div></div>
-  </div></section>
+  <section class="join" id="join">
+    <div class="wide join-grid">
+      <div class="join-copy">
+        <p class="kicker">Founding members</p>
+        <h2 class="display">Get in first.</h2>
+        <p class="lede">Put your name down and you're numbered from day one. The app opens to founding members before anyone else, by email.</p>
+      </div>
 
-  <section><div class="wrap">
-    <h2>Contact</h2>
-    <p class="sub">The beta is invite-only while we build with our first listeners and artists. Want in? <a href="#join">Put your name on the list</a>.</p>
-    <div class="row" style="margin-top:22px"><span class="n">&#9679;</span><div><b><a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Investor%20inquiry">Investors, here</a></b><p>Building the discovery layer for live music. Ask us for the deck.</p></div></div>
-    <div class="row"><span class="n">&#9679;</span><div><b><a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Ad%20space%20request">Ad space, request here</a></b><p>Reach fans by city, right in the deck. Tell us the city, the dates, and what you're promoting.</p></div></div>
-    <p style="margin-top:18px" class="mono">info@showfuseapp.com</p>
-  </div></section>
+      <div class="admit">
+        <div class="admit-ticket">
+          <div class="admit-head">
+            <span class="mono-label">Admit one</span>
+            <span class="admit-title">Founding member</span>
+          </div>
+          <div class="admit-body">
+            <form id="joinForm" novalidate>
+              <div class="field"><label class="lab">I am a</label>
+                <div class="roles">
+                  <input type="radio" name="role" id="r-listener" value="listener" checked><label for="r-listener"><b>Listener</b><span>Find shows near you, follow artists, go.</span></label>
+                  <input type="radio" name="role" id="r-artist" value="artist"><label for="r-artist"><b>Artist</b><span>Post your dates, sell your tickets.</span></label>
+                  <input type="radio" name="role" id="r-venue" value="venue"><label for="r-venue"><b>Venue</b><span>Who's coming through, who's coming out.</span></label>
+                </div>
+              </div>
+              <div class="grid2">
+                <div class="field"><label class="lab" for="j-name">Name</label><input id="j-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Your name"></div>
+                <div class="field"><label class="lab" for="j-city">Home city</label><input id="j-city" name="city" type="text" autocomplete="address-level2" maxlength="80" placeholder="Los Angeles, CA"></div>
+              </div>
+              <div class="grid2">
+                <div class="field"><label class="lab" for="j-email">Email</label><input id="j-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required></div>
+                <div class="field"><label class="lab" for="j-phone">Phone <span class="opt">(optional)</span></label><input id="j-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="32" placeholder="+1 (555) 555-5555"></div>
+              </div>
+              <label class="news"><input type="checkbox" name="newsletter" id="j-news" aria-describedby="j-news-note"><span>Email me when new merch drops</span></label>
+              <p class="newsnote" id="j-news-note">Unsubscribe any time.</p>
+              <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+              <button class="btn btn-ink btn-block" id="joinBtn" type="submit">Put me on the list</button>
+              <div class="err" id="joinErr" role="alert"></div>
+              <p class="fine">By joining you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. 13+. One email when your door opens, plus merch news only if you tick the box. No spam, ever.</p>
+            </form>
+            <div id="joinDone" style="display:none" role="status">
+              <div class="kicker kicker-ticket">You're in</div>
+              <div class="num" id="joinNum">#—</div>
+              <p class="lede" id="joinMsg">Founding member. Watch your inbox for the invite.</p>
+              <p class="fine">Already on the list? We kept your original number.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="wide">
+      <h2 class="display">How it works</h2>
+      <ol class="steps">
+        <li class="step">
+          <div class="step-shot" aria-hidden="true">
+            <div class="phone phone-sm"><picture><source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-discover.webp"><img src="/assets/screens/dark-discover.webp" width="398" height="870" alt="" loading="lazy"></picture></div>
+          </div>
+          <div class="step-ticket">
+            <div class="step-stub"><span class="n">01</span></div>
+            <div class="step-text"><b>Swipe the deck.</b><p>Artists near you, with their music playing as you browse. Right to follow, up when you're going.</p></div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-shot" aria-hidden="true">
+            <div class="phone phone-sm"><picture><source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-lineup.webp"><img src="/assets/screens/dark-lineup.webp" width="398" height="870" alt="" loading="lazy"></picture></div>
+          </div>
+          <div class="step-ticket">
+            <div class="step-stub"><span class="n">02</span></div>
+            <div class="step-text"><b>Never miss the date.</b><p>Artists you follow come back as a show card when they're playing close, with the ticket link at the seller's own door.</p></div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-shot" aria-hidden="true">
+            <div class="phone phone-sm"><picture><source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-show.webp"><img src="/assets/screens/dark-show.webp" width="398" height="870" alt="" loading="lazy"></picture></div>
+          </div>
+          <div class="step-ticket">
+            <div class="step-stub"><span class="n">03</span></div>
+            <div class="step-text"><b>Built for artists too.</b><p>Post your dates, see who's going and who said maybe, city by city.</p></div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="contact">
+    <div class="wide">
+      <h2 class="display">Contact</h2>
+      <p class="lede">The beta is invite-only while we build with our first listeners and artists. Want in? <a class="ul" href="#join">Put your name on the list</a>.</p>
+      <div class="contact-rows">
+        <a class="crow" href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Investor%20inquiry"><span class="crow-stub">&#9679;</span><span class="crow-text"><b>Investors, here</b><span>Building the discovery layer for live music. Ask us for the deck.</span></span></a>
+        <a class="crow" href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Ad%20space%20request"><span class="crow-stub">&#9679;</span><span class="crow-text"><b>Ad space, request here</b><span>Reach fans by city, right in the deck. Tell us the city, the dates, and what you're promoting.</span></span></a>
+      </div>
+      <p class="mono-label email">info@showfuseapp.com</p>
+    </div>
+  </section>
 </main>
 
-<footer><div class="wrap"><a href="/#join">Get in first</a> · <a href="/faq">FAQ</a> · <a href="/support">Support</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Investor%20inquiry">Investors</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Ad%20space%20request">Ad space</a><br>
-  ShowFuse · Los Angeles, CA<br>
-  © 2026 ShowFuse. All rights reserved. · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a>
-</div></footer>
+<footer class="foot">
+  <div class="wide">
+    <span class="foot-logo" role="img" aria-label="ShowFuse"></span>
+    <p class="foot-links"><a href="/#join">Get in first</a> · <a href="/faq">FAQ</a> · <a href="/support">Support</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Investor%20inquiry">Investors</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Ad%20space%20request">Ad space</a></p>
+    <p>ShowFuse · Los Angeles, CA<br>
+    © 2026 ShowFuse. All rights reserved. · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a></p>
+  </div>
+</footer>
 <script>
 (function(){
   // Where the form posts: the real API on the real site. Only a page opened on localhost may post anywhere else (the local API, or the practice
