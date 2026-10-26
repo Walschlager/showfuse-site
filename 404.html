@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#100F0D" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F4EFE4" media="(prefers-color-scheme: light)">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/AppIcon_Night_32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/AppIcon_Night_192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/assets/AppIcon_Night_512.png">
@@ -10,21 +13,25 @@
 <title>Not found · ShowFuse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/tokens.css">
 <style>
-  :root{--bg:#111013;--paper:#f2efe6;--accent:#FFC300;--text2:#b9b4a8;--hair:#2c2a2e;--ink:#1a181b}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--paper);font-family:Outfit,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
-  .card{max-width:520px;text-align:center}
+  body{background:var(--bg);color:var(--paper);font:400 17px/1.55 var(--font-ui);-webkit-font-smoothing:antialiased;min-height:100vh;display:grid;place-items:center;padding:24px;position:relative}
+  body::before{content:"";position:absolute;inset:0 0 auto 0;height:700px;background:var(--glow);pointer-events:none}
+  .card{position:relative;max-width:520px;text-align:center}
   .logo{margin-bottom:40px;display:flex;justify-content:center}
-  .wordmark{display:block;width:240px;aspect-ratio:961.02/257.97;background:url(/assets/ShowFuse_Lockup_Horizontal_Reversed_Yellow.svg) center/contain no-repeat}
-  .logo span{color:var(--accent)}
-  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,10vw,64px);line-height:1;letter-spacing:1px;margin-bottom:18px}
-  p{color:var(--text2);font-weight:300;line-height:1.6;font-size:17px}
-  .beta{display:inline-block;margin-top:30px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--ink);background:var(--accent);padding:10px 16px;text-transform:uppercase}
-  a.home{display:block;margin-top:26px;color:var(--text2);font-size:14px;text-decoration:none;border-bottom:none}
+  .wordmark{display:block;width:240px;aspect-ratio:1737.72/379.04;background:var(--lockup) center/contain no-repeat}
+  h1{font:400 clamp(48px,11vw,72px)/.94 var(--font-display);letter-spacing:.012em;margin-bottom:18px;text-wrap:balance}
+  p{color:var(--text2);line-height:1.6;font-size:17px}
+  .beta{display:inline-block;margin-top:30px;filter:var(--drop)}
+  .beta span{display:block;padding:10px 22px;background:var(--ticket);color:var(--ticket-ink);border-radius:10px;font:700 12px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;
+    -webkit-mask:radial-gradient(circle 6px at 0 50%,transparent 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 6px at 100% 50%,transparent 97%,#000) right/51% 100% no-repeat;
+            mask:radial-gradient(circle 6px at 0 50%,transparent 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 6px at 100% 50%,transparent 97%,#000) right/51% 100% no-repeat}
+  a{color:var(--paper);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px;font-weight:600}
+  a:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:6px}
+  a.home{display:block;margin-top:26px;color:var(--text2);font-size:14px;font-weight:400;text-decoration:none}
   .links{margin-top:22px}
-  .links a{color:var(--accent);text-decoration:none}
   [hidden]{display:none!important}
 </style>
 </head>
@@ -40,7 +47,7 @@
       <h1>THIS ONE LIVES<br>IN THE APP</h1>
       <p>Shows, artists, and tickets on ShowFuse open inside the app.
       We're in closed beta on iOS. If a friend sent you this link, ask them for an invite.</p>
-      <div class="beta">iOS · Closed beta</div>
+      <div class="beta"><span>iOS · Closed beta</span></div>
       <a class="home" href="/">← showfuseapp.com</a>
     </div>
     <script>
