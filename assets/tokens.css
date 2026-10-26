@@ -27,7 +27,7 @@
   --text3: rgba(244, 239, 228, .58);
   --hair: rgba(244, 239, 228, .1);
   --hair2: rgba(244, 239, 228, .2);
-  --ph: rgba(244, 239, 228, .42);          /* placeholder text */
+  --ph: rgba(244, 239, 228, .52);          /* placeholder text */
 
   /* the brand */
   --ink: #0A0A0A;                          /* the ink on yellow */
@@ -85,7 +85,7 @@
     --text3: rgba(18, 17, 15, .63);
     --hair: rgba(18, 17, 15, .09);
     --hair2: rgba(18, 17, 15, .28);
-    --ph: rgba(18, 17, 15, .45);
+    --ph: rgba(18, 17, 15, .56);
 
     --accent-fg: #12110F;
     --accent-dim: rgba(255, 195, 0, .3);
