@@ -1,0 +1,121 @@
+/* ShowFuse website: the tokens. Backstage Daylight, the app's build 15 look.
+   Dark is the default (Backstage's warm black). Light follows the visitor's own setting (Daylight's paper, white and ink).
+   Taken from the app's mockups/build15/ui/dir-f.css. Every page loads this file first, then its own stylesheet.
+
+   The first group are the names every page's CSS already used (--paper is the main TEXT colour, --ink is the ink that sits ON yellow,
+   --text2/--text3 are the softer text, --hair/--hair2 the lines, --card/--field the surfaces), so older rules keep working and
+   only the values changed. The second group is new in build 15.
+
+   The yellow rule: on dark, yellow may be text. On light it never is: yellow is a fill behind ink, and text that was yellow turns to ink
+   (--accent-fg). Anything sitting on a cream ticket uses the --ticket-* inks in both looks. */
+:root {
+  color-scheme: dark light;
+
+  --font-display: 'Bebas Neue', Impact, sans-serif;
+  --font-ui: Outfit, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* surfaces */
+  --bg: #100F0D;
+  --surface: #1B1815;
+  --card: #1B1815;
+  --field: rgba(244, 239, 228, .07);
+
+  /* text and lines */
+  --paper: #F4EFE4;
+  --text2: rgba(244, 239, 228, .72);
+  --text3: rgba(244, 239, 228, .58);
+  --hair: rgba(244, 239, 228, .1);
+  --hair2: rgba(244, 239, 228, .2);
+  --ph: rgba(244, 239, 228, .42);          /* placeholder text */
+
+  /* the brand */
+  --ink: #0A0A0A;                          /* the ink on yellow */
+  --accent: #FFC300;                       /* the fill */
+  --accent-fg: #FFC300;                    /* the yellow that is allowed to be text (ink on Light) */
+  --accent-dim: rgba(255, 195, 0, .14);
+  --wash: rgba(255, 195, 0, .14);
+  --focus: #FFC300;
+  --halo: rgba(255, 195, 0, .18);
+  --on-accent-glow: 0 10px 26px -10px rgba(255, 195, 0, .75), inset 0 1px 0 rgba(255, 255, 255, .4);
+
+  /* good / bad (the washes are for boxes, -t for text) */
+  --go: #2ED573;
+  --go-t: #5FE08F;
+  --go-bg: rgba(46, 213, 115, .1);
+  --go-line: rgba(46, 213, 115, .5);
+  --stop: #FF4757;
+  --stop-t: #FF6B72;
+  --stop-bg: rgba(255, 71, 87, .1);
+  --stop-line: rgba(255, 71, 87, .6);
+  --info: #5AD1FF;
+
+  /* the cream ticket (it stays cream in both looks, with dark ink) */
+  --ticket: #F4EFE4;
+  --stub: #F4EFE4;
+  --ticket-ink: #100F0D;
+  --ticket-ink-2: rgba(16, 15, 13, .72);
+  --ticket-ink-3: rgba(16, 15, 13, .64);
+  --ticket-line: rgba(16, 15, 13, .22);
+  --ticket-fill: rgba(16, 15, 13, .06);
+  --ticket-rim: 0 0 0 1px rgba(244, 239, 228, .06);
+
+  /* elevation */
+  --edge: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 0 0 1px rgba(244, 239, 228, .06);
+  --e1: 0 1px 2px rgba(0, 0, 0, .35), 0 10px 26px -8px rgba(0, 0, 0, .6);
+  --e2: 0 2px 6px rgba(0, 0, 0, .45), 0 30px 60px -16px rgba(0, 0, 0, .8);
+  --drop: drop-shadow(0 18px 28px rgba(0, 0, 0, .45));
+  --band: rgba(16, 15, 13, .86);
+  --glow: radial-gradient(120% 50% at 50% -10%, rgba(255, 195, 0, .12), transparent 60%);
+
+  /* the logo: yellow ticket on dark, two-tone ticket on paper */
+  --mark: url(/assets/ShowFuse_Mark_Reversed_Yellow.svg);
+  --lockup: url(/assets/ShowFuse_Lockup_Horizontal_Reversed_Yellow.svg);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #F4EFE4;
+    --surface: #FFFFFF;
+    --card: #FFFFFF;
+    --field: #FFFFFF;
+
+    --paper: #12110F;
+    --text2: rgba(18, 17, 15, .7);
+    --text3: rgba(18, 17, 15, .63);
+    --hair: rgba(18, 17, 15, .09);
+    --hair2: rgba(18, 17, 15, .28);
+    --ph: rgba(18, 17, 15, .45);
+
+    --accent-fg: #12110F;
+    --accent-dim: rgba(255, 195, 0, .3);
+    --wash: rgba(255, 195, 0, .26);
+    --focus: #12110F;
+    --halo: rgba(255, 195, 0, .45);
+    --on-accent-glow: 0 10px 24px -12px rgba(255, 195, 0, .9), inset 0 1px 0 rgba(255, 255, 255, .45);
+
+    --go: #1E9E57;
+    --go-t: #10632F;
+    --go-bg: rgba(30, 158, 87, .1);
+    --go-line: rgba(30, 158, 87, .55);
+    --stop: #D93025;
+    --stop-t: #B71C1C;
+    --stop-bg: rgba(217, 48, 37, .08);
+    --stop-line: rgba(217, 48, 37, .55);
+    --info: #00779C;
+
+    --ticket: #FFFDF8;
+    --stub: #EFE8DA;
+    --ticket-rim: 0 0 0 1px rgba(18, 17, 15, .06);
+
+    --edge: 0 1px 2px rgba(40, 30, 10, .07), inset 0 0 0 1px rgba(18, 17, 15, .05);
+    --e1: 0 1px 2px rgba(40, 30, 10, .06), 0 8px 22px -8px rgba(40, 30, 10, .18);
+    --e2: 0 2px 6px rgba(40, 30, 10, .07), 0 30px 60px -22px rgba(40, 30, 10, .34);
+    --drop: drop-shadow(0 14px 22px rgba(40, 30, 10, .2));
+    --band: rgba(244, 239, 228, .88);
+    --glow: radial-gradient(120% 42% at 50% -8%, rgba(255, 195, 0, .26), transparent 62%);
+
+    --mark: url(/assets/ShowFuse_Mark_TwoTone_Yellow.svg);
+    --lockup: url(/assets/ShowFuse_Lockup_Horizontal_TwoTone_Yellow.svg);
+  }
+}
