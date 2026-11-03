@@ -50,12 +50,30 @@
       <div class="beta"><span>iOS · Closed beta</span></div>
       <a class="home" href="/">← showfuseapp.com</a>
     </div>
+    <script src="/assets/config.js"></script>
     <script>
       // Links the app shares (shows, artists, venues) get the "lives in the app" note; everything else is a plain not-found.
-      if (/^\/(s|a|v|artist|show|venue)\//.test(location.pathname)) {
+      // Once APP_URL is set (the web app is live), a link the phone shared here before build 16 goes on to the real page there:
+      // /s/<slug>?id=<uuid> and /show/<uuid> to /s/<uuid> (keeping ?ref=), /artist/<x> to /a/<x>, /venue/<x> to /v/<x>.
+      // A show link with no id in it can't be found there, so it keeps the note.
+      (function () {
+        var m = /^\/(s|a|v|artist|show|venue)\/([^\/?#]+)\/?$/.exec(location.pathname);
+        if (!/^\/(s|a|v|artist|show|venue)\//.test(location.pathname)) return;
+        var app = null, cfg = window.SF_CONFIG || {};
+        try { var u = new URL(cfg.APP_URL || '', location.href); if (cfg.APP_URL && u.protocol === 'https:') app = u.origin; } catch (e) {}
+        if (app && m) {
+          var kind = { s: 's', show: 's', a: 'a', artist: 'a', v: 'v', venue: 'v' }[m[1]];
+          var key = decodeURIComponent(m[2]), q = new URLSearchParams(location.search), uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+          if (kind === 's') key = uuid.test(q.get('id') || '') ? q.get('id') : (uuid.test(key) ? key : '');
+          if (key) {
+            var ref = kind === 's' && /^[a-z0-9_.-]{1,40}$/i.test(q.get('ref') || '') ? '?ref=' + encodeURIComponent(q.get('ref')) : '';
+            location.replace(app + '/' + kind + '/' + encodeURIComponent(key) + ref);
+            return;
+          }
+        }
         document.getElementById('lost').hidden = true;
         document.getElementById('inapp').hidden = false;
-      }
+      })();
     </script>
   </div>
 </body>
