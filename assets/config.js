@@ -7,6 +7,6 @@
 
    Only https:// addresses are used; anything else is ignored and the buttons stay hidden. */
 window.SF_CONFIG = {
-  APP_URL: '',
+  APP_URL: 'https://app.showfuseapp.com',
   APP_STORE_URL: ''
 };
