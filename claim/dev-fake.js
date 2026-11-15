@@ -214,7 +214,7 @@
       if (/^timeout@/i.test(c.email)) return fail(401, 'session_expired', 'This page timed out after 2 hours.');
       if (b.accept_terms !== true) return fail(400, 'terms_required', 'Tick the box to agree to the Terms.');
       if (c.needs_dob && !b.date_of_birth) return fail(400, 'dob_required', 'Add your birthday.');
-      if (b.date_of_birth && age(b.date_of_birth) < 13) return fail(400, 'too_young', 'You need to be 13 or older to claim a page.');
+      if (b.date_of_birth && age(b.date_of_birth) < 18) return fail(400, 'too_young', 'You need to be 18 or older to claim a page.');
       if (c.invite) return reply(200, { status: 'approved', dm_code: c.dm_code });
       var band = c.email_kind === 'band';
       var shot = c.shots > 0;   // like the server: what was uploaded, not proof_ids
