@@ -837,7 +837,7 @@
     var age = now.getFullYear() - y;
     if (now.getMonth() + 1 < mo || (now.getMonth() + 1 === mo && now.getDate() < d)) age--;
     if (age < 0) return 'bad';
-    return age >= 13 ? 'ok' : 'young';
+    return age >= 18 ? 'ok' : 'young';
   }
 
   // Where to send someone who still needs a proof.
@@ -867,7 +867,7 @@
     if (c.needs_dob) {
       var d = dobState();
       if (d === 'empty') return { text: 'Add your birthday', focus: 'dob' };
-      if (d === 'young') return { text: 'You need to be 13 or older', focus: 'dob' };
+      if (d === 'young') return { text: 'You need to be 18 or older', focus: 'dob' };
       if (d === 'bad') return { text: 'Check your birthday', focus: 'dob' };
     }
     if (!$('terms').checked) return { text: 'Tick the box to agree', focus: 'terms' };
@@ -882,7 +882,7 @@
     b.setAttribute('aria-disabled', m ? 'true' : 'false');
     b.textContent = m ? m.text : S.mode === 'invite' ? 'Finish' : 'Send for review';
     if (S.claim.needs_dob && dobState() === 'young') {
-      showErr('dobErr', 'You need to be 13 or older to claim a page.', null, 'A parent or your manager can claim it for you with their own email.');
+      showErr('dobErr', 'You need to be 18 or older to claim a page.', null, 'A parent or your manager can claim it for you with their own email.');
     } else hideErr('dobErr');
   }
 
