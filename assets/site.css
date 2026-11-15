@@ -178,3 +178,32 @@ a.ul{color:var(--paper);text-decoration:underline 2px var(--accent);text-underli
 .foot-logo{display:block;width:150px;height:33px;margin-bottom:14px;background:var(--lockup) left center/contain no-repeat}
 .foot-links{margin-bottom:6px}
 .foot-links a{white-space:nowrap}
+
+/* 2026-11-15 roast: the line that says why it's different, the three promises, and the artists' band */
+.punch{max-width:30em;margin:-6px 0 18px;font:600 clamp(19px,2.3vw,23px)/1.4 var(--font-ui);color:var(--paper);text-wrap:balance}
+.punch b{font-weight:800;color:var(--accent-fg)}
+.promises{padding:0 0 clamp(28px,5vw,56px)}
+.promise-grid{display:grid;gap:12px}
+@media (min-width:760px){.promise-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
+.promise{display:flex;align-items:flex-start;gap:14px;padding:18px 20px;border-radius:18px;background:var(--surface);box-shadow:var(--e1),var(--edge)}
+.promise p{font-size:15.5px;line-height:1.5;color:var(--text2)}
+.promise b{color:var(--paper);font-weight:700}
+.pi{flex:none;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:var(--accent);color:var(--ink)}
+.pi svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.artists{padding:clamp(8px,2vw,24px) 0 clamp(36px,6vw,72px)}
+.artist-band{position:relative;overflow:hidden;padding:clamp(26px,5vw,48px);border-radius:26px;background:var(--surface);box-shadow:var(--e2),var(--edge)}
+.artist-band::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 90% at 100% 0,var(--wash),transparent 60%);pointer-events:none}
+.ab-copy{position:relative;max-width:640px}
+.ab-list{list-style:none;display:grid;gap:10px;margin:6px 0 26px}
+.ab-list li{position:relative;padding-left:32px;font-size:17px;line-height:1.45;color:var(--paper)}
+.ab-list li::before{content:"";position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.4l2.9 2.9 6-6.2' fill='none' stroke='%230A0A0A' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+.ab-cta{display:flex;flex-wrap:wrap;gap:12px}
+/* the artists' band: Micah's show card on the right from a laptop up (the same card as the hero, standing on its own) */
+.artist-band{display:grid;gap:28px;align-items:center}
+.ab-card{display:none}
+@media (min-width:900px){
+  .artist-band{grid-template-columns:minmax(0,1fr) 280px;gap:40px}
+  .ab-card{display:block;position:relative;width:280px;aspect-ratio:375/499;transform:rotate(3deg)}
+  .ab-card .deck{left:0;top:0;width:100%;height:100%}
+  .ab-card .dcard{box-shadow:0 24px 50px rgba(0,0,0,.5)}
+}
