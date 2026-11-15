@@ -179,9 +179,7 @@ a.ul{color:var(--paper);text-decoration:underline 2px var(--accent);text-underli
 .foot-links{margin-bottom:6px}
 .foot-links a{white-space:nowrap}
 
-/* 2026-11-15 roast: the line that says why it's different, the three promises, and the artists' band */
-.punch{max-width:30em;margin:-6px 0 18px;font:600 clamp(19px,2.3vw,23px)/1.4 var(--font-ui);color:var(--paper);text-wrap:balance}
-.punch b{font-weight:800;color:var(--accent-fg)}
+/* 2026-11-15 roast: the three promises and the artists' band */
 .promises{padding:0 0 clamp(28px,5vw,56px)}
 .promise-grid{display:grid;gap:12px}
 @media (min-width:760px){.promise-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
