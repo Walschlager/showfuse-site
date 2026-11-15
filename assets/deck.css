@@ -1,0 +1,86 @@
+/* ShowFuse website: the demo deck. Real artist cards (Walschlager, Micah Martin) laid over the Discover screenshot, built to
+   the app's own numbers (SwipeCardView.swift: 30 pt chips, Bebas 56 name, the cream ticket with a 76 pt strip and 9 pt notches).
+   Everything inside a card is sized in cqw (1% of the card's width), so the card matches the screenshot at any phone size.
+   The card box sits exactly over the screenshot's card: 12-386 x 148-646 of the 398 x 870 screen, 1 px wider on every side. */
+
+.screen{position:relative;border-radius:37px;overflow:hidden;line-height:0}
+.phone-sm .screen{border-radius:27px}
+.screen>picture img{border-radius:0}
+
+.deck{position:absolute;left:2.889%;top:16.954%;width:94.22%;height:57.356%;container-type:inline-size;line-height:1.2;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.deck.is-live{cursor:grab}
+.deck.is-dragging{cursor:grabbing}
+
+.dcard{position:absolute;inset:0;overflow:hidden;border-radius:6.15cqw;background:#24211B;color:#fff;font-family:var(--font-ui);
+  box-shadow:0 2.5cqw 7cqw rgba(0,0,0,.42);will-change:transform;transform-origin:50% 100%}
+.dcard.is-flying{transition:transform .6s cubic-bezier(.22,.7,.2,1),opacity .6s ease}
+.dcard.is-settling{transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+
+/* the photo, with the app's bottom fade (clear → 35% → 82% black over its last 170 pt) */
+.dc-photo{position:absolute;left:0;right:0;top:0;height:88cqw;background:#2E2A24}
+.dc-photo img{display:block;width:100%;height:100%;border-radius:0;object-fit:cover;object-position:50% 28%;pointer-events:none}
+.dc-photo::after{content:"";position:absolute;left:0;right:0;bottom:0;height:43.9cqw;background:linear-gradient(transparent,rgba(0,0,0,.35) 50%,rgba(0,0,0,.82))}
+
+/* chips: the countdown top-left (yellow), the distance top-right (smoke) */
+.dc-chips{position:absolute;left:4.27cqw;right:4.27cqw;top:4.27cqw;display:flex;justify-content:space-between;align-items:flex-start;gap:2cqw}
+.dc-count,.dc-near{display:inline-flex;align-items:center;gap:1.81cqw;height:7.74cqw;padding:0 3.1cqw;border-radius:2.58cqw;
+  font:700 3.1cqw/1 var(--font-mono);letter-spacing:.117em;text-transform:uppercase;white-space:nowrap}
+.dc-count{background:#FFC300;color:#0A0A0A;box-shadow:0 1.07cqw 2.14cqw rgba(255,195,0,.45)}
+.dc-count i{width:1.81cqw;height:1.81cqw;border-radius:50%;background:#0A0A0A}
+.dc-near{background:rgba(0,0,0,.66);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);letter-spacing:.083em}
+.dc-near svg{width:2.9cqw;height:2.9cqw;fill:#FFC300}
+.dc-dist{display:inline-flex;align-items:center;padding:1.55cqw 3.1cqw;border-radius:2.58cqw;background:rgba(0,0,0,.62);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);
+  font:700 3.1cqw/1.25 var(--font-mono);letter-spacing:.067em;text-transform:uppercase;color:#fff;white-space:nowrap}
+
+/* who: two genres, the name in Bebas, the verified seal */
+.dc-who{position:absolute;left:4.13cqw;right:4.13cqw;bottom:58.4cqw;display:flex;flex-direction:column;align-items:flex-start;gap:2.06cqw}
+.dc-genres{display:flex;gap:1.81cqw}
+.dc-genres span{display:inline-flex;align-items:center;height:6.71cqw;padding:0 2.58cqw;border-radius:99px;font:600 2.84cqw/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.dc-genres .g1{background:#FFC300;color:#0A0A0A}
+.dc-genres .g2{background:rgba(16,15,13,.5);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+.dc-name{display:flex;align-items:center;gap:2.06cqw;max-width:100%}
+.dc-name b{font:400 14.45cqw/1 var(--font-display);letter-spacing:.01em;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-top:.6cqw}
+.dc-name svg{flex:none;width:5.68cqw;height:5.68cqw}
+
+/* the cream ticket that rides up over the photo: a 76 pt strip, a dashed perforation with a notch at each end, then Side A */
+.dc-ticket{position:absolute;left:2.67cqw;right:2.67cqw;top:78.13cqw;bottom:2.94cqw;border-radius:4.64cqw;background:var(--dc-paper,#F4EFE4);color:#100F0D;
+  box-shadow:0 .5cqw 1.6cqw rgba(0,0,0,.35)}
+.dc-ticket::before,.dc-ticket::after{content:"";position:absolute;top:calc(19.47cqw - 2.32cqw);width:4.64cqw;height:4.64cqw;border-radius:50%;background:#24211B}
+.dc-ticket::before{left:-2.32cqw}
+.dc-ticket::after{right:-2.32cqw}
+.dc-strip{height:19.47cqw;display:flex;align-items:center;gap:3.1cqw;padding:0 4.13cqw}
+.dc-date{flex:none;width:14.93cqw;height:13.33cqw;border-radius:2.67cqw;background:#100F0D;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4cqw}
+.dc-date span{font:700 2.84cqw/1 var(--font-mono);letter-spacing:.136em;color:#FFC300;text-transform:uppercase}
+.dc-date b{font:400 7.22cqw/.9 var(--font-display);color:#F4EFE4}
+.dc-venue{flex:1;min-width:0;display:flex;flex-direction:column;gap:.5cqw}
+.dc-venue b{font:700 4.39cqw/1.2 var(--font-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-venue span{font:400 3.35cqw/1.25 var(--font-ui);color:rgba(16,15,13,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-price{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:.5cqw}
+.dc-price b{font:400 7.74cqw/.9 var(--font-display);letter-spacing:.02em}
+.dc-price span{font:600 2.84cqw/1 var(--font-mono);letter-spacing:.045em;color:rgba(16,15,13,.78);white-space:nowrap}
+.dc-perf{height:.53cqw;margin:0 4.13cqw;background:repeating-linear-gradient(90deg,rgba(16,15,13,.22) 0 1.07cqw,transparent 1.07cqw 1.87cqw)}
+.dc-tracks{padding:1.55cqw 2.58cqw 2.06cqw}
+.dc-side{padding:2.06cqw 1.55cqw .53cqw;font:600 2.84cqw/1.2 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(16,15,13,.64)}
+.dc-trk{display:flex;align-items:center;gap:2.58cqw;min-height:10.84cqw;padding:0 1.55cqw}
+.dc-trk i{flex:none;position:relative;width:7.74cqw;height:7.74cqw;border-radius:50%;background:#100F0D}
+.dc-trk i::after{content:"";position:absolute;left:50%;top:50%;width:2.5cqw;height:2.9cqw;background:#F4EFE4;clip-path:polygon(0 0,100% 50%,0 100%);transform:translate(-38%,-50%)}
+.dc-trk b{flex:1;min-width:0;font:600 3.74cqw/1.2 var(--font-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-trk span{flex:none;font:600 3.1cqw/1 var(--font-mono);color:rgba(16,15,13,.78);font-variant-numeric:tabular-nums}
+
+@media (prefers-color-scheme:light){.deck{--dc-paper:#FFFDF8}}
+
+/* the honest line under the phone */
+.demo-note{margin:14px auto 0;max-width:300px;text-align:center;font-size:13px;line-height:1.45;color:var(--text3)}
+.hero-shot{display:flex;flex-direction:column}
+@media (max-width:899px){.hero-shot .demo-note{order:-1;margin:0 auto 12px}}
+
+/* the show page picture (How it works, 03): its headliner chip says Walschlager, matching his card (The Echo, Jun 21, $25, 34 going).
+   Laid exactly over the screenshot's chip (18-192 x 419-474 of 398 x 870), and as wide as the name needs. Sized in cqw of the screen. */
+.screen{container-type:inline-size}
+.hl-patch{position:absolute;left:4.52cqw;top:48.16%;height:13.82cqw;min-width:43.72cqw;display:flex;align-items:center;gap:3.02cqw;padding:0 3.52cqw 0 2.01cqw;
+  border-radius:3.52cqw;background:#191512;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);line-height:1.2;color:#F4EFE4}
+.hl-patch img{flex:none;width:10.05cqw;height:10.05cqw;border-radius:2.01cqw;object-fit:cover}
+.hl-patch span{display:flex;flex-direction:column;gap:.7cqw}
+.hl-patch small{font:600 2.51cqw/1 var(--font-mono);letter-spacing:.2em;text-transform:uppercase;color:rgba(244,239,228,.62)}
+.hl-patch b{font:700 4.02cqw/1.1 var(--font-ui);white-space:nowrap}
+.hl-patch i{margin-left:auto;padding-left:3cqw;font:400 5cqw/1 var(--font-ui);font-style:normal;color:rgba(244,239,228,.62)}

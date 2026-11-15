@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- ShowFuse website: the source of /assets/og.png, the picture a shared link shows (1200 x 630).
+     Not published (Jekyll skips _dev). To remake it: node _dev/serve.mjs, then a 1200 x 630 screenshot of http://localhost:8792/_dev/og.html -->
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<link rel="stylesheet" href="/assets/tokens.css">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/deck.css">
+<style>
+  html,body{width:1200px;height:630px;margin:0;overflow:hidden;background:#100F0D;color:#F4EFE4}
+  .og{position:relative;width:1200px;height:630px;overflow:hidden;background:radial-gradient(70% 90% at 12% 0%,rgba(255,195,0,.16),transparent 62%),#100F0D}
+  .og-logo{position:absolute;left:72px;top:58px;width:226px;height:49px;background:url(/assets/ShowFuse_Lockup_Horizontal_Reversed_Yellow.svg) left center/contain no-repeat}
+  .og h1{position:absolute;left:68px;top:132px;margin:0;font:400 112px/.9 'Bebas Neue',Impact,sans-serif;letter-spacing:.012em;color:#F4EFE4}
+  .og h1 .hl{text-decoration:underline;text-decoration-color:#FFC300;text-decoration-thickness:.075em;text-underline-offset:.07em;text-decoration-skip-ink:none}
+  .og>p{position:absolute;left:72px;top:466px;margin:0;max-width:660px;font:400 28px/1.35 Outfit,sans-serif;color:rgba(244,239,228,.78)}
+  .og .url{position:absolute;left:72px;bottom:46px;font:700 22px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#FFC300}
+  .og .phone{position:absolute;right:86px;top:56px;width:300px;margin:0;padding:7px;border-radius:44px}
+</style></head>
+<body><div class="og">
+  <div class="og-logo"></div>
+  <h1>STOP MISSING<br>THE SHOWS<br><span class="hl">YOU'D LOVE.</span></h1>
+  <p>Every show near you, in one swipeable deck.</p>
+  <div class="url">showfuseapp.com</div>
+  <svg width="0" height="0" style="position:absolute"><symbol id="sf-seal" viewBox="0 0 24 24"><g fill="#FFC300"><circle cx="12" cy="12" r="8.6"/><circle cx="20.6" cy="12" r="2.9"/><circle cx="19.45" cy="16.3" r="2.9"/><circle cx="16.3" cy="19.45" r="2.9"/><circle cx="12" cy="20.6" r="2.9"/><circle cx="7.7" cy="19.45" r="2.9"/><circle cx="4.55" cy="16.3" r="2.9"/><circle cx="3.4" cy="12" r="2.9"/><circle cx="4.55" cy="7.7" r="2.9"/><circle cx="7.7" cy="4.55" r="2.9"/><circle cx="12" cy="3.4" r="2.9"/><circle cx="16.3" cy="4.55" r="2.9"/><circle cx="19.45" cy="7.7" r="2.9"/></g><path d="M7.9 12.3l2.8 2.8 5.5-5.6" fill="none" stroke="#100F0D" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></symbol></svg>
+  <div class="phone"><div class="screen"><picture><img src="/assets/screens/dark-discover.webp" width="398" height="870" alt=""></picture>
+    <div class="deck" data-deck="still">
+      <article class="dcard">
+        <div class="dc-photo"><img src="/assets/demo/walschlager.webp" alt=""></div>
+        <div class="dc-chips"><span class="dc-count"><i></i>Tonight</span><span class="dc-dist">2.4 mi</span></div>
+        <div class="dc-who"><div class="dc-genres"><span class="g1">Trap</span><span class="g2">Dubstep</span></div><div class="dc-name"><b>Walschlager</b><svg><use href="#sf-seal"/></svg></div></div>
+        <div class="dc-ticket"><div class="dc-strip"><div class="dc-date"><span>Jun</span><b>21</b></div><div class="dc-venue"><b>The Echo</b><span>Los Angeles, CA · 9:00 PM</span></div><div class="dc-price"><b>$25</b><span>34 going</span></div></div><div class="dc-perf"></div>
+          <div class="dc-tracks"><p class="dc-side">Side A — Top tracks</p><div class="dc-trk"><i></i><b>BREAK SWEAT</b><span>3:34</span></div><div class="dc-trk"><i></i><b>SHOT DOWN</b><span>3:45</span></div></div></div>
+      </article>
+    </div>
+  </div></div>
+</div></body></html>

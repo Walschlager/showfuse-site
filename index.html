@@ -11,14 +11,26 @@
 <link rel="icon" type="image/png" sizes="512x512" href="/assets/AppIcon_Night_512.png">
 <link rel="apple-touch-icon" href="/assets/AppIcon_Night_180.png">
 <title>ShowFuse</title>
-<meta name="description" content="Stop missing the shows you'd love. ShowFuse is the first swipe-to-discover live music app: every show near you, in one swipeable deck. iOS, in closed beta.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<meta name="description" content="Stop missing the shows you'd love. ShowFuse is the first swipe-to-discover live music app: every show near you, in one swipeable deck. Free on the web. iPhone in beta.">
+<link rel="canonical" href="https://showfuseapp.com/">
+<!-- the card a shared link shows (texts, socials) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ShowFuse">
+<meta property="og:url" content="https://showfuseapp.com/">
+<meta property="og:title" content="ShowFuse: stop missing the shows you'd love">
+<meta property="og:description" content="Every show near you, in one swipeable deck. Free on the web. iPhone in beta.">
+<meta property="og:image" content="https://showfuseapp.com/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ShowFuse: stop missing the shows you'd love.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/fonts.css">
 <link rel="stylesheet" href="/assets/tokens.css">
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/deck.css">
 <script src="/assets/config.js"></script>
 <script src="/assets/site.js" defer></script>
+<script src="/assets/deck.js" defer></script>
 </head>
 <body>
 <div class="glow" aria-hidden="true"></div>
@@ -28,10 +40,20 @@
   <div class="wide top-in">
     <a class="brand" href="/" aria-label="ShowFuse home"><span class="brand-img" role="img" aria-label="ShowFuse"></span></a>
     <nav class="top-actions" aria-label="Site">
-      <a class="btn btn-ghost btn-sm" data-app href="/" hidden>Sign in</a>
-      <a class="btn btn-primary btn-sm" href="/claim/">Claim your page</a>
+      <a class="nav-link nav-wide" href="/claim/">For artists</a>
+      <a class="nav-link nav-wide" data-app href="/" hidden>Sign in</a>
+      <a class="btn btn-primary btn-sm" data-app-go="/signup" href="/#join">Get in first</a>
+      <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="siteMenu"><span></span><span></span><span></span></button>
     </nav>
   </div>
+  <nav class="menu" id="siteMenu" aria-label="Menu" hidden>
+    <div class="wide menu-in">
+      <a href="/claim/">Claim your page<span>For artists</span></a>
+      <a data-app href="/" hidden>Sign in<span>Already have an account</span></a>
+      <a href="/#join">iPhone beta<span>Get the TestFlight invite</span></a>
+      <a href="/contact">Contact<span>Investors, advertising, press</span></a>
+    </div>
+  </nav>
 </header>
 
 <main id="main">
@@ -46,22 +68,72 @@
         ShowFuse plugs you into the live music happening around you.</p>
         <div class="cta-row">
           <a class="btn btn-primary btn-lg" data-store href="/" hidden>Get the app</a>
-          <a class="btn btn-primary btn-lg btn-join" href="#join">Get in first</a>
-          <a class="btn btn-ghost btn-lg" data-app href="/" hidden>Open on web</a>
-          <a class="btn btn-quiet btn-lg" data-app href="/" hidden>Sign in</a>
+          <a class="btn btn-primary btn-lg btn-join" data-app-go="/signup" href="#join">Get in first</a>
         </div>
+        <p class="cta-note">Free. Make an account on the web and you're in.</p>
         <div class="beta" data-beta>
-          <span class="tix"><span class="tix-in">iOS · Closed beta</span></span>
-          <p>Founding members get their TestFlight invite first, by email.</p>
+          <span class="tix"><span class="tix-in">iPhone · Beta</span></span>
+          <p>Want the iPhone app? <a class="ul" href="#join">Join the iPhone beta</a> and we'll email your TestFlight invite.</p>
         </div>
       </div>
       <div class="hero-shot">
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+          <symbol id="sf-seal" viewBox="0 0 24 24"><g fill="#FFC300"><circle cx="12" cy="12" r="8.6"/><circle cx="20.6" cy="12" r="2.9"/><circle cx="19.45" cy="16.3" r="2.9"/><circle cx="16.3" cy="19.45" r="2.9"/><circle cx="12" cy="20.6" r="2.9"/><circle cx="7.7" cy="19.45" r="2.9"/><circle cx="4.55" cy="16.3" r="2.9"/><circle cx="3.4" cy="12" r="2.9"/><circle cx="4.55" cy="7.7" r="2.9"/><circle cx="7.7" cy="4.55" r="2.9"/><circle cx="12" cy="3.4" r="2.9"/><circle cx="16.3" cy="4.55" r="2.9"/><circle cx="19.45" cy="7.7" r="2.9"/></g><path d="M7.9 12.3l2.8 2.8 5.5-5.6" fill="none" stroke="#100F0D" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+          <symbol id="sf-bolt" viewBox="0 0 24 24"><path d="M13.5 1.5 3.8 13.6h6.4l-1.1 8.9 9.7-12.2h-6.4l1.1-8.8z"/></symbol>
+        </svg>
         <div class="phone">
-          <picture>
-            <source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-discover.webp">
-            <img src="/assets/screens/dark-discover.webp" width="398" height="870" alt="The ShowFuse deck: a show card for tonight, with the venue, the date, the price and two songs to hear." fetchpriority="high">
-          </picture>
+          <div class="screen" role="img" aria-label="Demo of the ShowFuse deck: Walschlager, tonight at The Echo, swipes away to Micah Martin, in 3 days at Avalon Hollywood. Each card has the date, the venue, the price and two songs to hear.">
+            <picture>
+              <source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-discover.webp">
+              <img src="/assets/screens/dark-discover.webp" width="398" height="870" alt="" fetchpriority="high">
+            </picture>
+            <div class="deck" data-deck="live" aria-hidden="true">
+              <article class="dcard">
+                <div class="dc-photo"><img src="/assets/demo/walschlager.webp" alt="" draggable="false"></div>
+                <div class="dc-chips"><span class="dc-count"><i></i>Tonight</span><span class="dc-dist">2.4 mi</span></div>
+                <div class="dc-who">
+                  <div class="dc-genres"><span class="g1">Trap</span><span class="g2">Dubstep</span></div>
+                  <div class="dc-name"><b>Walschlager</b><svg><use href="#sf-seal"/></svg></div>
+                </div>
+                <div class="dc-ticket">
+                  <div class="dc-strip">
+                    <div class="dc-date"><span>Jun</span><b>21</b></div>
+                    <div class="dc-venue"><b>The Echo</b><span>Los Angeles, CA · 9:00 PM</span></div>
+                    <div class="dc-price"><b>$25</b><span>34 going</span></div>
+                  </div>
+                  <div class="dc-perf"></div>
+                  <div class="dc-tracks">
+                    <p class="dc-side">Side A — Top tracks</p>
+                    <div class="dc-trk"><i></i><b>BREAK SWEAT</b><span>3:34</span></div>
+                    <div class="dc-trk"><i></i><b>SHOT DOWN</b><span>3:45</span></div>
+                  </div>
+                </div>
+              </article>
+              <article class="dcard">
+                <div class="dc-photo"><img src="/assets/demo/micah-martin.webp" alt="" draggable="false"></div>
+                <div class="dc-chips"><span class="dc-count"><i></i>In 3 days</span><span class="dc-dist">6.8 mi</span></div>
+                <div class="dc-who">
+                  <div class="dc-genres"><span class="g1">Hardstyle</span><span class="g2">Metalcore</span></div>
+                  <div class="dc-name"><b>Micah Martin</b><svg><use href="#sf-seal"/></svg></div>
+                </div>
+                <div class="dc-ticket">
+                  <div class="dc-strip">
+                    <div class="dc-date"><span>Jun</span><b>24</b></div>
+                    <div class="dc-venue"><b>Avalon Hollywood</b><span>Los Angeles, CA · 10:00 PM</span></div>
+                    <div class="dc-price"><b>$30</b><span>58 going</span></div>
+                  </div>
+                  <div class="dc-perf"></div>
+                  <div class="dc-tracks">
+                    <p class="dc-side">Side A — Top tracks</p>
+                    <div class="dc-trk"><i></i><b>Demons</b><span>4:27</span></div>
+                    <div class="dc-trk"><i></i><b>One Life</b><span>3:50</span></div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
         </div>
+        <p class="demo-note">Demo cards. Your deck shows real shows near you.</p>
       </div>
     </div>
   </section>
@@ -69,9 +141,10 @@
   <section class="join" id="join">
     <div class="wide join-grid">
       <div class="join-copy">
-        <p class="kicker">Founding members</p>
-        <h2 class="display">Get in first.</h2>
-        <p class="lede">Put your name down and you're numbered from day one. The app opens to founding members before anyone else, by email.</p>
+        <p class="kicker">iPhone beta</p>
+        <h2 class="display">Get the iPhone app first.</h2>
+        <p class="lede">ShowFuse for iPhone is in beta on TestFlight. Put your name down and you're a founding member, numbered from day one. We'll email your invite.</p>
+        <p class="lede join-web">Don't want to wait? <a class="ul" data-app-go="/signup" href="/#join">Start now on the web</a>.</p>
       </div>
 
       <div class="admit">
@@ -85,7 +158,7 @@
               <div class="field"><label class="lab">I am a</label>
                 <div class="roles">
                   <input type="radio" name="role" id="r-listener" value="listener" checked><label for="r-listener"><b>Listener</b><span>Find shows near you, follow artists, go.</span></label>
-                  <input type="radio" name="role" id="r-artist" value="artist"><label for="r-artist"><b>Artist</b><span>Post your dates, sell your tickets.</span></label>
+                  <input type="radio" name="role" id="r-artist" value="artist"><label for="r-artist"><b>Artist</b><span>Post your dates, reach fans near you.</span></label>
                   <input type="radio" name="role" id="r-venue" value="venue"><label for="r-venue"><b>Venue</b><span>Who's coming through, who's coming out.</span></label>
                 </div>
               </div>
@@ -102,7 +175,7 @@
               <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
               <button class="btn btn-ink btn-block" id="joinBtn" type="submit">Put me on the list</button>
               <div class="err" id="joinErr" role="alert"></div>
-              <p class="fine">By joining you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. 13+. One email when your door opens, plus merch news only if you tick the box. No spam, ever.</p>
+              <p class="fine">By joining you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. 18+. One email when your door opens, plus merch news only if you tick the box. No spam, ever.</p>
             </form>
             <div id="joinDone" style="display:none" role="status">
               <div class="kicker kicker-ticket">You're in</div>
@@ -122,7 +195,17 @@
       <ol class="steps">
         <li class="step">
           <div class="step-shot" aria-hidden="true">
-            <div class="phone phone-sm"><picture><source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-discover.webp"><img src="/assets/screens/dark-discover.webp" width="398" height="870" alt="" loading="lazy"></picture></div>
+            <div class="phone phone-sm"><div class="screen"><picture><source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-discover.webp"><img src="/assets/screens/dark-discover.webp" width="398" height="870" alt="" loading="lazy"></picture>
+              <div class="deck" data-deck="still">
+                <article class="dcard">
+                  <div class="dc-photo"><img src="/assets/demo/walschlager.webp" alt="" loading="lazy"></div>
+                  <div class="dc-chips"><span class="dc-count"><i></i>Tonight</span><span class="dc-dist">2.4 mi</span></div>
+                  <div class="dc-who"><div class="dc-genres"><span class="g1">Trap</span><span class="g2">Dubstep</span></div><div class="dc-name"><b>Walschlager</b><svg><use href="#sf-seal"/></svg></div></div>
+                  <div class="dc-ticket"><div class="dc-strip"><div class="dc-date"><span>Jun</span><b>21</b></div><div class="dc-venue"><b>The Echo</b><span>Los Angeles, CA · 9:00 PM</span></div><div class="dc-price"><b>$25</b><span>34 going</span></div></div><div class="dc-perf"></div>
+                    <div class="dc-tracks"><p class="dc-side">Side A — Top tracks</p><div class="dc-trk"><i></i><b>BREAK SWEAT</b><span>3:34</span></div><div class="dc-trk"><i></i><b>SHOT DOWN</b><span>3:45</span></div></div></div>
+                </article>
+              </div>
+            </div></div>
           </div>
           <div class="step-ticket">
             <div class="step-stub"><span class="n">01</span></div>
@@ -131,7 +214,17 @@
         </li>
         <li class="step">
           <div class="step-shot" aria-hidden="true">
-            <div class="phone phone-sm"><picture><source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-lineup.webp"><img src="/assets/screens/dark-lineup.webp" width="398" height="870" alt="" loading="lazy"></picture></div>
+            <div class="phone phone-sm"><div class="screen"><picture><source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-discover.webp"><img src="/assets/screens/dark-discover.webp" width="398" height="870" alt="" loading="lazy"></picture>
+              <div class="deck" data-deck="still">
+                <article class="dcard">
+                  <div class="dc-photo"><img src="/assets/demo/micah-martin.webp" alt="" loading="lazy"></div>
+                  <div class="dc-chips"><span class="dc-near"><svg><use href="#sf-bolt"/></svg>Playing near you · in 3d</span></div>
+                  <div class="dc-who"><div class="dc-genres"><span class="g1">Hardstyle</span><span class="g2">Metalcore</span></div><div class="dc-name"><b>Micah Martin</b><svg><use href="#sf-seal"/></svg></div></div>
+                  <div class="dc-ticket"><div class="dc-strip"><div class="dc-date"><span>Jun</span><b>24</b></div><div class="dc-venue"><b>Avalon Hollywood</b><span>Los Angeles, CA · 10:00 PM</span></div><div class="dc-price"><b>$30</b><span>58 going</span></div></div><div class="dc-perf"></div>
+                    <div class="dc-tracks"><p class="dc-side">Side A — Top tracks</p><div class="dc-trk"><i></i><b>Demons</b><span>4:27</span></div><div class="dc-trk"><i></i><b>One Life</b><span>3:50</span></div></div></div>
+                </article>
+              </div>
+            </div></div>
           </div>
           <div class="step-ticket">
             <div class="step-stub"><span class="n">02</span></div>
@@ -140,7 +233,9 @@
         </li>
         <li class="step">
           <div class="step-shot" aria-hidden="true">
-            <div class="phone phone-sm"><picture><source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-show.webp"><img src="/assets/screens/dark-show.webp" width="398" height="870" alt="" loading="lazy"></picture></div>
+            <div class="phone phone-sm"><div class="screen"><picture><source media="(prefers-color-scheme: light)" srcset="/assets/screens/light-show.webp"><img src="/assets/screens/dark-show.webp" width="398" height="870" alt="" loading="lazy"></picture>
+              <div class="hl-patch"><img src="/assets/demo/walschlager.webp" alt="" loading="lazy"><span><small>Headliner</small><b>Walschlager</b></span><i>›</i></div>
+            </div></div>
           </div>
           <div class="step-ticket">
             <div class="step-stub"><span class="n">03</span></div>
@@ -151,15 +246,15 @@
     </div>
   </section>
 
-  <section class="contact">
+  <section class="contact" id="contact">
     <div class="wide">
       <h2 class="display">Contact</h2>
-      <p class="lede">The beta is invite-only while we build with our first listeners and artists. Want in? <a class="ul" href="#join">Put your name on the list</a>.</p>
+      <p class="lede">Investors, advertisers, press: send us a note and we'll answer by email.</p>
       <div class="contact-rows">
-        <a class="crow" href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Investor%20inquiry"><span class="crow-stub">&#9679;</span><span class="crow-text"><b>Investors, here</b><span>Building the discovery layer for live music. Ask us for the deck.</span></span></a>
-        <a class="crow" href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Ad%20space%20request"><span class="crow-stub">&#9679;</span><span class="crow-text"><b>Ad space, request here</b><span>Reach fans by city, right in the deck. Tell us the city, the dates, and what you're promoting.</span></span></a>
+        <a class="crow" href="/contact?topic=investors"><span class="crow-stub">&#9679;</span><span class="crow-text"><b>Investors, here</b><span>Building the discovery layer for live music. Ask us for the deck.</span></span></a>
+        <a class="crow" href="/contact?topic=advertising"><span class="crow-stub">&#9679;</span><span class="crow-text"><b>Ad space, request here</b><span>Reach fans by city, right in the deck. Tell us the city, the dates, and what you're promoting.</span></span></a>
       </div>
-      <p class="mono-label email">info@showfuseapp.com</p>
+      <p class="email"><span class="mono-label">info@showfuseapp.com</span><button class="copy" type="button" data-copy="info@showfuseapp.com">Copy</button></p>
     </div>
   </section>
 </main>
@@ -167,7 +262,7 @@
 <footer class="foot">
   <div class="wide">
     <span class="foot-logo" role="img" aria-label="ShowFuse"></span>
-    <p class="foot-links"><a href="/#join">Get in first</a> · <a href="/faq">FAQ</a> · <a href="/support">Support</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Investor%20inquiry">Investors</a> · <a href="mailto:info@showfuseapp.com?subject=ShowFuse%20%E2%80%94%20Ad%20space%20request">Ad space</a></p>
+    <p class="foot-links"><a data-app-go="/signup" href="/#join">Get in first</a> · <a href="/#join">iPhone beta</a> · <a href="/claim/">For artists</a> · <a href="/faq">FAQ</a> · <a href="/support">Support</a> · <a href="/contact">Contact</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p>
     <p>ShowFuse · Los Angeles, CA<br>
     © 2026 ShowFuse. All rights reserved. · <a href="mailto:info@showfuseapp.com">info@showfuseapp.com</a></p>
   </div>

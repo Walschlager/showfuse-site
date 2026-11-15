@@ -13,7 +13,7 @@
 
   --font-display: 'Bebas Neue', Impact, sans-serif;
   --font-ui: Outfit, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'Barlow Condensed', 'Arial Narrow', sans-serif;   /* the label font: Barlow Condensed since 2026-11-14 (the name stays so every page's CSS keeps working) */
 
   /* surfaces */
   --bg: #100F0D;

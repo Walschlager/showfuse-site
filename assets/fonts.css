@@ -1,0 +1,9 @@
+/* ShowFuse website: the fonts, served from this site, so no font request ever carries a visitor's address to Google (privacy sweep).
+   Bebas Neue = big titles, Outfit = text, Barlow Condensed = the small labels, prices' notes and numbers (Brandon's pick 2026-11-14,
+   replacing JetBrains Mono). Latin subset, woff2, from Google Fonts (SIL Open Font License 1.1).
+   Barlow Condensed is narrower than the old label font, so it is drawn 14% larger (size-adjust): every label keeps its size in the CSS. */
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/bebas-neue-400.woff2) format('woff2')}
+@font-face{font-family:'Outfit';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/outfit-var.woff2) format('woff2')}
+@font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:500;font-display:swap;size-adjust:114%;src:url(/assets/fonts/barlow-condensed-500.woff2) format('woff2')}
+@font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:600;font-display:swap;size-adjust:114%;src:url(/assets/fonts/barlow-condensed-600.woff2) format('woff2')}
+@font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:700;font-display:swap;size-adjust:114%;src:url(/assets/fonts/barlow-condensed-700.woff2) format('woff2')}
