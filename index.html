@@ -31,8 +31,25 @@
 <script src="/assets/config.js"></script>
 <script src="/assets/site.js" defer></script>
 <script src="/assets/deck.js" defer></script>
+<script>
+  /* The splash: the ticket-eats-showfuse animation, once per visit. Decided here, before the first paint, so the page never
+     flashes behind it. Skipped for people who ask their device for less motion; ?splash=1 always shows it (for checking it). */
+  (function () {
+    try {
+      var force = /(?:^|[?&])splash=1(?:&|$)/.test(location.search), seen = false, calm = false;
+      try { seen = sessionStorage.getItem('sf-splash') === '1'; } catch (e) { /* no storage: show it */ }
+      calm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      if (force || (!seen && !calm)) document.documentElement.classList.add('splash');
+    } catch (e) { /* no splash */ }
+  })();
+</script>
+<script src="/assets/splash.js" defer></script>
 </head>
 <body>
+<div id="splash" role="presentation">
+  <video id="splashVideo" muted playsinline preload="none" aria-hidden="true"></video>
+  <button class="splash-skip" type="button">Skip</button>
+</div>
 <div class="glow" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to the page</a>
 

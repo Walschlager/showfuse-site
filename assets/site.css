@@ -205,3 +205,16 @@ a.ul{color:var(--paper);text-decoration:underline 2px var(--accent);text-underli
   .ab-card .deck{left:0;top:0;width:100%;height:100%}
   .ab-card .dcard{box-shadow:0 24px 50px rgba(0,0,0,.5)}
 }
+
+/* the splash (assets/splash.js): full screen over the page, the video centred, the background the video's own colour so no edge shows */
+#splash{display:none}
+.splash #splash{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:#110E0D;cursor:pointer;transition:opacity .48s ease}
+.splash #splash.is-leaving{opacity:0;pointer-events:none}
+.splash body{overflow:hidden}
+#splash video{display:block;width:min(100vw,1500px);max-height:100vh;height:auto}
+.splash-skip{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));min-height:36px;padding:0 16px;border:0;border-radius:18px;
+  background:rgba(244,239,228,.1);box-shadow:inset 0 0 0 1px rgba(244,239,228,.22);color:#F4EFE4;font:700 13px/1 var(--font-ui);letter-spacing:.02em;cursor:pointer}
+@media (prefers-color-scheme:light){
+  .splash #splash{background:#FFFFFF}
+  .splash-skip{background:rgba(16,15,13,.06);box-shadow:inset 0 0 0 1px rgba(16,15,13,.18);color:#100F0D}
+}
