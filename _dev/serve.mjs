@@ -97,6 +97,10 @@ export function createServer(root) {
       if (wantsDir || file === base) {
         const index = fileAt(path.join(file, 'index.html'));
         if (index) return page(req, res, 200, index);
+      } else if (fileAt(file + '.html')) {
+        // GitHub Pages serves /support from support.html even though a support/ folder exists too (checked on the live site
+        // 2026-11-15). Going to the folder first sent /contact and /support round in a loop here, never on the real site.
+        return page(req, res, 200, fileAt(file + '.html'));
       } else if (dirAt(file)) {
         // a folder asked for without its closing slash: send the browser to the slash (what GitHub Pages does), keeping ?query
         const where = '/' + parts.map(encodeURIComponent).join('/') + '/' + search.replace(/[^\x21-\x7e]/g, encodeURIComponent);
