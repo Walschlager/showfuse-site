@@ -74,13 +74,3 @@
 .hero-shot{display:flex;flex-direction:column}
 @media (max-width:899px){.hero-shot .demo-note{order:-1;margin:0 auto 12px}}
 
-/* the show page picture (How it works, 03): its headliner chip says Walschlager, matching his card (The Echo, Jun 21, $25, 34 going).
-   Laid exactly over the screenshot's chip (18-192 x 419-474 of 398 x 870), and as wide as the name needs. Sized in cqw of the screen. */
-.screen{container-type:inline-size}
-.hl-patch{position:absolute;left:4.52cqw;top:48.16%;height:13.82cqw;min-width:43.72cqw;display:flex;align-items:center;gap:3.02cqw;padding:0 3.52cqw 0 2.01cqw;
-  border-radius:3.52cqw;background:#191512;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);line-height:1.2;color:#F4EFE4}
-.hl-patch img{flex:none;width:10.05cqw;height:10.05cqw;border-radius:2.01cqw;object-fit:cover}
-.hl-patch span{display:flex;flex-direction:column;gap:.7cqw}
-.hl-patch small{font:600 2.51cqw/1 var(--font-mono);letter-spacing:.2em;text-transform:uppercase;color:rgba(244,239,228,.62)}
-.hl-patch b{font:700 4.02cqw/1.1 var(--font-ui);white-space:nowrap}
-.hl-patch i{margin-left:auto;padding-left:3cqw;font:400 5cqw/1 var(--font-ui);font-style:normal;color:rgba(244,239,228,.62)}
