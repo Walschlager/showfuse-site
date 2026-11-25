@@ -177,6 +177,7 @@ a.ul{color:var(--paper);text-decoration:underline 2px var(--accent);text-underli
 .foot a:hover{color:var(--paper)}
 .foot-logo{display:block;width:150px;height:33px;margin-bottom:14px;background:var(--lockup) left center/contain no-repeat}
 .foot-links{margin-bottom:6px}
+.foot-signin{max-width:68ch;margin-bottom:10px;line-height:1.6}
 .foot-links a{white-space:nowrap}
 
 /* 2026-11-15 roast: the three promises and the artists' band */
